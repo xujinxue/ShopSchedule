@@ -71,7 +71,7 @@ class Utils:
         return True if new_obj <= old_obj else False
 
     @staticmethod
-    def len_tabu(m, n):
+    def len_tabu(m, n):  # 禁忌搜索表的长度
         a = m * n
         if a < 250:
             return 250

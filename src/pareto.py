@@ -1,3 +1,8 @@
+__doc__ = """
+帕累托排序；
+基于帕累托等级和拥挤度的选择；
+"""
+
 import numpy as np
 
 from .utils import Utils
