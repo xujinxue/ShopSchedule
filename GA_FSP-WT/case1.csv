@@ -1,0 +1,10 @@
+Test,Objective,Iteration,Direction
+1,2301.0,18,0
+MinObj,2301.0
+MaxObj,2301.0
+MeanObj,2301.00
+MinIter,18
+MaxIter,18
+MeanIter,18.00
+Direction#0,1
+Direction#1,0
