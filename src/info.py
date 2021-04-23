@@ -740,10 +740,11 @@ class Info(GanttChart):
         code1[d], code2[e] = code2[e], code1[d]
         return code1, code2
 
-    def ga_crossover_sequence_ox(self, info):
+    def ga_crossover_sequence_ox(self, info, a=None, b=None):
         code1 = deepcopy(self.code)
         code2 = deepcopy(info.code)
-        a, b = np.random.choice(range(1, self.schedule.length - 1), 2, replace=False)
+        if a is None or b is None:
+            a, b = np.random.choice(range(1, self.schedule.length - 1), 2, replace=False)
         if a > b:
             a, b = b, a
         r_a_b = range(a, b + 1)
@@ -774,23 +775,70 @@ class Info(GanttChart):
         code1[left_b_a], code2[left_b_a] = change1, change2
         return code1, code2
 
+    def ga_crossover_sequence_pmx(self, info, a=None, b=None):
+        code1 = deepcopy(self.code)
+        code2 = deepcopy(info.code)
+        number1 = self.schedule.start_number_jme[1]
+        number2 = info.schedule.start_number_jme[1]
+        if a is None or b is None:
+            a, b = np.random.choice(range(1, self.schedule.length - 1), 2, replace=False)
+        if a > b:
+            a, b = b, a
+        r_a_b = range(a, b + 1)
+        r_left = np.delete(range(self.schedule.length), r_a_b)
+        middle_1 = [(code1[i], number1[i]) for i in r_a_b]
+        middle_2 = [(code2[i], number2[i]) for i in r_a_b]
+        left_1 = [(code1[i], number1[i]) for i in r_left]
+        left_2 = [(code2[i], number2[i]) for i in r_left]
+        code1[r_a_b], code2[r_a_b] = code2[r_a_b], code1[r_a_b]
+        mapping = [[], []]
+        for i, j in zip(middle_1, middle_2):
+            if j in middle_1 and i not in middle_2:
+                index = middle_1.index(j)
+                value = middle_2[index]
+                while True:
+                    if value in middle_1:
+                        index = middle_1.index(value)
+                        value = middle_2[index]
+                    else:
+                        break
+                if i[0] != value[0]:
+                    mapping[0].append(i)
+                    mapping[1].append(value)
+            elif j not in middle_1 and i not in middle_2:
+                mapping[0].append(i)
+                mapping[1].append(j)
+        for i, j in zip(mapping[0], mapping[1]):
+            if i in left_1:
+                left_1[left_1.index(i)] = j
+            elif i in left_2:
+                left_2[left_2.index(i)] = j
+            if j in left_1:
+                left_1[left_1.index(j)] = i
+            elif j in left_2:
+                left_2[left_2.index(j)] = i
+        code1[r_left], code2[r_left] = [val[0] for val in left_1], [val[0] for val in left_2]
+        return code1, code2
+
     def ga_crossover_sequence_hybrid(self, info, func_list=None):
         if func_list is None:
             func_list = [self.ga_crossover_sequence_pox, self.ga_crossover_sequence_ipox,
-                         self.ga_crossover_sequence_dpox, self.ga_crossover_sequence_ox]
+                         self.ga_crossover_sequence_dpox, self.ga_crossover_sequence_ox,
+                         self.ga_crossover_sequence_pmx]
         func = np.random.choice(func_list, 1, replace=False)[0]
         return func(info)
 
-    def ga_crossover_sequence_permutation_pmx(self, info):
+    def ga_crossover_sequence_permutation_pmx(self, info, a=None, b=None):
         code1 = deepcopy(self.code)
         code2 = deepcopy(info.code)
-        a, b = np.random.choice(self.schedule.n, 2, replace=False)
+        if a is None or b is None:
+            a, b = np.random.choice(self.schedule.n, 2, replace=False)
         if a > b:
             a, b = b, a
-        r_a_b = range(a, b)
+        r_a_b = range(a, b + 1)
         r_left = np.delete(range(self.schedule.n), r_a_b)
-        left_1, left_2 = code2[r_left], code1[r_left]
-        middle_1, middle_2 = code2[r_a_b], code1[r_a_b]
+        middle_1, middle_2 = code1[r_a_b], code2[r_a_b]
+        left_1, left_2 = code1[r_left], code2[r_left]
         code1[r_a_b], code2[r_a_b] = middle_2, middle_1
         mapping = [[], []]
         for i, j in zip(middle_1, middle_2):
@@ -805,9 +853,7 @@ class Info(GanttChart):
                         break
                 mapping[0].append(i)
                 mapping[1].append(value)
-            elif i in middle_2:
-                pass
-            else:
+            elif j not in middle_1 and i not in middle_2:
                 mapping[0].append(i)
                 mapping[1].append(j)
         for i, j in zip(mapping[0], mapping[1]):
@@ -883,9 +929,7 @@ class Info(GanttChart):
                             break
                     mapping[0].append(i)
                     mapping[1].append(value)
-                elif i in middle_2:
-                    pass
-                else:
+                elif j not in middle_1 and i not in middle_2:
                     mapping[0].append(i)
                     mapping[1].append(j)
             for i, j in zip(mapping[0], mapping[1]):
