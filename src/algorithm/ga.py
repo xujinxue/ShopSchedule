@@ -223,7 +223,7 @@ class GaJsp(Ga):
         self.show_generation(0)
 
     def do_crossover(self, i, j):
-        code1, code2 = self.pop[0][i].ga_crossover_sequence_pox(self.pop[0][j])
+        code1, code2 = self.pop[0][i].ga_crossover_sequence_hybrid(self.pop[0][j])
         self.decode_update(i, code1)
         self.decode_update(j, code2)
 
@@ -264,13 +264,13 @@ class GaFrJsp(GaJsp):
         self.show_generation(0)
 
     def do_crossover(self, i, j):
-        code1, code2 = self.pop[0][i].ga_crossover_sequence_pox(self.pop[0][j])
+        code1, code2 = self.pop[0][i].ga_crossover_sequence_hybrid(self.pop[0][j])
         route1, route2 = self.pop[0][i].ga_crossover_route_pmx(self.pop[0][j])
         self.decode_update(i, code1, route1)
         self.decode_update(j, code1, route2)
 
     def do_mutation(self, i):
-        code1 = self.pop[0][i].ga_mutation_sequence_operation_based_tpe()
+        code1 = self.pop[0][i].ga_mutation_sequence_operation_based_hybrid()
         route1 = self.pop[0][i].ga_mutation_route_tpe()
         self.decode_update(i, code1, route1)
 
@@ -312,7 +312,7 @@ class GaNwJsp(Ga):
         self.decode_update(j, code2)
 
     def do_mutation(self, i):
-        code1 = self.pop[0][i].ga_mutation_sequence_permutation_tpe()
+        code1 = self.pop[0][i].ga_mutation_sequence_permutation_hybrid()
         self.decode_update(i, code1)
 
     def do_tabu_search(self, i):

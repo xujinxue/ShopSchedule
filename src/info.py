@@ -1114,8 +1114,7 @@ class Info(GanttChart):
         code = deepcopy(self.code)
         n_time = Utils.n_time(n_time)
         if func_list is None:
-            func_list = [self.ga_mutation_sequence_permutation_tpe, self.ga_mutation_sequence_permutation_insert,
-                         self.ga_mutation_sequence_reverse]
+            func_list = [self.ga_mutation_sequence_permutation_tpe, self.ga_mutation_sequence_permutation_insert]
         for n_do in range(n_time):
             func = np.random.choice(func_list, 1, replace=False)[0]
             code = func(code)
