@@ -1,6 +1,6 @@
 from src import *
 
-file_dir = "./GA_LWJSP/ft06"
+file_dir = "./GA_JSP/ft06"
 file = "1-GanttChart.csv"
 file_save = "%s/GanttChart/%s" % (file_dir, file[:-4])
 Utils.make_dir("%s/GanttChart" % file_dir)
