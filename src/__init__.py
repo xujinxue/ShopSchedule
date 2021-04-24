@@ -18,6 +18,9 @@ from .utils import Utils
 INSTANCE_LIST_JSP = """
 ft06
 """
+INSTANCE_LIST_FJSP = """
+mk1
+"""
 CASES_LIST = """
 case1
 """

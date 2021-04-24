@@ -15,7 +15,7 @@ def run(case="case1"):
     ga = GaTemplateFspTimetable(pop_size=50, rc=0.75, rm=0.15, max_generation=500, objective=Objective.makespan,
                                 n=n, m=m, p=p, tech=tech, proc=proc,
                                 rest_start_end=rest_start_end, resumable=resumable, time_unit=60)  # 调用写好的模板
-    ga.do_exp(exp_log="./GA_FSP-WT", instance="case1", n_exp=10, tabu_search=False, gc=False, y_based=0)  # 求解
+    ga.do_exp(exp_log="./GA_FSP-WT", instance="case1", n_exp=10, tabu_search=True, gc=False, y_based=0)  # 求解
     # 结果保存在exp_log（例："./GA_FSP-WT"）及exp_log/instance（例："./GA_FSP-WT/case1"）目录下
 
 

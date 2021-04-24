@@ -419,11 +419,13 @@ class GaFjsp(Ga):
         for i in range(self.pop_size):
             if pop is None:
                 code = self.schedule.sequence_operation_based(self.schedule.n, self.p)
-                mac = self.schedule.assignment_job_based(self.schedule.n, self.p, self.tech)
+                # mac = self.schedule.assignment_job_based(self.schedule.n, self.p, self.tech)
+                # info = self.schedule.decode_operation_based_active(code, mac)
+                info = self.schedule.decode_only_operation_based_active(code)
             else:
                 code = pop[0][i].code
                 mac = pop[0][i].mac
-            info = self.schedule.decode_operation_based_active(code, mac)
+                info = self.schedule.decode_operation_based_active(code, mac)
             self.pop[0].append(info)
             self.pop[1].append(self.objective(info))
             self.pop[2].append(Utils.calculate_fitness(self.pop[1][i]))
@@ -432,13 +434,13 @@ class GaFjsp(Ga):
         self.show_generation(0)
 
     def do_crossover(self, i, j):
-        code1, code2 = self.pop[0][i].ga_crossover_sequence_ipox(self.pop[0][j])
+        code1, code2 = self.pop[0][i].ga_crossover_sequence_hybrid(self.pop[0][j])
         mac1, mac2 = self.pop[0][i].ga_crossover_assignment_job_based_random(self.pop[0][j])
         self.decode_update(i, code1, mac1)
         self.decode_update(j, code2, mac2)
 
     def do_mutation(self, i):
-        code1 = self.pop[0][i].ga_mutation_sequence_operation_based_tpe()
+        code1 = self.pop[0][i].ga_mutation_sequence_operation_based_hybrid()
         mac1 = self.pop[0][i].ga_mutation_assignment_job_based_random_replace(self.tech)
         self.decode_update(i, code1, mac1)
 
@@ -467,13 +469,15 @@ class GaFrFjsp(GaFjsp):
         for i in range(self.pop_size):
             if pop is None:
                 code = self.schedule.sequence_operation_based(self.schedule.n, self.p)
-                mac = self.schedule.assignment_job_based(self.schedule.n, self.p, self.tech)
+                # mac = self.schedule.assignment_job_based(self.schedule.n, self.p, self.tech)
                 route = self.schedule.route_job_based(self.schedule.n, self.p)
+                # info = self.schedule.decode_operation_based_active(code, mac, route)
+                info = self.schedule.decode_only_operation_based_active(code, route)
             else:
                 code = pop[0][i].code
                 mac = pop[0][i].mac
                 route = pop[0][i].route
-            info = self.schedule.decode_operation_based_active(code, mac, route)
+                info = self.schedule.decode_operation_based_active(code, mac, route)
             self.pop[0].append(info)
             self.pop[1].append(self.objective(info))
             self.pop[2].append(Utils.calculate_fitness(self.pop[1][i]))
@@ -482,14 +486,14 @@ class GaFrFjsp(GaFjsp):
         self.show_generation(0)
 
     def do_crossover(self, i, j):
-        code1, code2 = self.pop[0][i].ga_crossover_sequence_ipox(self.pop[0][j])
+        code1, code2 = self.pop[0][i].ga_crossover_sequence_hybrid(self.pop[0][j])
         mac1, mac2 = self.pop[0][i].ga_crossover_assignment_job_based_random(self.pop[0][j])
         route1, route2 = self.pop[0][i].ga_crossover_route_pmx(self.pop[0][j])
         self.decode_update(i, code1, mac1, route1)
         self.decode_update(j, code2, mac2, route2)
 
     def do_mutation(self, i):
-        code1 = self.pop[0][i].ga_mutation_sequence_operation_based_tpe()
+        code1 = self.pop[0][i].ga_mutation_sequence_operation_based_hybrid()
         mac1 = self.pop[0][i].ga_mutation_assignment_job_based_random_replace(self.tech)
         route1 = self.pop[0][i].ga_mutation_route_tpe()
         self.decode_update(i, code1, mac1, route1)
