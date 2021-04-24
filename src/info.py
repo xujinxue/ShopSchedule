@@ -818,6 +818,10 @@ class Info(GanttChart):
             elif j in left_2:
                 left_2[left_2.index(j)] = i
         code1[r_left], code2[r_left] = [val[0] for val in left_1], [val[0] for val in left_2]
+        # if a is not None and b is not None:
+        #     print("映射对：")
+        #     for i, j in zip(mapping[0], mapping[1]):
+        #         print("父代1：{}<-->父代2：{}".format((i[0] + 1, i[1] + 1), (j[0] + 1, j[1] + 1)))
         return code1, code2
 
     def ga_crossover_sequence_hybrid(self, info, func_list=None):
