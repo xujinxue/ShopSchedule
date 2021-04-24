@@ -996,6 +996,17 @@ class Info(GanttChart):
                 code = code[::-1]
         return code
 
+    def ga_mutation_sequence_operation_based_reverse(self, code=None, n_time=None):
+        if code is None:
+            code = deepcopy(self.code)
+        for n_do in range(Utils.n_time(n_time)):
+            a, b = np.random.choice(range(self.schedule.length), 2, replace=False)
+            if a > b:
+                a, b = b, a
+            c = range(a, b + 1)
+            code[c] = code[c[::-1]]
+        return code
+
     def ga_mutation_sequence_operation_based_oji(self, code=None):
         if code is None:
             code = deepcopy(self.code)
@@ -1082,8 +1093,11 @@ class Info(GanttChart):
     def ga_mutation_sequence_operation_based_hybrid(self, func_list=None):
         code = deepcopy(self.code)
         if func_list is None:
-            func_list = [self.ga_mutation_sequence_operation_based_tpe,
-                         self.ga_mutation_sequence_operation_based_insert]
+            func_list = [
+                self.ga_mutation_sequence_operation_based_tpe,
+                self.ga_mutation_sequence_operation_based_insert,
+                self.ga_mutation_sequence_operation_based_reverse,
+            ]
         func = np.random.choice(func_list, 1, replace=False)[0]
         return func(code)
 
@@ -1110,11 +1124,26 @@ class Info(GanttChart):
                 code = code[::-1]
         return code
 
+    def ga_mutation_sequence_permutation_reverse(self, code=None, n_time=None):
+        if code is None:
+            code = deepcopy(self.code)
+        for n_do in range(Utils.n_time(n_time)):
+            a, b = np.random.choice(range(self.schedule.n), 2, replace=False)
+            if a > b:
+                a, b = b, a
+            c = range(a, b + 1)
+            code[c] = code[c[::-1]]
+        return code
+
     def ga_mutation_sequence_permutation_hybrid(self, n_time=None, func_list=None):
         code = deepcopy(self.code)
         n_time = Utils.n_time(n_time)
         if func_list is None:
-            func_list = [self.ga_mutation_sequence_permutation_tpe, self.ga_mutation_sequence_permutation_insert]
+            func_list = [
+                self.ga_mutation_sequence_permutation_tpe,
+                self.ga_mutation_sequence_permutation_insert,
+                self.ga_mutation_sequence_permutation_reverse,
+            ]
         for n_do in range(n_time):
             func = np.random.choice(func_list, 1, replace=False)[0]
             code = func(code)
