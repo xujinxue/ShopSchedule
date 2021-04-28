@@ -64,14 +64,7 @@ class Ga:
 
     def update_individual(self, i, obj_new, info_new):
         fit_new = Utils.calculate_fitness(obj_new)
-        # self.pop[0].append(info_new)
-        # self.pop[1].append(obj_new)
-        # self.pop[2].append(fit_new)
-        # for k in range(3):
-        #     self.tabu_list[k].append(self.tabu_list[k][i])
         if Utils.update_info(self.pop[1][i], obj_new) or np.random.random() < RATE_ACCEPT_WORSE:
-            # if Utils.update_info(self.pop[1][i], obj_new) or self.update_info(i, fit_new):
-            # if Utils.update_info(self.pop[1][i], obj_new):
             self.pop[0][i] = info_new
             self.pop[1][i] = obj_new
             self.pop[2][i] = fit_new
@@ -128,29 +121,22 @@ class Ga:
     def do_selection(self):
         a = np.array(self.pop[2]) / sum(self.pop[2])
         b = np.array([])
-        # for i in range(a.shape[0]):
         for i in range(self.pop_size):
             b = np.append(b, sum(a[:i + 1]))
         pop = deepcopy(self.pop)
         tabu_list = deepcopy(self.tabu_list)
-        # self.pop = [[], [], []]
         for i in range(self.pop_size):
             j = np.argwhere(b > np.random.random())[0, 0]  # 轮盘赌选择
-            # self.pop[0].append(pop[0][j])
-            # self.pop[1].append(pop[1][j])
-            # self.pop[2].append(pop[2][j])
             self.pop[0][i] = pop[0][j]
             self.pop[1][i] = pop[1][j]
             self.pop[2][i] = pop[2][j]
             for k in range(3):
                 self.tabu_list[k][i] = tabu_list[k][j]
-        # c = self.pop[2].index(max(self.pop[2]))
-        c = np.random.choice(range(self.pop_size), 1, replace=False)[0]
-        self.pop[0][c] = deepcopy(self.best[0])
-        self.pop[1][c] = self.best[1]
-        self.pop[2][c] = self.best[2]
+        self.pop[0][0] = deepcopy(self.best[0])
+        self.pop[1][0] = self.best[1]
+        self.pop[2][0] = self.best[2]
         for k in range(3):
-            self.tabu_list[k][c] = self.best[3][k]
+            self.tabu_list[k][0] = self.best[3][k]
 
     def do_init(self, pop=None):
         pass

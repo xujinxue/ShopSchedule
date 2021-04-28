@@ -17,6 +17,17 @@ from .utils import Utils
 
 INSTANCE_LIST_JSP = """
 ft06
+la04
+la05
+ft10
+abz5
+abz6
+ft20
+la24
+la25
+la29
+la30
+la34
 """
 INSTANCE_LIST_FJSP = """
 mk1
