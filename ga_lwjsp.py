@@ -36,9 +36,9 @@ def main2():
         cof = [0.5, 1, 2, 10]
         for index, c in enumerate(cof):
             Utils.print("%s %s" % (index, c))
-            run(instance, index=3)
+            run(instance, index=index)
 
 
 if __name__ == '__main__':
-    # main()
-    main2()
+    main()
+    # main2()
