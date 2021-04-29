@@ -10,7 +10,7 @@ import time
 
 import numpy as np
 
-from ..define import k1, k2, k3, k4
+from ..define import k1, k2, k3, k4, RATE_ACCEPT_WORSE, SIMILARITY_THRESHOLD
 from ..utils import Utils
 
 deepcopy = copy.deepcopy
@@ -61,25 +61,34 @@ class Ga:
         p = np.exp(-np.abs(fit_new - self.pop[2][i]) / self.t)
         return True if np.random.random() < p else False
 
+    def dislocation(self, i):
+        pass
+
     def update_individual(self, i, obj_new, info_new):
         fit_new = Utils.calculate_fitness(obj_new)
-        if Utils.update_info(self.pop[1][i], obj_new):
-            # self.pop[0][i] = info_new
-            # self.pop[1][i] = obj_new
-            # self.pop[2][i] = fit_new
+        if Utils.update_info(self.pop[1][i], obj_new) or np.random.random() < RATE_ACCEPT_WORSE:
+            self.pop[0][i] = info_new
+            self.pop[1][i] = obj_new
+            self.pop[2][i] = fit_new
             for k in range(3):
                 self.tabu_list[k][i] = []
-        self.pop[0].append(info_new)
-        self.pop[1].append(obj_new)
-        self.pop[2].append(fit_new)
-        for k in range(3):
-            self.tabu_list[k].append([])
+        elif Utils.similarity(self.pop[0][i].code, info_new.code) > SIMILARITY_THRESHOLD:
+            self.dislocation(i)
         if Utils.update_info(self.best[1], obj_new):
             self.best[0] = info_new
             self.best[1] = obj_new
             self.best[2] = fit_new
             for k in range(3):
                 self.best[3][k].append([])
+
+    def replace_individual(self, i, info_new):
+        obj_new = self.objective(info_new)
+        fit_new = Utils.calculate_fitness(obj_new)
+        self.pop[0][i] = info_new
+        self.pop[1][i] = obj_new
+        self.pop[2][i] = fit_new
+        for k in range(3):
+            self.tabu_list[k][i] = []
 
     def adaptive_rc_rm_s(self, i, j):
         f_max, f_avg = max(self.pop[2]), np.mean(self.pop[2])
@@ -125,20 +134,15 @@ class Ga:
     def do_selection(self):
         a = np.array(self.pop[2]) / sum(self.pop[2])
         b = np.array([])
-        for i in range(a.shape[0]):
+        for i in range(self.pop_size):
             b = np.append(b, sum(a[:i + 1]))
         pop = deepcopy(self.pop)
         tabu_list = deepcopy(self.tabu_list)
-        self.pop = [[], [], []]
-        self.tabu_list = [[[] for _ in self.individual], [[] for _ in self.individual], [[] for _ in self.individual]]
         for i in range(self.pop_size):
             j = np.argwhere(b > np.random.random())[0, 0]  # 轮盘赌选择
-            # self.pop[0][i] = pop[0][j]
-            # self.pop[1][i] = pop[1][j]
-            # self.pop[2][i] = pop[2][j]
-            self.pop[0].append(pop[0][j])
-            self.pop[1].append(pop[1][j])
-            self.pop[2].append(pop[2][j])
+            self.pop[0][i] = pop[0][j]
+            self.pop[1][i] = pop[1][j]
+            self.pop[2][i] = pop[2][j]
             for k in range(3):
                 self.tabu_list[k][i] = tabu_list[k][j]
         self.pop[0][0] = deepcopy(self.best[0])
@@ -201,6 +205,11 @@ class GaJsp(Ga):
     def decode_update(self, i, code, route=None):
         info = self.schedule.decode_operation_based_active(code, route)
         self.update_individual(i, self.objective(info), info)
+
+    def dislocation(self, i):
+        code = self.pop[0][i].dislocation()
+        info = self.schedule.decode_operation_based_active(code, self.pop[0][i].route)
+        self.replace_individual(i, info)
 
     def do_init(self, pop=None):
         self.record[0].append(time.perf_counter())
@@ -285,6 +294,11 @@ class GaNwJsp(Ga):
     def decode_update(self, i, code, route=None):
         info = self.schedule.decode_no_wait_active(code, self.p, route)
         self.update_individual(i, self.objective(info), info)
+
+    def dislocation(self, i):
+        code = self.pop[0][i].dislocation()
+        info = self.schedule.decode_no_wait_active(code, self.pop[0][i].route)
+        self.replace_individual(i, info)
 
     def do_init(self, pop=None):
         self.record[0].append(time.perf_counter())
@@ -409,6 +423,11 @@ class GaFjsp(Ga):
         info = self.schedule.decode_operation_based_active(code, mac, route)
         self.update_individual(i, self.objective(info), info)
 
+    def dislocation(self, i):
+        code = self.pop[0][i].dislocation()
+        info = self.schedule.decode_operation_based_active(code, self.pop[0][i].mac, self.pop[0][i].route)
+        self.replace_individual(i, info)
+
     def do_init(self, pop=None):
         self.record[0].append(time.perf_counter())
         for i in range(self.pop_size):
@@ -510,6 +529,11 @@ class GaNwFjsp(Ga):
     def decode_update(self, i, code, mac, route=None):
         info = self.schedule.decode_no_wait_active(code, mac, self.p, route)
         self.update_individual(i, self.objective(info), info)
+
+    def dislocation(self, i):
+        code = self.pop[0][i].dislocation()
+        info = self.schedule.decode_no_wait_active(code, self.pop[0][i].mac, self.pop[0][i].route)
+        self.replace_individual(i, info)
 
     def do_init(self, pop=None):
         self.record[0].append(time.perf_counter())
@@ -626,6 +650,11 @@ class GaFjsp1(Ga):
         info = self.schedule.decode_only_operation_based_active(code, route)
         self.update_individual(i, self.objective(info), info)
 
+    def dislocation(self, i):
+        code = self.pop[0][i].dislocation()
+        info = self.schedule.decode_only_operation_based_active(code, self.pop[0][i].route)
+        self.replace_individual(i, info)
+
     def do_init(self, pop=None):
         self.record[0].append(time.perf_counter())
         for i in range(self.pop_size):
@@ -709,6 +738,11 @@ class GaNwFjsp1(Ga):
     def decode_update(self, i, code, route=None):
         info = self.schedule.decode_no_wait_only_job_active(code, self.p, route)
         self.update_individual(i, self.objective(info), info)
+
+    def dislocation(self, i):
+        code = self.pop[0][i].dislocation()
+        info = self.schedule.decode_no_wait_only_job_active(code, self.pop[0][i].route)
+        self.replace_individual(i, info)
 
     def do_init(self, pop=None):
         self.record[0].append(time.perf_counter())
@@ -805,6 +839,11 @@ class GaFspHfsp(Ga):
         info = self.schedule.decode_permutation(code)
         self.update_individual(i, self.objective(info), info)
 
+    def dislocation(self, i):
+        code = self.pop[0][i].dislocation()
+        info = self.schedule.decode_permutation(code)
+        self.replace_individual(i, info)
+
     def do_init(self, pop=None):
         self.record[0].append(time.perf_counter())
         for i in range(self.pop_size):
@@ -843,6 +882,11 @@ class GaFspHfspTimetable(GaFspHfsp):
     def decode_update(self, i, code):
         info = self.schedule.decode_permutation_timetable(code)
         self.update_individual(i, self.objective(info), info)
+
+    def dislocation(self, i):
+        code = self.pop[0][i].dislocation()
+        info = self.schedule.decode_permutation_timetable(code)
+        self.replace_individual(i, info)
 
     def do_init(self, pop=None):
         self.record[0].append(time.perf_counter())

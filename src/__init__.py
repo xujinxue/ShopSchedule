@@ -16,6 +16,16 @@ from .template import (GaTemplateJsp, GaTemplateFjsp, GaTemplateFsp, GaTemplateH
 from .utils import Utils
 
 INSTANCE_LIST_JSP = """
+ft06
+"""
+INSTANCE_LIST_FJSP = """
+mk1
+"""
+CASES_LIST = """
+case1
+"""
+"""
+ft06
 la04
 la05
 ft10
@@ -27,10 +37,4 @@ la25
 la29
 la30
 la34
-"""
-INSTANCE_LIST_FJSP = """
-mk1
-"""
-CASES_LIST = """
-case1
 """
