@@ -4,7 +4,7 @@ __doc__ = """
 
 from src import *
 
-file_dir = "./GA_FRFJSP/mk1"  # 甘特图数据文件所在目录
+file_dir = "./GA_LWJSP_VS_MA/ft06"  # 甘特图数据文件所在目录
 file = "1-GanttChart.csv"  # 甘特图数据文件
 file_save = "%s/GanttChart/%s" % (file_dir, file[:-4])  # 保存的甘特图名称
 Utils.make_dir("%s/GanttChart" % file_dir)  # 生成的甘特图保存至该目录
