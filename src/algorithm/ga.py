@@ -10,7 +10,7 @@ import time
 
 import numpy as np
 
-from ..define import k1, k2, k3, k4, RATE_ACCEPT_WORSE
+from ..define import k1, k2, k3, k4
 from ..utils import Utils
 
 deepcopy = copy.deepcopy
@@ -44,16 +44,15 @@ class Ga:
         self.record = [[], [], [], [], [], []]
         # (code, mac, tech)
         self.max_tabu = Utils.len_tabu(self.schedule.m, self.schedule.n)
-        individual = range(self.pop_size)
-        self.tabu_list = [[[] for _ in individual], [[] for _ in individual], [[] for _ in individual]]
+        self.individual = range(self.pop_size)
+        self.tabu_list = [[[] for _ in self.individual], [[] for _ in self.individual], [[] for _ in self.individual]]
 
     def clear(self):
         self.t = self.t0
         self.best = [None, None, None, [[], [], []]]
         self.pop = [[], [], []]
         self.record = [[], [], [], [], [], []]
-        individual = range(self.pop_size)
-        self.tabu_list = [[[] for _ in individual], [[] for _ in individual], [[] for _ in individual]]
+        self.tabu_list = [[[] for _ in self.individual], [[] for _ in self.individual], [[] for _ in self.individual]]
 
     def update_t(self):
         self.t *= self.alpha
@@ -64,18 +63,23 @@ class Ga:
 
     def update_individual(self, i, obj_new, info_new):
         fit_new = Utils.calculate_fitness(obj_new)
-        if Utils.update_info(self.pop[1][i], obj_new) or np.random.random() < RATE_ACCEPT_WORSE:
-            self.pop[0][i] = info_new
-            self.pop[1][i] = obj_new
-            self.pop[2][i] = fit_new
+        if Utils.update_info(self.pop[1][i], obj_new):
+            # self.pop[0][i] = info_new
+            # self.pop[1][i] = obj_new
+            # self.pop[2][i] = fit_new
             for k in range(3):
                 self.tabu_list[k][i] = []
+        self.pop[0].append(info_new)
+        self.pop[1].append(obj_new)
+        self.pop[2].append(fit_new)
+        for k in range(3):
+            self.tabu_list[k].append([])
         if Utils.update_info(self.best[1], obj_new):
             self.best[0] = info_new
             self.best[1] = obj_new
             self.best[2] = fit_new
             for k in range(3):
-                self.best[3][k].append(self.tabu_list[k][i])
+                self.best[3][k].append([])
 
     def adaptive_rc_rm_s(self, i, j):
         f_max, f_avg = max(self.pop[2]), np.mean(self.pop[2])
@@ -121,15 +125,20 @@ class Ga:
     def do_selection(self):
         a = np.array(self.pop[2]) / sum(self.pop[2])
         b = np.array([])
-        for i in range(self.pop_size):
+        for i in range(a.shape[0]):
             b = np.append(b, sum(a[:i + 1]))
         pop = deepcopy(self.pop)
         tabu_list = deepcopy(self.tabu_list)
+        self.pop = [[], [], []]
+        self.tabu_list = [[[] for _ in self.individual], [[] for _ in self.individual], [[] for _ in self.individual]]
         for i in range(self.pop_size):
             j = np.argwhere(b > np.random.random())[0, 0]  # 轮盘赌选择
-            self.pop[0][i] = pop[0][j]
-            self.pop[1][i] = pop[1][j]
-            self.pop[2][i] = pop[2][j]
+            # self.pop[0][i] = pop[0][j]
+            # self.pop[1][i] = pop[1][j]
+            # self.pop[2][i] = pop[2][j]
+            self.pop[0].append(pop[0][j])
+            self.pop[1].append(pop[1][j])
+            self.pop[2].append(pop[2][j])
             for k in range(3):
                 self.tabu_list[k][i] = tabu_list[k][j]
         self.pop[0][0] = deepcopy(self.best[0])
