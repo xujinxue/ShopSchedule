@@ -92,9 +92,9 @@ def run2():
     index_limited_wait = 2
     index_due_date = 0
     max_solve_time = 3600
+    y_set = [0.5, 1, 2, 10]  # la06 la07 la08
     for instance in "la06 la07 la08".split():
         Utils.print(instance)
-        y_set = [0.5, 1, 2, 10]  # la06~la08
         for y in y_set:
             Utils.print("%s_0_%s" % (instance, y), fore=Utils.fore().LIGHTRED_EX)
             main_jsp(instance, max_solve_time, index_limited_wait, index_due_date, y=y)
