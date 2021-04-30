@@ -22,7 +22,7 @@ def run(instance="ft06", y=-1):
     ga = GaTemplateJsp(pop_size=50, rc=0.85, rm=0.15, max_generation=500, objective=Objective.makespan,
                        n=n, m=m, p=p, tech=tech, proc=proc, limited_wait=lw,
                        index_template=3, best_known=best_known)
-    ga.do_exp(exp_log="./GA_LWJSP_VS_MA", instance=instance, n_exp=10, tabu_search=True, key_block_move=False,
+    ga.do_exp(exp_log="./GA_JSPTL", instance=instance, n_exp=10, tabu_search=True, key_block_move=False,
               gc=False, y_based=1)
 
 
