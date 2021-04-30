@@ -9,14 +9,15 @@ import numpy as np
 from src import *
 
 
-def main_jsp(instance, max_solve_time, index_limited_wait=0, index_due_date=0, n_exp=10, index=-1):
+def main_jsp(instance, max_solve_time, index_limited_wait=0, index_due_date=0, n_exp=10, y=-1):
     # 第1步, 准备数据
     string = jsp_benchmark.instance[instance]
-    if index < 0:
-        string_limited_wait = Utils.load_text("./src/data/limited_wait_jsp/%s.txt" % instance)
-    else:
-        string_limited_wait = Utils.load_text("./src/data/limited_wait_jsp_c%s/%s.txt" % (index, instance))
     n, m, p, tech, proc = Utils.string2data_jsp_fsp(string)  # 工件数量, 机器数量, 工序数量, 加工机器, 加工时间
+    if y < 0:
+        string_limited_wait = Utils.load_text("./src/data/limited_wait_jsp/%s.txt" % instance)
+        lw = Utils.string2data_wait(string_limited_wait, p)
+    else:
+        lw = Utils.crt_limited_wait_cof(p, proc, y, int)
     all_machines = range(m)  # 机器列表
     jobs_data = []  # 加工数据jobs_data
     for i in range(n):
@@ -30,7 +31,7 @@ def main_jsp(instance, max_solve_time, index_limited_wait=0, index_due_date=0, n
             no_wait[i].append(0)
         no_wait[i].append(-1)
     # 等待时间有限数据
-    limited_wait = [None, no_wait, Utils.string2data_wait(string_limited_wait, p)][index_limited_wait]
+    limited_wait = [None, no_wait, lw][index_limited_wait]
     # 交货期数据
     try:
         due_date = [None, list(map(int, jsp_benchmark.due_date[instance].split()))][index_due_date]
@@ -42,10 +43,10 @@ def main_jsp(instance, max_solve_time, index_limited_wait=0, index_due_date=0, n
     log = ["C", "NWJSP", "LWJSP"][index_limited_wait]
     if index_due_date == 1:
         log += "-DD"
-    if index < 0:
+    if y < 0:
         log_dir = "./ORToolsResult_%s/%s" % (log, instance)
     else:
-        log_dir = "./ORToolsResult_%s/%s_%s" % (log, instance, index)
+        log_dir = "./ORToolsResult_%s/%s_0_%s" % (log, instance, y)
     Utils.make_dir("./ORToolsResult_%s" % log)
     Utils.make_dir(log_dir)
     record = [[], [], []]
@@ -63,10 +64,10 @@ def main_jsp(instance, max_solve_time, index_limited_wait=0, index_due_date=0, n
     Utils.print("Average runtime: %.4f" % np.mean(record[0]))
     Utils.print("Average objective value: %.4f" % np.mean(record[1]))
     Utils.print("Status#4: {}\n".format(record[2].count(4)))
-    if index < 0:
+    if y < 0:
         file_dir = "./ORToolsResult_%s/%s.csv" % (log, instance)
     else:
-        file_dir = "./ORToolsResult_%s/%s_%s.csv" % (log, instance, index)
+        file_dir = "./ORToolsResult_%s/%s_0_%s.csv" % (log, instance, y)
     with open(file_dir, "w") as f:
         f.writelines("Objective,Status,Runtime\n")
         for i, j, k in zip(record[1], record[2], record[0]):
@@ -93,10 +94,10 @@ def run2():
     max_solve_time = 3600
     for instance in "la06 la07 la08".split():
         Utils.print(instance)
-        cof = [0.5, 1, 2, 10]
-        for index, c in enumerate(cof):
-            Utils.print("%s %s" % (index, c))
-            main_jsp(instance, max_solve_time, index_limited_wait, index_due_date, index=index)
+        y_set = [0.5, 1, 2, 10]  # la06~la08
+        for y in y_set:
+            Utils.print("%s_0_%s" % (instance, y), fore=Utils.fore().LIGHTRED_EX)
+            main_jsp(instance, max_solve_time, index_limited_wait, index_due_date, y=y)
 
 
 if __name__ == '__main__':

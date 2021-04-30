@@ -157,7 +157,10 @@ class Utils:
         for i, n in enumerate(p):
             a.append([])
             for j in range(n - 1):
-                a[-1].append(dtype(c * np.mean(proc[i])))
+                if dtype is int:
+                    a[-1].append(dtype(c * np.mean(proc[i])))
+                else:
+                    a[-1].append(dtype(c * np.mean(proc[i])))
             a[i].append(-1)
         return a
 
