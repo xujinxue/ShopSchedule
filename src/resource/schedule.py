@@ -224,7 +224,8 @@ class Schedule(Code):  # 调度资源融合类
                     early_start = max([delay_start, b])  # delay_start是满足等待时间有限约束的最早开始时间
                     if early_start + p <= c:
                         if c != np.inf:  # 在空闲时间段上的的右移
-                            early_start = max([delay_start, c - p])
+                            early_start_right = max([delay_start, c - p])
+                            early_start = np.random.randint(early_start, early_start_right + 1, 1)[0]
                         self.job[i].task[j].start = early_start
                         self.job[i].task[j].end = early_start + p
                         if self.job[i].task[j].resumable is not None:

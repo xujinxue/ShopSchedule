@@ -63,18 +63,18 @@ class Ga:
 
     def update_individual(self, i, obj_new, info_new):
         fit_new = Utils.calculate_fitness(obj_new)
-        if Utils.update_info(self.pop[1][i], obj_new) or fit_new >= self.record[-1][-1]:
-            self.pop[0][i] = info_new
-            self.pop[1][i] = obj_new
-            self.pop[2][i] = fit_new
-            for k in range(3):
-                self.tabu_list[k][i] = []
         if Utils.update_info(self.best[1], obj_new):
             self.best[0] = info_new
             self.best[1] = obj_new
             self.best[2] = fit_new
             for k in range(3):
                 self.best[3][k].append([])
+        self.pop[0][i] = info_new
+        self.pop[1][i] = obj_new
+        self.pop[2][i] = fit_new
+        if Utils.update_info(self.pop[1][i], obj_new):
+            for k in range(3):
+                self.tabu_list[k][i] = []
 
     def replace_individual(self, i, info_new):
         obj_new = self.objective(info_new)
