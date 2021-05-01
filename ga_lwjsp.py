@@ -19,7 +19,7 @@ def run(instance="ft06", y=-1):
         lw = Utils.crt_limited_wait_cof(p, proc, y, float)
         instance = "%s_0_%s" % (instance, y)
         # best_known = None
-    ga = GaTemplateJsp(pop_size=50, rc=0.85, rm=0.15, max_generation=500, objective=Objective.makespan,
+    ga = GaTemplateJsp(pop_size=100, rc=0.85, rm=0.15, max_generation=5000, objective=Objective.makespan,
                        n=n, m=m, p=p, tech=tech, proc=proc, limited_wait=lw,
                        index_template=3, best_known=best_known)
     ga.do_exp(exp_log="./HGA_JSPTL", instance=instance, n_exp=10, tabu_search=True, key_block_move=False,
@@ -32,9 +32,9 @@ def main():
 
 
 def main2():
-    y_set = [0.5, 1, 2]  # ft06 la01 la02 la03 la04 la05
+    y_set = [0.5, 1, 2]  # la01 la02 la03 la04 la05
     # y_set = [0.5, 1, 3, 10]  # la06 la07 la08
-    for instance in "ft06 la01 la02 la03 la04 la05".split():
+    for instance in "la01 la02 la03 la04 la05".split():
         for y in y_set:
             Utils.print("%s_0_%s" % (instance, y), fore=Utils.fore().LIGHTRED_EX)
             run(instance, y=y)
