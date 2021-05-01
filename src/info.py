@@ -530,6 +530,35 @@ class Info(GanttChart):
                     pass
         return code
 
+    def ts_sequence_operation_based_oji(self, tabu_list, max_tabu, n_time=None):
+        self.std_code()
+        code = deepcopy(self.code)
+        for n_do in range(Utils.n_time(n_time)):
+            n_try = 0
+            while n_try < max_tabu:
+                n_try += 1
+                try:
+                    a = np.random.choice(list(self.schedule.job.keys()), 1, replace=False)[0]
+                    for operation, i in enumerate(self.schedule.job[a].index_list):
+                        if self.schedule.direction == 1:
+                            operation = self.schedule.job[a].nop - operation - 1
+                        if self.mac is None:
+                            b = self.schedule.job[a].task[operation].machine
+                        else:
+                            b = self.mac[a][operation]
+                        machine_index = self.schedule.machine[b].index_list
+                        c = [j for j in machine_index if j < i]
+                        try:
+                            j = np.random.choice(c, 1, replace=False)[0]
+                            value = code[i]
+                            obj = np.delete(code, i)
+                            code = np.insert(obj, j, value)
+                        except ValueError:
+                            pass
+                except ValueError:
+                    pass
+        return code
+
     def ts_sequence_operation_based_insert1set(self, tabu_list, max_tabu):
         self.std_code()
         code = deepcopy(self.code)
@@ -545,8 +574,7 @@ class Info(GanttChart):
                 index_job = self.schedule.job[job].index_list
                 index_job.sort()
                 index_list = [j, ]
-                # [index_list.append(v) for v in index_job if v > j]
-                [index_list.append(v) for v in index_job if v > j and np.random.random() < 0.5]
+                [index_list.append(v) for v in index_job if v > j]
                 tabu = {"m%s" % k, "i%s" % i}
                 [tabu.add(v) for v in index_list]
                 if tabu not in tabu_list:
@@ -584,10 +612,38 @@ class Info(GanttChart):
                     pass
         return code
 
+    def ts_sequence_operation_based_insert2pre_1set(self, tabu_list, max_tabu):
+        self.std_code()
+        code = deepcopy(self.code)
+        n_try = 0
+        while n_try < max_tabu:
+            n_try += 1
+            try:
+                a = np.random.choice(list(self.schedule.job.keys()), 1, replace=False)[0]
+                b = np.random.choice(range(self.schedule.job[a].nop - 1), 1, replace=False)[0]
+                if self.schedule.job[a].task[b].limited_wait != np.inf:
+                    index_list = self.schedule.job[a].index_list
+                    index_list.sort()
+                    i, j = index_list[b], index_list[b + 1]
+                    tabu = {"ja%s" % a, i, j}
+                    if tabu not in tabu_list:
+                        index_list2end = [v for v in index_list if v > i]
+                        for cur, g in enumerate(index_list2end):
+                            code = np.delete(code, g - cur)
+                        code = np.insert(code, i, [a] * len(index_list2end))
+                        tabu_list.append(tabu)
+                        break
+            except ValueError:
+                pass
+        return code
+
     def ts_sequence_operation_based_hybrid(self, tabu_list, max_tabu, func_list=None):
         if func_list is None:
-            func_list = [self.ts_sequence_operation_based, self.ts_sequence_operation_based_insert1set,
-                         self.ts_sequence_operation_based_insert2pre]
+            func_list = [self.ts_sequence_operation_based,
+                         self.ts_sequence_operation_based_oji,
+                         self.ts_sequence_operation_based_insert1set,
+                         self.ts_sequence_operation_based_insert2pre,
+                         self.ts_sequence_operation_based_insert2pre_1set, ]
         func = np.random.choice(func_list, 1, replace=False)[0]
         return func(tabu_list, max_tabu)
 
@@ -1100,6 +1156,7 @@ class Info(GanttChart):
             func_list = [
                 self.ga_mutation_sequence_operation_based_tpe,
                 self.ga_mutation_sequence_operation_based_insert,
+                self.ga_mutation_sequence_operation_based_reverse,
             ]
         func = np.random.choice(func_list, 1, replace=False)[0]
         return func(code)

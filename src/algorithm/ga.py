@@ -63,7 +63,7 @@ class Ga:
 
     def update_individual(self, i, obj_new, info_new):
         fit_new = Utils.calculate_fitness(obj_new)
-        if Utils.update_info(self.pop[1][i], obj_new) or np.random.random() < RATE_ACCEPT_WORSE:
+        if Utils.update_info(self.pop[1][i], obj_new) or np.random.random() < fit_new / self.best[2]:
             self.pop[0][i] = info_new
             self.pop[1][i] = obj_new
             self.pop[2][i] = fit_new
