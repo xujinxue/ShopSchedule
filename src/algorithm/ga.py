@@ -161,13 +161,16 @@ class Ga:
     def do_key_block_move(self, i):
         pass
 
+    def no_improve(self, g):
+        return True if g >= 500 and self.record[2][g] == self.record[2][g - 499] else False
+
     def do_evolution(self, tabu_search=True, key_block_move=False, pop=None):
         Utils.print("{}Evolution  start{}".format("=" * 48, "=" * 48), fore=Utils.fore().LIGHTYELLOW_EX)
         self.clear()
         self.do_init(pop)
         self.do_selection()
         for g in range(1, self.max_generation + 1):
-            if self.reach_best_known_solution():
+            if self.reach_best_known_solution() or self.no_improve(g):
                 break
             self.record[0].append(time.perf_counter())
             for i in range(self.pop_size):
