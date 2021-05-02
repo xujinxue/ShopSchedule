@@ -139,12 +139,12 @@ class Utils:
         return c
 
     @staticmethod
-    def crt_limited_wait_cof(p, proc, c, dtype=int):
+    def crt_limited_wait_cof(p, proc, y, dtype=int):
         a = []
         for i, n in enumerate(p):
             a.append([])
             for j in range(n - 1):
-                a[-1].append(dtype(c * np.mean(proc[i])))
+                a[-1].append(dtype(y * np.mean(proc[i])))
             a[i].append(-1)
         return a
 
