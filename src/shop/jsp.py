@@ -1,4 +1,4 @@
-from .rule_jsp import RuleJsp
+from .rule import RuleJsp
 from ..info import Info
 from .schedule import Schedule
 from ..utils import Utils
