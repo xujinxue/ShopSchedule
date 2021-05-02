@@ -169,5 +169,5 @@ class NSGAJsp(NSGA):
         self.decode_update(code2)
 
     def do_mutation(self, i):
-        code1 = self.pop[0][i].ga_mutation_sequence_operation_based_tpe()
+        code1 = self.pop[0][i].ga_mutation_sequence_tpe()
         self.decode_update(code1)
