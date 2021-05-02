@@ -18,6 +18,11 @@ def run(instance="ft06"):
     nsga = NSGAJsp(pop_size=40, rc=0.85, rm=0.15, max_generation=50, objective=objective_list, schedule=schedule)
     c = nsga.do_evolution(pop=None, n_level=5, column=0)
     # 输出结果
+    Utils.make_dir("./NSGA_JSP")
+    Utils.make_dir("./NSGA_JSP/%s" % instance)
+    Utils.make_dir("./NSGA_JSP/%s/GanttChart" % instance)
+    Utils.clear_dir("./NSGA_JSP/%s" % instance)
+    Utils.clear_dir("./NSGA_JSP/%s/GanttChart" % instance)
     plt.figure(figsize=[9, 5])
     res = ""
     for i, j in enumerate(c):
@@ -45,11 +50,6 @@ def run(instance="ft06"):
 
 def main():
     for instance in INSTANCE_LIST_JSP.split():
-        Utils.make_dir("./NSGA_JSP")
-        Utils.make_dir("./NSGA_JSP/%s" % instance)
-        Utils.make_dir("./NSGA_JSP/%s/GanttChart" % instance)
-        Utils.clear_dir("./NSGA_JSP/%s" % instance)
-        Utils.clear_dir("./NSGA_JSP/%s/GanttChart" % instance)
         run(instance=instance)
 
 

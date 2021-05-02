@@ -147,8 +147,8 @@ class NSGAJsp(NSGA):
     def __init__(self, pop_size, rc, rm, max_generation, objective, schedule):
         NSGA.__init__(self, pop_size, rc, rm, max_generation, objective, schedule)
 
-    def decode_update(self, code, route=None):
-        info = self.schedule.decode(code, route)
+    def decode_update(self, code):
+        info = self.schedule.decode(code)
         self.update_child(info)
 
     def do_init(self, pop=None):
