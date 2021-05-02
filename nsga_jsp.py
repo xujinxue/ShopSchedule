@@ -16,7 +16,7 @@ def run(instance="ft06"):
     schedule = Utils.create_schedule(Jsp, n, m, p, tech, proc, due_date=due_date)
     objective_list = [Objective.tardiness, Objective.makespan]
     nsga = NSGAJsp(pop_size=40, rc=0.85, rm=0.15, max_generation=50, objective=objective_list, schedule=schedule)
-    c = nsga.do_evolution(tabu_search=True, key_block_move=False, pop=None, n_level=5, column=0)
+    c = nsga.do_evolution(pop=None, n_level=5, column=0)
     # 输出结果
     plt.figure(figsize=[9, 5])
     res = ""
