@@ -643,7 +643,8 @@ class Info(GanttChart):
                          self.ts_sequence_operation_based_oji,
                          self.ts_sequence_operation_based_insert1set,
                          self.ts_sequence_operation_based_insert2pre,
-                         self.ts_sequence_operation_based_insert2pre_1set, ]
+                         self.ts_sequence_operation_based_insert2pre_1set,
+                         ]
         func = np.random.choice(func_list, 1, replace=False)[0]
         return func(tabu_list, max_tabu)
 
@@ -1155,7 +1156,6 @@ class Info(GanttChart):
         if func_list is None:
             func_list = [
                 self.ga_mutation_sequence_operation_based_tpe,
-                self.ga_mutation_sequence_operation_based_insert,
                 self.ga_mutation_sequence_operation_based_reverse,
             ]
         func = np.random.choice(func_list, 1, replace=False)[0]

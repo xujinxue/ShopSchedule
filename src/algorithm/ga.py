@@ -69,12 +69,12 @@ class Ga:
             self.best[2] = fit_new
             for k in range(3):
                 self.best[3][k].append([])
-        self.pop[0][i] = info_new
-        self.pop[1][i] = obj_new
-        self.pop[2][i] = fit_new
         if Utils.update_info(self.pop[1][i], obj_new):
             for k in range(3):
                 self.tabu_list[k][i] = []
+        self.pop[0][i] = info_new
+        self.pop[1][i] = obj_new
+        self.pop[2][i] = fit_new
 
     def replace_individual(self, i, info_new):
         obj_new = self.objective(info_new)
@@ -162,7 +162,7 @@ class Ga:
         pass
 
     def no_improve(self, g):
-        return True if g >= 500 and self.record[2][g] == self.record[2][g - 499] else False
+        return True if g > 500 and self.record[2][g - 1] == self.record[2][g - 500] else False
 
     def do_evolution(self, tabu_search=True, key_block_move=False, pop=None):
         Utils.print("{}Evolution  start{}".format("=" * 48, "=" * 48), fore=Utils.fore().LIGHTYELLOW_EX)

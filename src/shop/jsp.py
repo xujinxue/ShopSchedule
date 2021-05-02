@@ -75,8 +75,8 @@ class Jsp(Schedule, RuleJsp):
         info = self.decode_operation_based_active_classic(code, route, direction)
         if self.job[0].task[0].limited_wait is not None:
             info.std_code()
-            info2 = self.decode_operation_based_active_classic(info.code, route, info.schedule.direction)
-            info = info if info.schedule.makespan < info2.schedule.makespan else info2
+            # info2 = self.decode_operation_based_active_classic(info.code, route, info.schedule.direction)
+            # info = info if info.schedule.makespan < info2.schedule.makespan else info2
         # 跳跃式解码
         # info = self.decode_limited_wait(code, route, direction)
         # if self.job[0].task[0].limited_wait is not None:

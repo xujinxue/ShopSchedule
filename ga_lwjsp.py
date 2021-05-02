@@ -16,7 +16,7 @@ def run(instance="ft06", y=-1):
         best_known = jsp_benchmark.best_known_limited_wait[instance]
     else:
         best_known = jsp_benchmark.best_known_time_lag[str(y)][instance]
-        lw = Utils.crt_limited_wait_cof(p, proc, y, float)
+        lw = Utils.crt_limited_wait_cof(p, proc, y, int)
         instance = "%s_0_%s" % (instance, y)
         # best_known = None
     ga = GaTemplateJsp(pop_size=50, rc=0.85, rm=0.15, max_generation=10000, objective=Objective.makespan,
