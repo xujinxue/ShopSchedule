@@ -135,12 +135,8 @@ class RuleJsp(Rule):
                     proc = np.array(wait_data)[index]
                     index_value = func(proc)
                     choice = np.argwhere(proc == proc[index_value])[:, 0]
-                    # choose one from choice
                     index_choice = np.random.choice(choice, 1, replace=False)[0]
                     self.do_update(index[index_choice], wait_data)
-                    # choose all from choice
-                    # for u, v in enumerate(choice):
-                    #     self.do_update(index[v] - u, wait_data)
         return self.done
 
     def spt(self):

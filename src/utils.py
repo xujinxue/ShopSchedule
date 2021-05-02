@@ -32,7 +32,7 @@ class Utils:
                 val_due_date = None
             schedule.add_job(due_date=val_due_date, name=i)
             for j in range(p[i]):  # 添加工序, p是一个包含n个元素的列表, 对应n个工件的工序数量
-                val_limited_wait = None  # 方法add_task定义在resource包的job模块的Job类里面
+                val_limited_wait = None
                 if limited_wait is not None:  # 等待时间有限数据
                     val_limited_wait = limited_wait[i][j]
                     if val_limited_wait == -1:  # 允许等待时间为无穷大或不存在允许等待时间
@@ -42,7 +42,7 @@ class Utils:
                 except TypeError:
                     val_resumable = None
                 schedule.job[i].add_task(tech[i][j], proc[i][j], name=j, limited_wait=val_limited_wait,
-                                         resumable=val_resumable)
+                                         resumable=val_resumable)  # 方法add_task定义在resource包的job模块的Job类里面
         return schedule
 
     @staticmethod
@@ -167,7 +167,7 @@ class Utils:
             return None, None, None, None, None
 
     @staticmethod
-    def string2data_fjsp_hfsp(string, add_one=False, minus_one=True, dtype=int, time_unit=1):
+    def string2data_fjsp_hfsp(string, dtype=int, time_unit=1, minus_one=True):
         try:
             to_data = list(map(dtype, string.split()))
             job, p, tech, prt = 0, [], [], []
@@ -185,8 +185,6 @@ class Utils:
                         int_index_m = int(to_data[index_m])
                         if minus_one is True:
                             tech[job][i].append(int_index_m - 1)
-                        elif add_one is True:
-                            tech[job][i].append(int_index_m + 1)
                         else:
                             tech[job][i].append(int_index_m)
                         prt[job][i].append(time_unit * to_data[index_t])

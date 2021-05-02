@@ -3,7 +3,7 @@ import copy
 import numpy as np
 
 from ..info import Info
-from ..resource import Schedule
+from .schedule import Schedule
 
 deepcopy = copy.deepcopy
 
@@ -12,7 +12,7 @@ class Fsp(Schedule):
     def __init__(self):
         Schedule.__init__(self)
 
-    def decode_classic(self, code):
+    def decode(self, code):
         self.clear()
         for i in code:
             for j in range(self.job[i].nop):
@@ -43,7 +43,7 @@ class Fsp(Schedule):
                         self.job[i].task[j_end2head - 1].end = start
                         if self.machine[k].end < self.job[i].task[j_end2head - 1].end:
                             self.machine[k].end = self.job[i].task[j_end2head - 1].end
-        return Info(code, self)
+        return Info(self, code)
 
     def decode_work_timetable(self, code):
         self.clear()
@@ -74,4 +74,4 @@ class Fsp(Schedule):
                         pass
             copy_code = copy_code[np.argsort([self.job[i].task[j].start for i in copy_code])]
             j += 1
-        return Info(code, self)
+        return Info(self, code)

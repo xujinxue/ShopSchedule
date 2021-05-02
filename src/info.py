@@ -9,7 +9,6 @@ import plotly as py
 import plotly.figure_factory as ff
 from matplotlib import colors as mcolors
 
-from .resource import Schedule
 from .utils import Utils
 
 deepcopy = copy.deepcopy
@@ -28,11 +27,12 @@ plt.rcParams['font.sans-serif'] = ['SimHei']
 plt.rcParams['axes.unicode_minus'] = False
 
 
-class GanttChartFromCsv:
+class GanttChart:
     def __init__(self, file=None, schedule=None, mac=None):
         self.schedule = schedule
         self.mac = mac
         if file is not None:
+            from .shop.schedule import Schedule
             self.data = pd.read_csv(file)
             self.n = max(self.data.loc[:, "Job"])
             self.m = max(self.data.loc[:, "Machine"])
@@ -129,9 +129,9 @@ class GanttChartFromCsv:
             c += 1
         return block
 
-    def ganttChart_png(self, fig_width=9, fig_height=5, filename="GanttChart", random_colors=False, lang=1, dpi=200,
-                       height=0.8, scale_more=None, x_step=None, y_based=0, text_rotation=0,
-                       with_operation=True, with_start_end=False, show=False):
+    def gantt_chart_png(self, filename="GanttChart", fig_width=9, fig_height=5, random_colors=False, lang=1, dpi=200,
+                        height=0.8, scale_more=None, x_step=None, y_based=0, text_rotation=0,
+                        with_operation=True, with_start_end=False, show=False):
         if random_colors:
             random.shuffle(COLORS)
         plt.figure(figsize=[fig_width, fig_height])
@@ -237,7 +237,7 @@ class GanttChartFromCsv:
     def rgb(self):
         return random.randint(0, 255)
 
-    def ganttChart_html(self, date=None, filename="GanttChart", show=False, lang=1):
+    def gantt_chart_html(self, filename="GanttChart", date=None, show=False, lang=1):
         if date is None:
             today = dt.today()
             date = dt(today.year, today.month, today.day)
@@ -283,13 +283,12 @@ class GanttChartFromCsv:
         Utils.print("Create {}".format(filename), fore=Utils.fore().LIGHTCYAN_EX)
 
 
-class Info(GanttChartFromCsv):
-    def __init__(self, schedule, code, mac=None, route=None):
+class Info(GanttChart):
+    def __init__(self, schedule, code, mac=None):
         self.schedule = deepcopy(schedule)
-        self.code = deepcopy(code)
-        self.mac = deepcopy(mac)
-        self.route = deepcopy(route)
-        GanttChartFromCsv.__init__(self, schedule=self.schedule, mac=self.mac)
+        self.code = code
+        self.mac = mac
+        GanttChart.__init__(self, schedule=self.schedule, mac=self.mac)
 
     def std_code(self, std_direction=None):
         if std_direction not in [0, 1]:
@@ -313,19 +312,10 @@ class Info(GanttChartFromCsv):
         try:
             for g, i in enumerate(self.code):
                 u = self.schedule.job[i].nd
-                if self.route is None:
-                    if self.schedule.direction == 0:
-                        j = u
-                    else:
-                        j = self.schedule.job[i].nop - u - 1
+                if self.schedule.direction == 0:
+                    j = u
                 else:
-                    if self.schedule.direction == 0:
-                        j = self.route[i][u]
-                    else:
-                        try:
-                            j = self.route[i][self.schedule.job[i].nop - u - 1]
-                        except IndexError:
-                            j = self.route[i][self.schedule.job[i].nop - u - 1]
+                    j = self.schedule.job[i].nop - u - 1
                 if self.mac is None:
                     k = self.schedule.job[i].task[j].machine
                 else:
@@ -339,19 +329,10 @@ class Info(GanttChartFromCsv):
             code = self.schedule.trans_random_key2operation_based(self.code)
             for g, i in enumerate(code):
                 u = self.schedule.job[i].nd
-                if self.route is None:
-                    if self.schedule.direction == 0:
-                        j = u
-                    else:
-                        j = self.schedule.job[i].nop - u - 1
+                if self.schedule.direction == 0:
+                    j = u
                 else:
-                    if self.schedule.direction == 0:
-                        j = self.route[i][u]
-                    else:
-                        try:
-                            j = self.route[i][self.schedule.job[i].nop - u - 1]
-                        except IndexError:
-                            j = self.route[i][self.schedule.job[i].nop - u - 1]
+                    j = self.schedule.job[i].nop - u - 1
                 if self.mac is None:
                     k = self.schedule.job[i].task[j].machine
                 else:
@@ -645,31 +626,6 @@ class Info(GanttChartFromCsv):
                     except ValueError:
                         pass
         return mac
-
-    """"
-    =============================================================================
-    Genetic operator: route decision problem
-    =============================================================================
-    """
-
-    def ga_crossover_route(self, info):
-        route1 = deepcopy(self.route)
-        route2 = deepcopy(info.route)
-        for i, (a, b) in enumerate(zip(route1, route2)):
-            if np.random.random() < 0.5:
-                route1[i], route2[i] = b, a
-        return route1, route2
-
-    def ga_mutation_route(self):
-        route1 = deepcopy(self.route)
-        for i, j in enumerate(route1):
-            if np.random.random() < 0.5:
-                try:
-                    a = np.delete(range(self.schedule.job[i].nor), route1[i])
-                    route1[i] = np.random.choice(a, 1, replace=False)[0]
-                except ValueError:
-                    pass
-        return route1
 
     """"
     =============================================================================

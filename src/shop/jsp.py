@@ -1,6 +1,6 @@
 from .rule_jsp import RuleJsp
 from ..info import Info
-from ..resource import Schedule
+from .schedule import Schedule
 from ..utils import Utils
 
 
@@ -9,7 +9,7 @@ class Jsp(Schedule, RuleJsp):
         Schedule.__init__(self)
         RuleJsp.__init__(self, self.job)
 
-    def decode_classic(self, code, direction=None):
+    def decode(self, code, direction=None):
         self.clear()
         self.with_key_block = True
         if direction not in [0, 1]:
@@ -28,21 +28,21 @@ class Jsp(Schedule, RuleJsp):
             p = self.job[i].task[j].duration
             self.decode_common(i, j, k, p, v, g)
             self.decode_add_limited_wait(i, j, u)
-        return Info(code, self)
+        return Info(self, code)
 
     def decode_limited_wait(self, code, direction=None):
-        info = self.decode_classic(code, direction)
+        info = self.decode(code, direction)
         info.std_code()
-        info2 = self.decode_classic(info.code, info.schedule.direction)
+        info2 = self.decode(info.code, info.schedule.direction)
         info = info if info.schedule.makespan < info2.schedule.makespan else info2
         return info
 
     def decode_no_wait(self, code, p, direction=None):
-        info = self.decode_classic(self.trans_job2operation_based(code, p), direction)
+        info = self.decode(self.trans_job2operation_based(code, p), direction)
         info.code = code
         return info
 
-    def decode_classic_machine_based(self, code):
+    def decode_machine_based(self, code):
         self.clear()
         index = [0 for _ in self.machine.keys()]
         status = [False] * self.m
@@ -78,4 +78,4 @@ class Jsp(Schedule, RuleJsp):
                     self.decode_add_limited_wait(i, j, j)
             for k in range(self.m):
                 index[k] = 0
-        return Info(code, self)
+        return Info(self, code)

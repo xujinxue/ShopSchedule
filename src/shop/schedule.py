@@ -1,8 +1,8 @@
 import numpy as np
 
-from .code import Code
-from .job import Job
-from .machine import Machine
+from ..resource.code import Code
+from ..resource.job import Job
+from ..resource.machine import Machine
 
 
 class Schedule(Code):  # 调度资源融合类
@@ -104,7 +104,7 @@ class Schedule(Code):  # 调度资源融合类
         if self.machine[k].end < self.job[i].task[j].end:  # 更新机器上的最大完工时间
             self.machine[k].end = self.job[i].task[j].end
 
-    def decode_common(self, i, j, k, p, v, g=None):
+    def decode_common(self, i, j, k, p, v, g=None, save=True):
         try:
             a = self.job[i].task[v].end
         except KeyError:
@@ -124,7 +124,10 @@ class Schedule(Code):  # 调度资源融合类
                     self.job[i].task[j].start = res1
                     self.job[i].task[j].end = res2
                 self.decode_update_machine_idle(i, j, k, r, self.job[i].task[j].start)
-                self.save_update_decode(i, j, k, g)
+                if save is True:
+                    self.save_update_decode(i, j, k, g)
+                else:
+                    self.update_saved_start_end(i, j, g)
                 break
 
     def decode_add_limited_wait(self, i, j, u):
@@ -219,7 +222,7 @@ class Schedule(Code):  # 调度资源融合类
                 k = mac[i][j]
                 p = self.job[i].task[j].duration[self.job[i].task[j].machine.index(k)]
             self.constrain_limited_wait_release_job(i, j, k, p)
-            self.decode_common(i, j, k, p, j_pre)
+            self.decode_common(i, j, k, p, j_pre, save=False)
 
     def constrain_limited_wait(self, i, index, mac=None):  # 等待时间有限约束
         for cursor, (j, j_next) in enumerate(zip(index[1:], index[:-1])):  # index为工序索引

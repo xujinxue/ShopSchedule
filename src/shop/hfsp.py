@@ -3,7 +3,7 @@ import copy
 import numpy as np
 
 from ..info import Info
-from ..resource import Schedule
+from .schedule import Schedule
 
 deepcopy = copy.deepcopy
 
@@ -12,7 +12,7 @@ class Hfsp(Schedule):
     def __init__(self):
         Schedule.__init__(self)
 
-    def decode_classic(self, code):
+    def decode(self, code):
         self.clear()
         copy_code = deepcopy(code)
         mac, j = [[None for _ in range(job.nop)] for job in self.job.values()], 0
@@ -51,7 +51,7 @@ class Hfsp(Schedule):
                         pass
             copy_code = copy_code[np.argsort([self.job[i].task[j].start for i in copy_code])]
             j += 1
-        return Info(code, self, mac)
+        return Info(self, code, mac=mac)
 
     def decode_hfsp(self, code, mac):
         self.clear()
@@ -82,4 +82,4 @@ class Hfsp(Schedule):
                         pass
             copy_code = copy_code[np.argsort([self.job[i].task[j].start for i in copy_code])]
             j += 1
-        return Info(code, self, mac)
+        return Info(self, code, mac=mac)

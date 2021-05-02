@@ -148,7 +148,7 @@ class NSGAJsp(NSGA):
         NSGA.__init__(self, pop_size, rc, rm, max_generation, objective, schedule)
 
     def decode_update(self, code, route=None):
-        info = self.schedule.decode_operation_based_active(code, route)
+        info = self.schedule.decode(code, route)
         self.update_child(info)
 
     def do_init(self, pop=None):
@@ -158,7 +158,7 @@ class NSGAJsp(NSGA):
                 code = self.schedule.sequence_operation_based(self.schedule.n, self.p)
             else:
                 code = pop[0][i].code
-            info = self.schedule.decode_operation_based_active(code)
+            info = self.schedule.decode(code)
             self.pop[0].append(info)
             self.pop[1].append(self.get_obj(info))
         self.record[1].append(time.perf_counter())
