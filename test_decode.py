@@ -8,15 +8,22 @@ def main(instance="example"):
     b = Utils.load_text("./src/data/limited_wait_jsp/%s.txt" % instance)
     c = Utils.string2data_wait(b, p, int, time_unit)
     problem = Utils.create_schedule(Jsp, n, m, p, tech, proc, limited_wait=c, time_unit=time_unit)
-    """基于工序的编码"""
+    # problem.spt_lpt_new(spt_or_lpt=1)
+    # for node in problem.node_list_complete:
+    #     print(node.value + 1, problem.decode(node.value, direction=0).schedule.makespan)
+    # """基于工序的编码"""
+    problem.spt_lpt_new(spt_or_lpt=0)
     # code = problem.spt()
-    # print(code, "# code")
+    code = problem.node_list_complete[0].value
+    print(code, "# code")
     # solution = problem.decode(code)
     # solution = problem.decode_limited_wait(code)
+    solution = problem.decode_limited_wait_new(code)
+    # solution = problem.decode_limited_wait_new_twice(code)
     """基于机器的编码"""
-    code = problem.sequence_machine_based(n, m, problem.job)
-    # solution = problem.decode_machine_based(code)
-    solution = problem.decode_machine_based_limited_wait(code)
+    # code = problem.sequence_machine_based(n, m, problem.job)
+    # # solution = problem.decode_machine_based(code)
+    # solution = problem.decode_machine_based_limited_wait(code)
     """解码结果"""
     print(solution.code, "# solution.code")
     print(solution.schedule.direction, "# solution.schedule.direction")
@@ -27,4 +34,4 @@ def main(instance="example"):
 
 
 if __name__ == '__main__':
-    main(instance="example")
+    main(instance="example2")

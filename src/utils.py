@@ -43,6 +43,7 @@ class Utils:
                     val_resumable = None
                 schedule.job[i].add_task(tech[i][j], proc[i][j], name=j, limited_wait=val_limited_wait,
                                          resumable=val_resumable)  # 方法add_task定义在resource包的job模块的Job类里面
+        schedule.rule_init_task_on_machine(m)
         return schedule
 
     @staticmethod
