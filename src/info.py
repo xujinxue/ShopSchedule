@@ -21,8 +21,10 @@ COLORS_REMOVE.extend([i for i in COLORS if i.startswith('dark')])
 COLORS_REMOVE.extend([i for i in COLORS if i.startswith('light')])
 [COLORS.remove(i) for i in COLORS_REMOVE]
 LEN_COLORS = len(COLORS)
-[COLORS.pop(j - i) for i, j in enumerate(range(11))]
+[COLORS.pop(j - i) for i, j in enumerate(range(12))]
 [COLORS.pop(j - i) for i, j in enumerate([6, ])]
+BLOCK_COLORS = ["darkred", "darkorange", "darkgoldenrod", "darkgreen", "darkblue", "darkmagenta", "darkviolet"]
+LEN_BLOCK_COLORS = len(BLOCK_COLORS)
 plt.rcParams['font.sans-serif'] = ['SimHei']
 plt.rcParams['axes.unicode_minus'] = False
 
@@ -52,7 +54,7 @@ class GanttChart:
                     self.data.loc[:, "Machine"], self.data.loc[:, "End"], self.data.loc[:, "Duration"])):
                 job, operation, machine = job - 1, operation - 1, machine - 1
                 for i, val in enumerate([start, operation, job, machine, end]):
-                    self.schedule.start_number_jme[i] = np.append(self.schedule.start_number_jme[i], val)
+                    self.schedule.sjike[i] = np.append(self.schedule.sjike[i], val)
                 self.schedule.job[job].add_task(machine=machine, duration=duration, name=operation, index=operation)
                 self.schedule.job[job].task[operation].start = start
                 self.schedule.job[job].task[operation].end = end
@@ -62,7 +64,7 @@ class GanttChart:
                     self.schedule.machine[machine].end = end
 
     def key_route(self, index):
-        a = np.argwhere(self.schedule.start_number_jme[4] == self.schedule.makespan)[:, 0]
+        a = np.argwhere(self.schedule.sjike[4] == self.schedule.makespan)[:, 0]
         if a.shape[0] > 1:
             b = np.random.choice(a, 1, replace=False)[0]
         else:
@@ -70,16 +72,16 @@ class GanttChart:
         if b not in index:
             index.append(b)
         while True:
-            c = self.schedule.start_number_jme[0][b]
-            d = self.schedule.start_number_jme[2][b]
-            e = self.schedule.start_number_jme[3][b]
+            c = self.schedule.sjike[0][b]
+            d = self.schedule.sjike[2][b]
+            e = self.schedule.sjike[3][b]
             try:
-                tmp = self.schedule.start_number_jme[4][self.schedule.job[d].index_list]
+                tmp = self.schedule.sjike[4][self.schedule.job[d].index_list]
                 f = self.schedule.job[d].index_list[np.argwhere(tmp == c)[:, 0][0]]
             except IndexError:
                 f = None
             try:
-                tmp = self.schedule.start_number_jme[4][self.schedule.machine[e].index_list]
+                tmp = self.schedule.sjike[4][self.schedule.machine[e].index_list]
                 g = self.schedule.machine[e].index_list[np.argwhere(tmp == c)[:, 0][0]]
             except IndexError:
                 g = None
@@ -104,27 +106,27 @@ class GanttChart:
         index = []
         for i in range(n):
             index = self.key_route(index)
-        index_start = self.schedule.start_number_jme[0][index]
+        index_start = self.schedule.sjike[0][index]
         index = [index[i] for i in np.argsort(-index_start)]
-        a = self.schedule.start_number_jme[3][index]
+        a = self.schedule.sjike[3][index]
         b = set(a)
         c = 0
         block = {}
         for i in b:
             block[c] = np.array([], dtype=int)
             d = np.argwhere(a == i)[:, 0]
-            start = self.schedule.start_number_jme[0][[index[j] for j in d]].tolist()
+            start = self.schedule.sjike[0][[index[j] for j in d]].tolist()
             for cur, j in enumerate(d):
                 g = index[j]
                 try:
-                    end = self.schedule.start_number_jme[4][g]
+                    end = self.schedule.sjike[4][g]
                     start.index(end)
                 except ValueError:
                     if cur != 0:
                         c += 1
                         block[c] = np.array([], dtype=int)
-                self.schedule.job[self.schedule.start_number_jme[2][g]].task[
-                    self.schedule.start_number_jme[1][g]].block = c
+                self.schedule.job[self.schedule.sjike[2][g]].task[
+                    self.schedule.sjike[1][g]].block = c
                 block[c] = np.append(block[c], g)
             c += 1
         return block
@@ -134,6 +136,7 @@ class GanttChart:
                         with_operation=True, with_start_end=False, show=False):
         if random_colors:
             random.shuffle(COLORS)
+        self.key_block()
         plt.figure(figsize=[fig_width, fig_height])
         plt.yticks(range([self.schedule.m, self.schedule.n][y_based]),
                    range(1, [self.schedule.m, self.schedule.n][y_based] + 1))
@@ -151,10 +154,13 @@ class GanttChart:
                 y = y_values[y_based]
                 width = task.end - task.start
                 left = [task.start, self.schedule.makespan - task.end][self.schedule.direction]
+                edgecolor, linewidth = "black", 0.5
+                if task.block is not None:
+                    edgecolor, linewidth = BLOCK_COLORS[task.block % LEN_BLOCK_COLORS], 2
                 plt.barh(
                     y=y, width=width,
-                    left=left, color=COLORS[(y_values[y_based - 1] + 1) % LEN_COLORS],
-                    edgecolor="black", linewidth=0.5,
+                    left=left, color=COLORS[y_values[y_based - 1] % LEN_COLORS],
+                    edgecolor=edgecolor, linewidth=linewidth,
                 )
                 if with_operation:
                     if y_based == 0:
@@ -184,7 +190,7 @@ class GanttChart:
                         )
         if y_based == 0:
             for job in self.schedule.job.values():
-                plt.barh(0, 0, color=COLORS[(job.index + 1) % LEN_COLORS], label=job.index + 1)
+                plt.barh(0, 0, color=COLORS[job.index % LEN_COLORS], label=job.index + 1)
             plt.barh(y=0, width=self.schedule.makespan / scale_more, left=self.schedule.makespan, color="white")
             if lang == 0:
                 title = r"${Job}$"
@@ -193,7 +199,7 @@ class GanttChart:
             plt.legend(loc="best", title=title)
         if y_based == 1:
             for machine in self.schedule.machine.values():
-                plt.barh(0, 0, color=COLORS[(machine.index + 1) % LEN_COLORS], label=machine.index + 1)
+                plt.barh(0, 0, color=COLORS[machine.index % LEN_COLORS], label=machine.index + 1)
             plt.barh(y=0, width=self.schedule.makespan / scale_more, left=self.schedule.makespan, color="white")
             if lang == 0:
                 title = r"${Machine}$"
@@ -295,14 +301,14 @@ class Info(GanttChart):
             std_direction = Utils.direction()
         if self.schedule.direction == 0:
             if std_direction == 0:
-                index = np.argsort(self.schedule.start_number_jme[0])
+                index = np.argsort(self.schedule.sjike[0])
             else:
-                index = np.argsort(-self.schedule.start_number_jme[0])[::-1]
+                index = np.argsort(-self.schedule.sjike[0])[::-1]
         else:
             if std_direction == 0:
-                index = np.argsort(self.schedule.start_number_jme[0])[::-1]
+                index = np.argsort(self.schedule.sjike[0])[::-1]
             else:
-                index = np.argsort(-self.schedule.start_number_jme[0])
+                index = np.argsort(-self.schedule.sjike[0])
         self.code = self.code[index]
         for i in self.schedule.job.keys():
             self.schedule.job[i].nd = 0
@@ -323,7 +329,7 @@ class Info(GanttChart):
                 self.schedule.job[i].index_list[j] = g
                 self.schedule.machine[k].index_list.append(g)
                 for u, v in enumerate([self.schedule.job[i].task[j].start, j, i, k, self.schedule.job[i].task[j].end]):
-                    self.schedule.start_number_jme[u][g] = v
+                    self.schedule.sjike[u][g] = v
                 self.schedule.job[i].nd += 1
         except KeyError:
             code = self.schedule.trans_random_key2operation_based(self.code)
@@ -340,7 +346,7 @@ class Info(GanttChart):
                 self.schedule.job[i].index_list[j] = g
                 self.schedule.machine[k].index_list.append(g)
                 for u, v in enumerate([self.schedule.job[i].task[j].start, j, i, k, self.schedule.job[i].task[j].end]):
-                    self.schedule.start_number_jme[u][g] = v
+                    self.schedule.sjike[u][g] = v
                 self.schedule.job[i].nd += 1
 
     def std_code_machine_based(self):
@@ -405,7 +411,7 @@ class Info(GanttChart):
         left_a, right_b = range(a), range(b + 1, self.schedule.length)
         left_b_a = np.hstack([right_b, left_a])
         middle1, middle2 = code1[r_a_b], code2[r_a_b]
-        number1, number2 = self.schedule.start_number_jme[1][r_a_b], info.schedule.start_number_jme[1][r_a_b]
+        number1, number2 = self.schedule.sjike[1][r_a_b], info.schedule.sjike[1][r_a_b]
         left1, left2 = code1[left_a], code2[left_a]
         right1, right2 = code1[right_b], code2[right_b]
         cycle1, cycle2 = np.hstack([right1, left1, middle1]), np.hstack([right2, left2, middle2])
@@ -432,8 +438,8 @@ class Info(GanttChart):
     def ga_crossover_sequence_pmx(self, info):
         code1 = deepcopy(self.code)
         code2 = deepcopy(info.code)
-        number1 = self.schedule.start_number_jme[1]
-        number2 = info.schedule.start_number_jme[1]
+        number1 = self.schedule.sjike[1]
+        number2 = info.schedule.sjike[1]
         a, b = np.random.choice(range(1, self.schedule.length - 1), 2, replace=False)
         if a > b:
             a, b = b, a
@@ -668,7 +674,7 @@ class Info(GanttChart):
             for g in j:
                 if np.random.random() < 0.5:
                     try:
-                        a, b = self.schedule.start_number_jme[2][g], self.schedule.start_number_jme[1][g]
+                        a, b = self.schedule.sjike[2][g], self.schedule.sjike[1][g]
                         c = [v for v in self.schedule.job[a].task[b].machine if v != mac[a][b]]
                         mac[a][b] = np.random.choice(c, 1, replace=False)[0]
                     except ValueError:

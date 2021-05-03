@@ -11,7 +11,6 @@ class Fjsp(Schedule):
 
     def decode(self, code, mac, direction=None):
         self.clear()
-        self.with_key_block = True
         if direction not in [0, 1]:
             self.direction = Utils.direction()
         else:
@@ -32,7 +31,6 @@ class Fjsp(Schedule):
 
     def decode_one(self, code, direction=None):
         self.clear()
-        self.with_key_block = True
         if direction not in [0, 1]:
             self.direction = Utils.direction()
         else:

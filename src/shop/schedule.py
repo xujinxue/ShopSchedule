@@ -12,11 +12,10 @@ class Schedule(Code):  # 调度资源融合类
         self.best_known = None  # 已知下界值
         self.time_unit = 1  # 加工时间单位
         self.direction = 0  # 解码用：正向时间表、反向时间表（仅Jsp, Fjsp）
-        self.with_key_block = False  # 绘制甘特图用：是否带关键块
         # 找关键路径用：加工开始时间、加工任务（工序）索引、工件索引、机器索引、加工完成时间
-        self.start_number_jme = {0: np.zeros(self.length), 1: np.zeros(self.length, dtype=int),
-                                 2: np.zeros(self.length, dtype=int), 3: np.zeros(self.length, dtype=int),
-                                 4: np.zeros(self.length)}
+        self.sjike = {0: np.zeros(self.length), 1: np.zeros(self.length, dtype=int),
+                      2: np.zeros(self.length, dtype=int), 3: np.zeros(self.length, dtype=int),
+                      4: np.zeros(self.length)}
 
     def clear(self):  # 解码前要进行清空, 方便快速地进行下一次解码
         for i in self.job.keys():
@@ -24,10 +23,9 @@ class Schedule(Code):  # 调度资源融合类
         for i in self.machine.keys():
             self.machine[i].clear()
         self.direction = 0
-        self.with_key_block = False
-        self.start_number_jme = {0: np.zeros(self.length), 1: np.zeros(self.length, dtype=int),
-                                 2: np.zeros(self.length, dtype=int), 3: np.zeros(self.length, dtype=int),
-                                 4: np.zeros(self.length)}
+        self.sjike = {0: np.zeros(self.length), 1: np.zeros(self.length, dtype=int),
+                      2: np.zeros(self.length, dtype=int), 3: np.zeros(self.length, dtype=int),
+                      4: np.zeros(self.length)}
 
     @property
     def n(self):  # 工件数量
@@ -75,22 +73,22 @@ class Schedule(Code):  # 调度资源融合类
             index = self.n
         self.job[index] = Job(index, due_date, name)
 
-    def save_start_number_jme(self, i, j, k, g):  # 保存信息: 工件索引、 加工任务（工序）索引、机器索引
+    def save_sjike(self, i, j, k, g):  # 保存信息: 加工开始时间、加工任务（工序）索引、工件索引、机器索引、加工完成时间
         for u, v in enumerate([self.job[i].task[j].start, j, i, k, self.job[i].task[j].end]):
-            self.start_number_jme[u][g] = v
+            self.sjike[u][g] = v
 
     def update_saved_start_end(self, i, j, g):  # 更新信息: 工件索引、 加工任务（工序）索引、基因座位置
         try:
-            self.start_number_jme[0][g] = self.job[i].task[j].start
-            self.start_number_jme[4][g] = self.job[i].task[j].end
+            self.sjike[0][g] = self.job[i].task[j].start
+            self.sjike[4][g] = self.job[i].task[j].end
         except TypeError:
             pass
 
-    def save_update_decode(self, i, j, k, g):  # 解码用: 保存更新信息，工件索引、 加工任务（工序）索引、机器索引、基因座位置
+    def save_update_decode(self, i, j, k, g):  # 解码用: 保存更新信息
         self.job[i].nd += 1
         self.job[i].index_list[j] = g
         self.machine[k].index_list.append(g)
-        self.save_start_number_jme(i, j, k, g)
+        self.save_sjike(i, j, k, g)
 
     def decode_update_machine_idle(self, i, j, k, r, early_start):  # 解码用：更新机器空闲时间
         if self.machine[k].idle[1][r] - self.job[i].task[j].end > 0:  # 添加空闲时间段
@@ -222,7 +220,7 @@ class Schedule(Code):  # 调度资源融合类
                 k = mac[i][j]
                 p = self.job[i].task[j].duration[self.job[i].task[j].machine.index(k)]
             self.constrain_limited_wait_release_job(i, j, k, p)
-            self.decode_common(i, j, k, p, j_pre, save=False)
+            self.decode_common(i, j, k, p, j_pre, g=self.job[i].index_list[j], save=False)
 
     def constrain_limited_wait(self, i, index, mac=None):  # 等待时间有限约束
         for cursor, (j, j_next) in enumerate(zip(index[1:], index[:-1])):  # index为工序索引
