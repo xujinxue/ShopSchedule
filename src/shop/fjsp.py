@@ -1,7 +1,7 @@
 import numpy as np
 
-from ..info import Info
 from .schedule import Schedule
+from ..info import Info
 from ..utils import Utils
 
 

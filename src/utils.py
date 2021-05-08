@@ -59,6 +59,10 @@ class Utils:
         return True if new_obj < old_obj else False
 
     @staticmethod
+    def similarity(a, b):
+        return 1 - np.count_nonzero(a - b) / a.shape[0]
+
+    @staticmethod
     def len_tabu(m, n):  # 禁忌搜索表的长度
         a = m * n
         if a < 250:

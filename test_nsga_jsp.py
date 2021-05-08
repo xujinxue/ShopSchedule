@@ -9,14 +9,15 @@ from src import *
 
 
 def run(instance="ft06"):
+    time_unit = 1
     a = jsp_benchmark.instance[instance]
     b = jsp_benchmark.due_date[instance]
-    n, m, p, tech, proc = Utils.string2data_jsp_fsp(a)
+    n, m, p, tech, proc = Utils.string2data_jsp_fsp(a, int, time_unit)
     due_date = list(map(int, b.split()))
-    schedule = Utils.create_schedule(Jsp, n, m, p, tech, proc, due_date=due_date)
+    problem = Utils.create_schedule(Jsp, n, m, p, tech, proc, due_date=due_date, time_unit=time_unit)
     objective_list = [Objective.tardiness, Objective.makespan]
-    nsga = NSGAJsp(pop_size=40, rc=0.85, rm=0.15, max_generation=50, objective=objective_list, schedule=schedule)
-    c = nsga.do_evolution(pop=None, n_level=5, column=0)
+    nsga = NSGAJsp(pop_size=40, rc=0.85, rm=0.15, max_generation=50, objective=objective_list, schedule=problem)
+    c = nsga.do_evolution(key_block_move=False, pop=None, n_level=5, column=0)
     # 输出结果
     Utils.make_dir("./NSGA_JSP")
     Utils.make_dir("./NSGA_JSP/%s" % instance)

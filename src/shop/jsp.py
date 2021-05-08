@@ -1,6 +1,6 @@
 from .rule import RuleJsp
-from ..info import Info
 from .schedule import Schedule
+from ..info import Info
 from ..utils import Utils
 
 

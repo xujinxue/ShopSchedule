@@ -133,10 +133,11 @@ class GanttChart:
 
     def gantt_chart_png(self, filename="GanttChart", fig_width=9, fig_height=5, random_colors=False, lang=1, dpi=200,
                         height=0.8, scale_more=None, x_step=None, y_based=0, text_rotation=0,
-                        with_operation=True, with_start_end=False, show=False):
+                        with_operation=True, with_start_end=False, key_block=False, show=False):
         if random_colors:
             random.shuffle(COLORS)
-        self.key_block()
+        if key_block:  # JSP,FJSP
+            self.key_block()
         plt.figure(figsize=[fig_width, fig_height])
         plt.yticks(range([self.schedule.m, self.schedule.n][y_based]),
                    range(1, [self.schedule.m, self.schedule.n][y_based] + 1))
@@ -501,8 +502,11 @@ class Info(GanttChart):
     def ga_mutation_sequence_tpe(self, length=None):
         code = deepcopy(self.code)
         length = self.schedule.length if length is None else length
-        a = np.random.choice(range(length), 2, replace=False)
-        code[a] = code[a[::-1]]
+        while True:
+            a = np.random.choice(range(length), 2, replace=False)
+            if code[a[0]] != code[a[1]]:
+                code[a] = code[a[::-1]]
+                break
         return code
 
     def ga_mutation_sequence_insert(self, length=None):
@@ -632,6 +636,41 @@ class Info(GanttChart):
                     except ValueError:
                         pass
         return mac
+
+    """"
+    =============================================================================
+    Tabu search
+    =============================================================================
+    """
+
+    def ts_sequence_operation_based(self, tabu_list, max_tabu):
+        self.std_code()
+        code = deepcopy(self.code)
+        n_try = 0
+        while n_try < max_tabu:
+            n_try += 1
+            try:
+                k = np.random.choice(list(self.schedule.machine.keys()), 1, replace=False)[0]
+                i, j = np.random.choice(self.schedule.machine[k].index_list, 2, replace=False)
+                w = np.random.choice(range(3), 1, replace=False)[0]
+                tabu = {"machine-%s" % k, "way-%s" % w, i, j}
+                if tabu not in tabu_list:
+                    tabu_list.append(tabu)
+                    if i > j:
+                        i, j = j, i
+                    if w == 0:
+                        obj = np.delete(code, j)
+                        code = np.insert(obj, i, code[j])
+                    elif w == 1:
+                        obj = np.delete(code, i)
+                        code = np.insert(obj, j - 1, code[i])
+                        code[j], code[j - 1] = code[j - 1], code[j]
+                    else:
+                        code[i], code[j] = code[j], code[i]
+                    break
+            except ValueError:
+                pass
+        return code
 
     """"
     =============================================================================

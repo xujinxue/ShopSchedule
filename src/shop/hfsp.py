@@ -2,8 +2,8 @@ import copy
 
 import numpy as np
 
-from ..info import Info
 from .schedule import Schedule
+from ..info import Info
 
 deepcopy = copy.deepcopy
 

@@ -102,13 +102,10 @@ class NSGA:
     def do_mutation(self, i):
         pass
 
-    def do_tabu_search(self, i):
-        pass
-
     def do_key_block_move(self, i):
         pass
 
-    def do_evolution(self, pop=None, n_level=5, column=0):
+    def do_evolution(self, key_block_move=False, pop=None, n_level=5, column=0):
         Utils.print("{}Evolution  start{}".format("=" * 48, "=" * 48), fore=Utils.fore().LIGHTYELLOW_EX)
         self.clear()
         self.do_init(pop)
@@ -122,6 +119,8 @@ class NSGA:
                     self.do_crossover(i, j)
                 if np.random.random() < self.rm:
                     self.do_mutation(i)
+                if key_block_move:
+                    self.do_key_block_move(i)
             self.do_selection()
             self.record[1].append(time.perf_counter())
             self.show_generation(g)
@@ -170,4 +169,8 @@ class NSGAJsp(NSGA):
 
     def do_mutation(self, i):
         code1 = self.pop[0][i].ga_mutation_sequence_tpe()
+        self.decode_update(code1)
+
+    def do_key_block_move(self, i):
+        code1 = self.pop[0][i].key_block_move()
         self.decode_update(code1)

@@ -1772,6 +1772,7 @@ due_date = {
 }
 best_known = {
     "example": 18,
+    "example2": 24,
     "abz5": 1234,
     "abz6": 943,
     "abz7": 656,
