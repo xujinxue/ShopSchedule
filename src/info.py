@@ -643,6 +643,21 @@ class Info(GanttChart):
     =============================================================================
     """
 
+    @staticmethod
+    def do_tabu_search(code, i, j, w):
+        if i > j:
+            i, j = j, i
+        if w == 0:
+            obj = np.delete(code, j)
+            code = np.insert(obj, i, code[j])
+        elif w == 1:
+            obj = np.delete(code, i)
+            code = np.insert(obj, j - 1, code[i])
+            code[j], code[j - 1] = code[j - 1], code[j]
+        else:
+            code[i], code[j] = code[j], code[i]
+        return code
+
     def ts_sequence_operation_based(self, tabu_list, max_tabu):
         self.std_code()
         code = deepcopy(self.code)
@@ -656,17 +671,24 @@ class Info(GanttChart):
                 tabu = {"machine-%s" % k, "way-%s" % w, i, j}
                 if tabu not in tabu_list:
                     tabu_list.append(tabu)
-                    if i > j:
-                        i, j = j, i
-                    if w == 0:
-                        obj = np.delete(code, j)
-                        code = np.insert(obj, i, code[j])
-                    elif w == 1:
-                        obj = np.delete(code, i)
-                        code = np.insert(obj, j - 1, code[i])
-                        code[j], code[j - 1] = code[j - 1], code[j]
-                    else:
-                        code[i], code[j] = code[j], code[i]
+                    code = self.do_tabu_search(code, i, j, w)
+                    break
+            except ValueError:
+                pass
+        return code
+
+    def ts_sequence_permutation_based(self, tabu_list, max_tabu):
+        code = deepcopy(self.code)
+        n_try = 0
+        while n_try < max_tabu:
+            n_try += 1
+            try:
+                i, j = np.random.choice(self.schedule.n, 2, replace=False)
+                w = np.random.choice(range(3), 1, replace=False)[0]
+                tabu = {"way-%s" % w, i, j}
+                if tabu not in tabu_list:
+                    tabu_list.append(tabu)
+                    code = self.do_tabu_search(code, i, j, w)
                     break
             except ValueError:
                 pass
