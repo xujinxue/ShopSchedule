@@ -101,14 +101,14 @@ class GanttChart:
                     g = self.schedule.machine[e].index_list[np.argwhere(machine_end[e] == c)[:, 0][0]]
                 except IndexError:
                     g = None
-                if f is not None and g is not None:
+                if f is not None and self.schedule.sjike[0][b] != self.schedule.sjike[0][f] and g is not None:
                     index_f, index_g = deepcopy(index), deepcopy(index)
                     index_f.append(f)
                     index_g.append(g)
                     node_list.append(Node(index_f))
                     node_list.append(Node(index_g))
                     node_list.pop(0)
-                elif f is not None and g is None:
+                elif f is not None and self.schedule.sjike[0][b] != self.schedule.sjike[0][f] and g is None:
                     node_list[0].index.append(f)
                 elif f is None and g is not None:
                     node_list[0].index.append(g)
@@ -161,48 +161,49 @@ class GanttChart:
         ax = plt.gca()
         for job in self.schedule.job.values():
             for task in job.task.values():
-                if self.mac is None:
-                    machine = task.machine
-                else:
-                    machine = self.mac[job.index][task.index]
-                y_values = [machine, job.index]
-                y = y_values[y_based]
-                width = task.end - task.start
-                left = [task.start, self.schedule.makespan - task.end][self.schedule.direction]
-                edgecolor, linewidth = "black", 0.5
-                if task.block is not None:
-                    edgecolor, linewidth = BLOCK_COLORS[task.block % LEN_BLOCK_COLORS], 2
-                plt.barh(
-                    y=y, width=width,
-                    left=left, color=COLORS[y_values[y_based - 1] % LEN_COLORS],
-                    edgecolor=edgecolor, linewidth=linewidth,
-                )
-                if with_operation:
-                    if y_based == 0:
-                        mark = r"$O_{%s,%s}$" % (job.index + 1, task.index + 1)
+                if task.start != task.end:
+                    if self.mac is None:
+                        machine = task.machine
                     else:
-                        mark = r"$O_{%s,%s}^{%s}$" % (job.index + 1, task.index + 1, machine + 1)
-                    plt.text(
-                        x=left + 0.5 * width, y=y,
-                        s=mark, c="black",
-                        ha="center", va="center", rotation="vertical",
+                        machine = self.mac[job.index][task.index]
+                    y_values = [machine, job.index]
+                    y = y_values[y_based]
+                    width = task.end - task.start
+                    left = [task.start, self.schedule.makespan - task.end][self.schedule.direction]
+                    edgecolor, linewidth = "black", 0.5
+                    if task.block is not None:
+                        edgecolor, linewidth = BLOCK_COLORS[task.block % LEN_BLOCK_COLORS], 2
+                    plt.barh(
+                        y=y, width=width,
+                        left=left, color=COLORS[y_values[y_based - 1] % LEN_COLORS],
+                        edgecolor=edgecolor, linewidth=linewidth,
                     )
-                if with_start_end:
-                    if self.schedule.direction == 0:
-                        val = [task.start, task.end]
-                    else:
-                        val = [self.schedule.makespan - task.end, self.schedule.makespan - task.start]
-                    for x in val:
-                        s = r"$_{%s}$" % int(x)
-                        rotation = text_rotation
-                        if text_rotation in [0, 1]:
-                            rotation = ["horizontal", "vertical"][text_rotation]
+                    if with_operation:
+                        if y_based == 0:
+                            mark = r"$O_{%s,%s}$" % (job.index + 1, task.index + 1)
+                        else:
+                            mark = r"$O_{%s,%s}^{%s}$" % (job.index + 1, task.index + 1, machine + 1)
                         plt.text(
-                            x=x, y=y - height * 0.5,
-                            s=s, c="black",
-                            ha="center", va="top",
-                            rotation=rotation,
+                            x=left + 0.5 * width, y=y,
+                            s=mark, c="black",
+                            ha="center", va="center", rotation="vertical",
                         )
+                    if with_start_end:
+                        if self.schedule.direction == 0:
+                            val = [task.start, task.end]
+                        else:
+                            val = [self.schedule.makespan - task.end, self.schedule.makespan - task.start]
+                        for x in val:
+                            s = r"$_{%s}$" % int(x)
+                            rotation = text_rotation
+                            if text_rotation in [0, 1]:
+                                rotation = ["horizontal", "vertical"][text_rotation]
+                            plt.text(
+                                x=x, y=y - height * 0.5,
+                                s=s, c="black",
+                                ha="center", va="top",
+                                rotation=rotation,
+                            )
         if y_based == 0:
             for job in self.schedule.job.values():
                 plt.barh(0, 0, color=COLORS[job.index % LEN_COLORS], label=job.index + 1)
@@ -268,25 +269,26 @@ class GanttChart:
         df = []
         for job in self.schedule.job.values():
             for task in job.task.values():
-                if self.mac is None:
-                    machine = task.machine
-                else:
-                    machine = self.mac[job.index][task.index]
-                mark = machine + 1
-                if self.schedule.m >= 100:
-                    if mark < 10:
-                        mark = "00" + str(mark)
-                    elif mark < 100:
-                        mark = "0" + str(mark)
-                elif self.schedule.m >= 10:
-                    if mark < 10:
-                        mark = "0" + str(mark)
-                start, finish = task.start, task.end
-                if self.schedule.direction == 1:
-                    start, finish = self.schedule.makespan - task.end, self.schedule.makespan - task.start
-                df.append(dict(Task="M%s" % mark, Start=date + tmdelta(0, int(start)),
-                               Finish=date + tmdelta(0, int(finish)),
-                               Resource=str(job.index + 1), complete=job.index + 1))
+                if task.start != task.end:
+                    if self.mac is None:
+                        machine = task.machine
+                    else:
+                        machine = self.mac[job.index][task.index]
+                    mark = machine + 1
+                    if self.schedule.m >= 100:
+                        if mark < 10:
+                            mark = "00" + str(mark)
+                        elif mark < 100:
+                            mark = "0" + str(mark)
+                    elif self.schedule.m >= 10:
+                        if mark < 10:
+                            mark = "0" + str(mark)
+                    start, finish = task.start, task.end
+                    if self.schedule.direction == 1:
+                        start, finish = self.schedule.makespan - task.end, self.schedule.makespan - task.start
+                    df.append(dict(Task="M%s" % mark, Start=date + tmdelta(0, int(start)),
+                                   Finish=date + tmdelta(0, int(finish)),
+                                   Resource=str(job.index + 1), complete=job.index + 1))
         df = sorted(df, key=lambda val: (val['Task'], val['complete']), reverse=True)
         colors = {}
         for i in self.schedule.job.keys():
@@ -305,10 +307,11 @@ class GanttChart:
 
 
 class Info(GanttChart):
-    def __init__(self, schedule, code, mac=None):
+    def __init__(self, schedule, code, mac=None, route=None):
         self.schedule = deepcopy(schedule)
         self.code = code
         self.mac = mac
+        self.route = route
         GanttChart.__init__(self, schedule=self.schedule, mac=self.mac)
 
     def trans_operation_based2machine_based(self):  # 转码：基于工序的编码->基于机器的编码
@@ -392,8 +395,7 @@ class Info(GanttChart):
                         duration = task.duration
                     else:
                         machine = self.mac[job.index][task.index]
-                        duration = self.schedule.job[job.index].task[task.index].duration[
-                            self.schedule.job[job.index].task[task.index].machine.index(machine)]
+                        duration = task.duration[task.machine.index(machine)]
                     f.writelines("{},{},{},{},{},{}\n".format(
                         job.index + 1, task.index + 1, machine + 1, task.start, duration, task.end))
 
@@ -662,6 +664,43 @@ class Info(GanttChart):
 
     """"
     =============================================================================
+    Genetic operator: route assignment problem
+    =============================================================================
+    """
+
+    def ga_crossover_route(self, info):
+        route1 = deepcopy(self.route)
+        route2 = deepcopy(info.route)
+        for i, (p, q) in enumerate(zip(route1, route2)):
+            route1[i], route2[i] = q, p
+        return route1, route2
+
+    def ga_mutation_route(self):
+        route = deepcopy(self.route)
+        for i in range(self.schedule.n):
+            try:
+                a = list(range(self.schedule.job[i].nor))
+                a.remove(route[i])
+                route[i] = np.random.choice(a, 1, replace=False)[0]
+            except ValueError:
+                pass
+        return route
+
+    """"
+    =============================================================================
+    Genetic operator: match mac and route
+    =============================================================================
+    """
+
+    def repair_mac_route(self, mac, route):
+        for i, j in enumerate(mac):
+            for u, v in enumerate(j):
+                task = self.schedule.job[i].route[route[i]].task[u]
+                if v not in task.machine:
+                    mac[i][j] = task.machine[task.duration.index(min(task.duration))]
+
+    """"
+    =============================================================================
     Tabu search
     =============================================================================
     """
@@ -726,12 +765,10 @@ class Info(GanttChart):
     def key_block_move(self, block=None):
         self.std_code()
         code = deepcopy(self.code)
-        # code_list = []
         if block is None:
             block = self.key_block()
         for i, j in block.items():
             if j.shape[0] >= 2:
-                # code = deepcopy(self.code)
                 head, tail = j[0], j[-1]
                 if np.random.random() < 0.5:
                     index = np.random.choice(j[1:], 1, replace=False)[0]
@@ -750,27 +787,21 @@ class Info(GanttChart):
                         code = np.insert(obj, index, value)
                     else:
                         code[tail], code[index] = code[index], code[tail]
-                # code_list.append(code)
-        # return code_list[np.random.randint(0, len(code_list), 1)[0]]
         return code
 
     def key_block_move_mac(self, block=None):
         mac = deepcopy(self.mac)
-        # mac_list = []
         if block is None:
             block = self.key_block()
         for i, j in block.items():
             for g in j:
                 if np.random.random() < 0.5:
                     try:
-                        # mac = deepcopy(self.mac)
                         a, b = self.schedule.sjike[2][g], self.schedule.sjike[1][g]
                         c = [v for v in self.schedule.job[a].task[b].machine if v != mac[a][b]]
                         mac[a][b] = np.random.choice(c, 1, replace=False)[0]
-                        # mac_list.append(mac)
                     except ValueError:
                         pass
-        # return mac_list[np.random.randint(0, len(mac_list), 1)[0]]
         return mac
 
     """"

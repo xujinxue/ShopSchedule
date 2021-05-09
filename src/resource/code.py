@@ -55,3 +55,25 @@ class Code:  # 编码类
             for j in range(p[i]):
                 a[i].append(np.random.choice(tech[i][j], 1, replace=False)[0])
         return a
+
+    @staticmethod
+    def assignment_job_based_route(n, p, tech, route):
+        """
+        机器指派问题-基于工件的编码
+        """
+        a = []
+        for i in range(n):
+            a.append([])
+            for j in range(p[i]):
+                a[i].append(np.random.choice(tech[i][route[i]][j], 1, replace=False)[0])
+        return a
+
+    @staticmethod
+    def assignment_route(n, r):
+        """
+        加工路径问题
+        """
+        a = []
+        for i in range(n):
+            a.append(np.random.choice(range(r[i]), 1, replace=False)[0])
+        return a

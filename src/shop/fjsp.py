@@ -9,8 +9,8 @@ class Fjsp(Schedule):
     def __init__(self):
         Schedule.__init__(self)
 
-    def decode(self, code, mac, direction=None):
-        self.clear()
+    def decode(self, code, mac, route=None, direction=None):
+        self.clear(route)
         if direction not in [0, 1]:
             self.direction = Utils.direction()
         else:
@@ -27,10 +27,10 @@ class Fjsp(Schedule):
             p = self.job[i].task[j].duration[self.job[i].task[j].machine.index(k)]
             self.decode_common(i, j, k, p, v, g)
             self.decode_add_limited_wait(i, j, u)
-        return Info(self, code, mac=mac)
+        return Info(self, code, mac=mac, route=route)
 
-    def decode_one(self, code, direction=None):
-        self.clear()
+    def decode_one(self, code, route=None, direction=None):
+        self.clear(route)
         if direction not in [0, 1]:
             self.direction = Utils.direction()
         else:
@@ -77,28 +77,28 @@ class Fjsp(Schedule):
             self.decode_update_machine_idle(i, j, k, r, start[choice])
             self.save_update_decode(i, j, k, g)
             self.decode_add_limited_wait(i, j, u)
-        return Info(self, code, mac=mac)
+        return Info(self, code, mac=mac, route=route)
 
-    def decode_limited_wait(self, code, mac, direction=None):
-        info = self.decode(code, mac, direction)
+    def decode_limited_wait(self, code, mac, route=None, direction=None):
+        info = self.decode(code, mac, route, direction)
         info.std_code()
-        info2 = self.decode(info.code, info.mac, info.schedule.direction)
+        info2 = self.decode(info.code, info.mac, info.route, info.schedule.direction)
         info = info if info.schedule.makespan < info2.schedule.makespan else info2
         return info
 
-    def decode_limited_wait_one(self, code, direction=None):
-        info = self.decode_one(code, direction)
+    def decode_limited_wait_one(self, code, route=None, direction=None):
+        info = self.decode_one(code, route, direction)
         info.std_code()
-        info2 = self.decode_one(info.code, info.schedule.direction)
+        info2 = self.decode_one(info.code, info.route, info.schedule.direction)
         info = info if info.schedule.makespan < info2.schedule.makespan else info2
         return info
 
-    def decode_no_wait(self, code, mac, p, direction=None):
-        info = self.decode(self.trans_job2operation_based(code, p), mac, direction)
+    def decode_no_wait(self, code, mac, p, route=None, direction=None):
+        info = self.decode(self.trans_job2operation_based(code, p), mac, route, direction)
         info.code = code
         return info
 
-    def decode_no_wait_one(self, code, p, direction=None):
-        info = self.decode_one(self.trans_job2operation_based(code, p), direction)
+    def decode_no_wait_one(self, code, p, route=None, direction=None):
+        info = self.decode_one(self.trans_job2operation_based(code, p), route, direction)
         info.code = code
         return info

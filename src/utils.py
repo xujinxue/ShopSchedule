@@ -15,7 +15,7 @@ init(autoreset=True)
 
 class Utils:
     @staticmethod
-    def create_schedule(shop, n, m, p, tech, proc, limited_wait=None, rest_start_end=None,
+    def create_schedule(shop, n, m, p, tech, proc, multi_route=False, limited_wait=None, rest_start_end=None,
                         resumable=None, due_date=None, best_known=None, time_unit=1):  # 创建一个车间调度对象
         schedule = shop()  # shop是车间类, 在shop包里面, 如Jsp, Fjsp, Fsp, Hfsp
         schedule.best_known = best_known  # 已知最优目标值
@@ -31,19 +31,39 @@ class Utils:
             except TypeError:
                 val_due_date = None
             schedule.add_job(due_date=val_due_date, name=i)
-            for j in range(p[i]):  # 添加工序, p是一个包含n个元素的列表, 对应n个工件的工序数量
-                val_limited_wait = None
-                if limited_wait is not None:  # 等待时间有限数据
-                    val_limited_wait = limited_wait[i][j]
-                    if val_limited_wait == -1:  # 允许等待时间为无穷大或不存在允许等待时间
-                        val_limited_wait = np.inf
-                try:  # 加工是否可恢复数据
-                    val_resumable = resumable[i][j]
-                except TypeError:
-                    val_resumable = None
-                schedule.job[i].add_task(tech[i][j], proc[i][j], name=j, limited_wait=val_limited_wait,
-                                         resumable=val_resumable)  # 方法add_task定义在resource包的job模块的Job类里面
-        schedule.rule_init_task_on_machine(m)
+            if multi_route is False:
+                for j in range(p[i]):  # 添加工序, p是一个包含n个元素的列表, 对应n个工件的工序数量
+                    val_limited_wait = None
+                    if limited_wait is not None:  # 等待时间有限数据
+                        val_limited_wait = limited_wait[i][j]
+                        if val_limited_wait == -1:  # 允许等待时间为无穷大或不存在允许等待时间
+                            val_limited_wait = np.inf
+                    try:  # 加工是否可恢复数据
+                        val_resumable = resumable[i][j]
+                    except TypeError:
+                        val_resumable = None
+                    schedule.job[i].add_task(tech[i][j], proc[i][j], name=j, limited_wait=val_limited_wait,
+                                             resumable=val_resumable)
+            else:
+                for r, (route, duration) in enumerate(zip(tech[i], proc[i])):
+                    schedule.job[i].add_route(name=r)
+                    for j in range(p[i]):
+                        val_limited_wait = None
+                        if limited_wait is not None:
+                            val_limited_wait = limited_wait[r][i][j]
+                            if val_limited_wait == -1:
+                                val_limited_wait = np.inf
+                        try:
+                            val_resumable = resumable[r][i][j]
+                        except TypeError:
+                            val_resumable = None
+                        schedule.job[i].route[r].add_task(route[j], duration[j], name=j,
+                                                          limited_wait=val_limited_wait,
+                                                          resumable=val_resumable)
+        try:
+            schedule.rule_init_task_on_machine(m)
+        except AttributeError:
+            pass
         return schedule
 
     @staticmethod
@@ -218,6 +238,82 @@ class Utils:
                 wait.append(time_unit * value)
                 value = []
         return wait
+
+    @staticmethod
+    def string2data_mrjsp(string, dtype=int, time_unit=1):
+        try:
+            a = string.split("\n")
+            n, m = list(map(int, a[0].split()))
+            r = [m] * n  # 虚设加工路线数量
+            p = [m] * n  # 虚设工序
+            tech = [[] for _ in range(n)]
+            proc = [[] for _ in range(n)]
+            job, row = 0, 0
+            while job < n:
+                row += 1
+                b = list(map(int, a[row].split()))
+                r[job], p[job] = b[0], max(b[1:])  # 实际加工路径数量，所有加工路径中的最大工序数量
+                for i in range(r[job]):
+                    row += 1
+                    tech_proc_r = list(map(dtype, a[row].split()))
+                    tech_r = [int(i) for i in tech_proc_r[::2]]
+                    proc_r = [time_unit * i for i in tech_proc_r[1::2]]
+                    if len(tech_r) < p[job]:  # 虚工序
+                        dummy = np.random.choice(range(m), p[job] - len(tech_r), replace=False)
+                        tech_r.extend(dummy.tolist())
+                        proc_r.extend([0] * len(dummy))
+                    tech[job].append(tech_r)
+                    proc[job].append(proc_r)
+                job += 1
+            return n, m, p, tech, proc
+        except ValueError:
+            return None, None, None, None, None
+
+    @staticmethod
+    def string2data_mrfjsp(string, dtype=int, time_unit=1, minus_one=True):
+        try:
+            a = string.split("\n")
+            n, m = list(map(int, a[0].split()))
+            r = [m] * n  # 虚设加工路线数量
+            p = [m] * n  # 虚设工序
+            tech = [[] for _ in range(n)]
+            proc = [[] for _ in range(n)]
+            job, row = 0, 0
+            while job < n:
+                row += 1
+                b = list(map(int, a[row].split()))
+                r[job], p[job] = b[0], max(b[1:])
+                for i in range(r[job]):
+                    row += 1
+                    tech_proc_r = list(map(dtype, a[row].split()))
+                    index_nm, index_m, index_p, = 0, 1, 2
+                    tech_r = []
+                    proc_r = []
+                    for j in range(b[1:][i]):
+                        tech_r_j = []
+                        proc_r_j = []
+                        for k in range(tech_proc_r[index_nm]):
+                            if minus_one:
+                                tech_r_j.append(tech_proc_r[index_m] - 1)
+                            else:
+                                tech_r_j.append(tech_proc_r[index_m])
+                            proc_r_j.append(time_unit * tech_proc_r[index_p])
+                            index_m, index_p = index_m + 2, index_p + 2
+                        tech_r.append(tech_r_j)
+                        proc_r.append(proc_r_j)
+                        index_nm = index_p - 1
+                        index_m, index_p = index_nm + 1, index_nm + 2
+                    if b[1:][i] < p[job]:  # 虚工序
+                        dummy = np.random.choice(range(m), p[job] - b[1:][i], replace=False)
+                        for w in dummy:
+                            tech_r.append([w])
+                            proc_r.append([0])
+                    tech[job].append(tech_r)
+                    proc[job].append(proc_r)
+                job += 1
+            return n, m, p, tech, proc
+        except ValueError:
+            return None, None, None, None, None
 
     @staticmethod
     def save_code_to_txt(file, data):

@@ -9,8 +9,8 @@ class Jsp(Schedule, RuleJsp):
         Schedule.__init__(self)
         RuleJsp.__init__(self, self.job)
 
-    def decode(self, code, direction=None):
-        self.clear()
+    def decode(self, code, route=None, direction=None):
+        self.clear(route)
         if direction not in [0, 1]:
             self.direction = Utils.direction()
         else:
@@ -27,22 +27,22 @@ class Jsp(Schedule, RuleJsp):
             p = self.job[i].task[j].duration
             self.decode_common(i, j, k, p, v, g)
             self.decode_add_limited_wait(i, j, u)
-        return Info(self, code)
+        return Info(self, code, route=route)
 
-    def decode_limited_wait(self, code, direction=None):
-        info = self.decode(code, direction)
+    def decode_limited_wait(self, code, route=None, direction=None):
+        info = self.decode(code, route, direction)
         info.std_code()
-        info2 = self.decode(info.code, info.schedule.direction)
+        info2 = self.decode(info.code, info.route, info.schedule.direction)
         info = info if info.schedule.makespan < info2.schedule.makespan else info2
         return info
 
-    def decode_no_wait(self, code, p, direction=None):
-        info = self.decode(self.trans_job2operation_based(code, p), direction)
+    def decode_no_wait(self, code, p, route=None, direction=None):
+        info = self.decode(self.trans_job2operation_based(code, p), route, direction)
         info.code = code
         return info
 
-    def decode_machine_based(self, code):
-        self.clear()
+    def decode_machine_based(self, code, route=None):
+        self.clear(route)
         index = [0 for _ in self.machine.keys()]
         status = [False] * self.m
         g = 0
@@ -79,12 +79,12 @@ class Jsp(Schedule, RuleJsp):
                     g += 1
             for k in range(self.m):
                 index[k] = 0
-        return Info(self, code)
+        return Info(self, code, route=route)
 
-    def decode_machine_based_limited_wait(self, code):
-        info = self.decode_machine_based(code)
+    def decode_machine_based_limited_wait(self, code, route=None):
+        info = self.decode_machine_based(code, route)
         info.std_code_machine_based()
-        info2 = self.decode_machine_based(info.code)
+        info2 = self.decode_machine_based(info.code, info.route)
         info = info if info.schedule.makespan < info2.schedule.makespan else info2
         return info
 
@@ -96,8 +96,8 @@ class Jsp(Schedule, RuleJsp):
                     return True
         return False
 
-    def decode_limited_wait_new(self, code, direction=None):
-        self.clear()
+    def decode_limited_wait_new(self, code, route=None, direction=None):
+        self.clear(route)
         if direction not in [0, 1]:
             self.direction = Utils.direction()
         else:
@@ -174,11 +174,11 @@ class Jsp(Schedule, RuleJsp):
             g += 1
             if g == self.length:
                 break
-        return Info(self, code)
+        return Info(self, code, route=route)
 
-    def decode_limited_wait_new_twice(self, code, direction=None):
-        info = self.decode_limited_wait_new(code, direction)
+    def decode_limited_wait_new_twice(self, code, route=None, direction=None):
+        info = self.decode_limited_wait_new(code, route, direction)
         info.std_code()
-        info2 = self.decode_limited_wait_new(info.code, info.schedule.direction)
+        info2 = self.decode_limited_wait_new(info.code, info.route, info.schedule.direction)
         info = info if info.schedule.makespan < info2.schedule.makespan else info2
         return info
