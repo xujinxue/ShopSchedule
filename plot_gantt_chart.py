@@ -6,7 +6,7 @@ from src import *
 
 """Result"""
 file_dir = "./Result/GanttChart"  # 甘特图数据文件所在目录
-file = "example.csv"  # 甘特图数据文件
+file = "ft06.csv"  # 甘特图数据文件
 file_save = "%s/%s" % (file_dir, file[:-4])  # 保存的甘特图名称
 """NSGA_JSP"""
 # file_dir = "./NSGA_JSP/ft06"  # 甘特图数据文件所在目录
