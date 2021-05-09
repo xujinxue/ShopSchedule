@@ -17,20 +17,22 @@ def main(instance="example"):
     code = problem.node_list_complete[0].value
     print(code, "# code")
     # solution = problem.decode(code)
-    # solution = problem.decode_limited_wait(code)
-    solution = problem.decode_limited_wait_new(code)
+    solution = problem.decode_limited_wait(code)
+    # solution = problem.decode_limited_wait_new(code)
     # solution = problem.decode_limited_wait_new_twice(code)
+    # code = solution.trans_operation_based2machine_based()
+    # print(code, "# solution.trans_operation_based2machine_based()")
     """基于机器的编码"""
     # code = problem.sequence_machine_based(n, m, problem.job)
-    # # solution = problem.decode_machine_based(code)
+    # solution = problem.decode_machine_based(code)
     # solution = problem.decode_machine_based_limited_wait(code)
     """解码结果"""
     print(solution.code, "# solution.code")
     print(solution.schedule.direction, "# solution.schedule.direction")
     print(solution.schedule.makespan, "# solution.schedule.makespan")
-    print(solution.schedule.sjike, "# solution.schedule.sjike")
-    solution.save_gantt_chart_to_csv("./Result/%s.csv" % instance)
-    solution.gantt_chart_png("./Result/GanttChart/%s.png" % instance)
+    print(solution.schedule.sjike[2], "# solution.schedule.sjike[2]")
+    solution.save_gantt_chart_to_csv("./Result/GanttChart/%s.csv" % instance)
+    # solution.gantt_chart_png("./Result/GanttChart/%s.png" % instance)
 
 
 if __name__ == '__main__':

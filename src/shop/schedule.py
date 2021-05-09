@@ -11,8 +11,8 @@ class Schedule(Code):  # 调度资源融合类
         self.machine = {}  # 机器
         self.best_known = None  # 已知下界值
         self.time_unit = 1  # 加工时间单位
-        self.direction = 0  # 解码用：正向时间表、反向时间表（仅Jsp, Fjsp）
-        # 找关键路径用：加工开始时间、加工任务（工序）索引、工件索引、机器索引、加工完成时间
+        self.direction = 0  # 解码：正向时间表、反向时间表（仅Jsp, Fjsp）
+        # 找关键路径：加工开始时间、加工任务（工序）索引、工件索引、机器索引、加工完成时间
         self.sjike = {0: np.zeros(self.length), 1: np.zeros(self.length, dtype=int),
                       2: np.zeros(self.length, dtype=int), 3: np.zeros(self.length, dtype=int),
                       4: np.zeros(self.length)}
@@ -51,16 +51,16 @@ class Schedule(Code):  # 调度资源融合类
         return a
 
     @staticmethod
-    def trans_job2operation_based(code, p):  # 转码用：基于工件的编码->基于工序的编码
+    def trans_job2operation_based(code, p):  # 转码：基于工件的编码->基于工序的编码
         a = np.array([], dtype=int)
         for i in code:
             a = np.append(a, [i] * p[i])
         return a
 
-    def trans_random_key2operation_based(self, code):  # 转码用：基于随机键的编码->基于工序的编码
+    def trans_random_key2operation_based(self, code):  # 转码：基于随机键的编码->基于工序的编码
         return self.a_operation_based_code[np.argsort(code)]
 
-    def any_task_not_done(self):  # 解码用：判断是否解码结束（基于机器的编码、混合流水车间、考虑作息时间的流水车间）
+    def any_task_not_done(self):  # 解码：判断是否解码结束（基于机器的编码、混合流水车间、考虑作息时间的流水车间）
         return any([any([task.start is None for task in job.task.values()]) for job in self.job.values()])
 
     def add_machine(self, name=None, timetable=None, index=None):  # 添加机器
@@ -90,7 +90,7 @@ class Schedule(Code):  # 调度资源融合类
         self.machine[k].index_list.append(g)
         self.save_sjike(i, j, k, g)
 
-    def decode_update_machine_idle(self, i, j, k, r, early_start):  # 解码用：更新机器空闲时间
+    def decode_update_machine_idle(self, i, j, k, r, early_start):  # 解码：更新机器空闲时间
         if self.machine[k].idle[1][r] - self.job[i].task[j].end > 0:  # 添加空闲时间段
             self.machine[k].idle[0].insert(r + 1, self.job[i].task[j].end)
             self.machine[k].idle[1].insert(r + 1, self.machine[k].idle[1][r])

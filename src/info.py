@@ -23,10 +23,18 @@ COLORS_REMOVE.extend([i for i in COLORS if i.startswith('light')])
 LEN_COLORS = len(COLORS)
 [COLORS.pop(j - i) for i, j in enumerate(range(12))]
 [COLORS.pop(j - i) for i, j in enumerate([6, ])]
-BLOCK_COLORS = ["darkred", "darkorange", "darkgoldenrod", "darkgreen", "darkblue", "darkmagenta", "darkviolet"]
+BLOCK_COLORS = ["dimgray", "darkred", "darkorange", "darkgoldenrod", "darkgreen",
+                "darkblue", "darkmagenta", "darkviolet", "crimson", "indigo",
+                "darkcyan", "springgreen", "firebrick", "chocolate", "darkgoldenrod"
+                ]
 LEN_BLOCK_COLORS = len(BLOCK_COLORS)
 plt.rcParams['font.sans-serif'] = ['SimHei']
 plt.rcParams['axes.unicode_minus'] = False
+
+
+class Node:
+    def __init__(self, index):
+        self.index = index
 
 
 class GanttChart:
@@ -63,49 +71,55 @@ class GanttChart:
                 if end > self.schedule.machine[machine].end:
                     self.schedule.machine[machine].end = end
 
-    def key_route(self, index):
+    def key_route(self):
+        critical_path = []
+        node_list = []
+        job_end = {}
+        machine_end = {}
+        for i in self.schedule.job.keys():
+            job_end[i] = self.schedule.sjike[4][self.schedule.job[i].index_list]
+        for i in self.schedule.machine.keys():
+            machine_end[i] = self.schedule.sjike[4][self.schedule.machine[i].index_list]
         a = np.argwhere(self.schedule.sjike[4] == self.schedule.makespan)[:, 0]
         if a.shape[0] > 1:
-            b = np.random.choice(a, 1, replace=False)[0]
+            for i in a:
+                node_list.append(Node([i]))
         else:
-            b = a[0]
-        if b not in index:
-            index.append(b)
-        while True:
-            c = self.schedule.sjike[0][b]
-            d = self.schedule.sjike[2][b]
-            e = self.schedule.sjike[3][b]
-            try:
-                tmp = self.schedule.sjike[4][self.schedule.job[d].index_list]
-                f = self.schedule.job[d].index_list[np.argwhere(tmp == c)[:, 0][0]]
-            except IndexError:
-                f = None
-            try:
-                tmp = self.schedule.sjike[4][self.schedule.machine[e].index_list]
-                g = self.schedule.machine[e].index_list[np.argwhere(tmp == c)[:, 0][0]]
-            except IndexError:
-                g = None
-            if f is not None and g is not None:
-                if f not in index:
-                    b = f
-                elif g not in index:
-                    b = g
+            node_list.append(Node([a[0]]))
+        while len(node_list):
+            while True:
+                index = node_list[0].index
+                b = index[-1]
+                c = self.schedule.sjike[0][b]
+                d = self.schedule.sjike[2][b]
+                e = self.schedule.sjike[3][b]
+                try:
+                    f = self.schedule.job[d].index_list[np.argwhere(job_end[d] == c)[:, 0][0]]
+                except IndexError:
+                    f = None
+                try:
+                    g = self.schedule.machine[e].index_list[np.argwhere(machine_end[e] == c)[:, 0][0]]
+                except IndexError:
+                    g = None
+                if f is not None and g is not None:
+                    index_f, index_g = deepcopy(index), deepcopy(index)
+                    index_f.append(f)
+                    index_g.append(g)
+                    node_list.append(Node(index_f))
+                    node_list.append(Node(index_g))
+                    node_list.pop(0)
+                elif f is not None and g is None:
+                    node_list[0].index.append(f)
+                elif f is None and g is not None:
+                    node_list[0].index.append(g)
                 else:
-                    b = np.random.choice([f, g], 1, replace=False)[0]
-            elif f is not None and g is None:
-                b = f
-            elif f is None and g is not None:
-                b = g
-            if b not in index:
-                index.append(b)
-            if f is None and g is None:
-                break
-        return index
+                    critical_path.extend(node_list[0].index)
+                    node_list.pop(0)
+                    break
+        return critical_path
 
-    def key_block(self, n=5):
-        index = []
-        for i in range(n):
-            index = self.key_route(index)
+    def key_block(self):
+        index = list(set(self.key_route()))
         index_start = self.schedule.sjike[0][index]
         index = [index[i] for i in np.argsort(-index_start)]
         a = self.schedule.sjike[3][index]
@@ -296,6 +310,15 @@ class Info(GanttChart):
         self.code = code
         self.mac = mac
         GanttChart.__init__(self, schedule=self.schedule, mac=self.mac)
+
+    def trans_operation_based2machine_based(self):  # 转码：基于工序的编码->基于机器的编码
+        code = [[] for _ in self.schedule.machine.keys()]
+        for i, machine in self.schedule.machine.items():
+            job = self.schedule.sjike[2][machine.index_list]
+            operation = self.schedule.sjike[1][machine.index_list]
+            for a, b in zip(job, operation):
+                code[i].append((a, b))
+        return code
 
     def std_code(self, std_direction=None):
         if std_direction not in [0, 1]:
@@ -703,14 +726,16 @@ class Info(GanttChart):
     def key_block_move(self, block=None):
         self.std_code()
         code = deepcopy(self.code)
+        # code_list = []
         if block is None:
             block = self.key_block()
         for i, j in block.items():
             if j.shape[0] >= 2:
+                # code = deepcopy(self.code)
                 head, tail = j[0], j[-1]
                 if np.random.random() < 0.5:
                     index = np.random.choice(j[1:], 1, replace=False)[0]
-                    if np.random.random() < 0.5:
+                    if np.random.random() < 0.8:
                         value = code[head]
                         obj = np.delete(code, head)
                         code = np.insert(obj, index - 1, value)
@@ -719,27 +744,33 @@ class Info(GanttChart):
                         code[head], code[index] = code[index], code[head]
                 else:
                     index = np.random.choice(j[:-1], 1, replace=False)[0]
-                    if np.random.random() < 0.5:
+                    if np.random.random() < 0.8:
                         value = code[tail]
                         obj = np.delete(code, tail)
                         code = np.insert(obj, index, value)
                     else:
                         code[tail], code[index] = code[index], code[tail]
+                # code_list.append(code)
+        # return code_list[np.random.randint(0, len(code_list), 1)[0]]
         return code
 
     def key_block_move_mac(self, block=None):
         mac = deepcopy(self.mac)
+        # mac_list = []
         if block is None:
             block = self.key_block()
         for i, j in block.items():
             for g in j:
                 if np.random.random() < 0.5:
                     try:
+                        # mac = deepcopy(self.mac)
                         a, b = self.schedule.sjike[2][g], self.schedule.sjike[1][g]
                         c = [v for v in self.schedule.job[a].task[b].machine if v != mac[a][b]]
                         mac[a][b] = np.random.choice(c, 1, replace=False)[0]
+                        # mac_list.append(mac)
                     except ValueError:
                         pass
+        # return mac_list[np.random.randint(0, len(mac_list), 1)[0]]
         return mac
 
     """"
