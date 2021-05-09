@@ -45,6 +45,7 @@ def run(instance="ft06"):
     plt.ylabel("工期")
     plt.savefig("./NSGA_JSP/%s-ParetoRank.png" % instance, dpi=200)
     for i in range(len(c[0])):
+        c[0][i][0].save_code_to_txt("./NSGA_JSP/%s/%s-code.txt" % (instance, i + 1))
         c[0][i][0].save_gantt_chart_to_csv("./NSGA_JSP/%s/%s-GanttChart.csv" % (instance, i + 1))
         # c[0][i][0].ganttChart_png(filename="./NSGA_JSP/%s/GanttChart/%s-GanttChart.png" % (instance, i + 1))
 

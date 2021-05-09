@@ -10,8 +10,14 @@ def main(instance="example"):
     ga = GaJsp(pop_size=10, rc=0.85, rm=0.15, max_generation=int(10e4), objective=Objective.makespan, schedule=problem,
                max_stay_generation=500)
     ga.do_evolution(tabu_search=True, key_block_move=False)
-    Utils.save_record_to_csv("./Result/Record/%s.csv" % instance, ga.record)
-    ga.best[0].save_gantt_chart_to_csv("./Result/GanttChart/%s.csv" % instance)
+    Utils.make_dir("./GA_JSP")
+    Utils.make_dir("./GA_JSP/%s" % instance)
+    Utils.make_dir("./GA_JSP/%s/GanttChart" % instance)
+    Utils.clear_dir("./GA_JSP/%s" % instance)
+    Utils.clear_dir("./GA_JSP/%s/GanttChart" % instance)
+    Utils.save_record_to_csv("./GA_JSP/%s/record.csv" % instance, ga.record)
+    ga.best[0].save_code_to_txt("./GA_JSP/%s/code.txt" % instance)
+    ga.best[0].save_gantt_chart_to_csv("./GA_JSP/%s/GanttChart.csv" % instance)
     # ga.best[0].gantt_chart_png("./Result/GanttChart/%s.png" % instance)
 
 

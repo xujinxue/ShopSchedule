@@ -9,8 +9,10 @@ def main(instance="example"):
     r = [job.nor for job in problem.job.values()]
     code = problem.sequence_operation_based(n, p)
     route = problem.assignment_route(n, r)
+    """解码方式一：有机器编码，在迭代的过程中保持route和mac对应"""
     # mac = problem.assignment_job_based_route(n, p, tech, route)
     # solution = problem.decode(code, mac, route)
+    """解码方式二：无机器编码，但要在解码过程中保存机器编码"""
     solution = problem.decode_one(code, route)
     print(solution.code, "# solution.code")
     print(solution.route, "# solution.route")
@@ -18,6 +20,7 @@ def main(instance="example"):
     print(solution.schedule.direction, "# solution.schedule.direction")
     print(solution.schedule.makespan, "# solution.schedule.makespan")
     print(solution.schedule.sjike[2], "# solution.schedule.sjike[2]")
+    solution.save_code_to_txt("./Result/Code/%s.txt" % instance)
     solution.save_gantt_chart_to_csv("./Result/GanttChart/%s.csv" % instance)
     # solution.gantt_chart_png("./Result/GanttChart/%s.png" % instance)
 

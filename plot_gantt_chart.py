@@ -6,11 +6,11 @@ from src import *
 
 """Result"""
 file_dir = "./Result/GanttChart"  # 甘特图数据文件所在目录
-file = "ft06.csv"  # 甘特图数据文件
+file = "example.csv"  # 甘特图数据文件
 file_save = "%s/%s" % (file_dir, file[:-4])  # 保存的甘特图名称
-"""NSGA_JSP"""
-# file_dir = "./NSGA_JSP/ft06"  # 甘特图数据文件所在目录
-# file = "1-GanttChart.csv"  # 甘特图数据文件
+"""Algorithm"""
+# file_dir = "./GA_JSP/ft06"  # 甘特图数据文件所在目录
+# file = "GanttChart.csv"  # 甘特图数据文件
 # file_save = "%s/GanttChart/%s" % (file_dir, file[:-4])  # 保存的甘特图名称
 """===================================================================================="""
 a = GanttChart("%s/%s" % (file_dir, file))  # 调用甘特图生成类

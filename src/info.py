@@ -383,6 +383,9 @@ class Info(GanttChart):
                 start.append(self.schedule.job[i].task[j].start)
             self.code[k] = [self.code[k][u] for u in np.argsort(start)]
 
+    def save_code_to_txt(self, file):
+        Utils.save_code_to_txt(file, {"code": self.code, "route": self.route, "mac": self.mac})
+
     def save_gantt_chart_to_csv(self, file):
         if not file.endswith(".csv"):
             file = file + ".csv"

@@ -12,8 +12,8 @@ from .shop import Jsp, Fjsp, Fsp, Hfsp
 from .utils import Utils
 
 Utils.make_dir("./Result")
+Utils.make_dir("./Result/Code")
 Utils.make_dir("./Result/GanttChart")
-Utils.make_dir("./Result/Record")
 
 INSTANCE_LIST_JSP = """
 ft06

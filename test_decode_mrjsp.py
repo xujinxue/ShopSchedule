@@ -15,6 +15,7 @@ def main(instance="example"):
     print(solution.schedule.direction, "# solution.schedule.direction")
     print(solution.schedule.makespan, "# solution.schedule.makespan")
     print(solution.schedule.sjike[2], "# solution.schedule.sjike[2]")
+    solution.save_code_to_txt("./Result/Code/%s.txt" % instance)
     solution.save_gantt_chart_to_csv("./Result/GanttChart/%s.csv" % instance)
     # solution.gantt_chart_png("./Result/GanttChart/%s.png" % instance)
 
