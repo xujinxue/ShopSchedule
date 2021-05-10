@@ -200,7 +200,7 @@ class GaJsp(Ga):
         self.show_generation(0)
 
     def do_crossover(self, i, j):
-        code1, code2 = self.pop[0][i].ga_crossover_sequence_pox(self.pop[0][j])
+        code1, code2 = self.pop[0][i].ga_crossover_sequence_mox(self.pop[0][j])
         self.decode_update(i, code1)
         self.decode_update(j, code2)
 

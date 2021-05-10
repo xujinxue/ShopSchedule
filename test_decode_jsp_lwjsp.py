@@ -35,7 +35,7 @@ def main(instance="example"):
     print(solution.schedule.sjike[2], "# solution.schedule.sjike[2]")
     solution.save_code_to_txt("./Result/Code/%s.txt" % instance)
     solution.save_gantt_chart_to_csv("./Result/GanttChart/%s.csv" % instance)
-    solution.gantt_chart_png("./Result/GanttChart/%s.png" % instance, key_block=True)
+    # solution.gantt_chart_png("./Result/GanttChart/%s.png" % instance, key_block=True)
 
 
 if __name__ == '__main__':
