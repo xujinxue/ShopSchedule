@@ -160,7 +160,7 @@ class GanttChart:
                    range(1, [self.schedule.m, self.schedule.n][y_based] + 1))
         plt.xticks([], [])
         scale_more = 12 if scale_more is None else scale_more
-        x_step = self.schedule.makespan // 10 if x_step is None else x_step
+        x_step = max([1, self.schedule.makespan // 10 if x_step is None else x_step])
         ax = plt.gca()
         for job in self.schedule.job.values():
             for task in job.task.values():
