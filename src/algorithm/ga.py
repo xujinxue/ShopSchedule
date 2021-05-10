@@ -29,6 +29,7 @@ class Ga:
         self.objective = objective
         self.schedule = schedule
         self.max_stay_generation = max_stay_generation
+        self.direction = Utils.direction0none(objective)
         self.p = [job.nop for job in self.schedule.job.values()]
         self.tech = [[task.machine for task in job.task.values()] for job in self.schedule.job.values()]
         self.best = [None, None, None, [[], [], []]]  # (info, objective, fitness, tabu)
@@ -176,12 +177,12 @@ class GaJsp(Ga):
         Ga.__init__(self, pop_size, rc, rm, max_generation, objective, schedule, max_stay_generation)
 
     def decode_update(self, i, code):
-        info = self.schedule.decode(code)
+        info = self.schedule.decode(code, direction=self.direction)
         self.update_individual(i, self.objective(info), info)
 
     def dislocation(self, i):
         code = self.pop[0][i].dislocation_operator()
-        info = self.schedule.decode(code)
+        info = self.schedule.decode(code, direction=self.direction)
         self.replace_individual(i, info)
 
     def do_init(self, pop=None):
@@ -191,7 +192,7 @@ class GaJsp(Ga):
                 code = self.schedule.sequence_operation_based(self.schedule.n, self.p)
             else:
                 code = pop[0][i].code
-            info = self.schedule.decode(code)
+            info = self.schedule.decode(code, direction=self.direction)
             self.pop[0].append(info)
             self.pop[1].append(self.objective(info))
             self.pop[2].append(Utils.calculate_fitness(self.pop[1][i]))
@@ -200,7 +201,7 @@ class GaJsp(Ga):
         self.show_generation(0)
 
     def do_crossover(self, i, j):
-        code1, code2 = self.pop[0][i].ga_crossover_sequence_mox(self.pop[0][j])
+        code1, code2 = self.pop[0][i].ga_crossover_sequence_pox(self.pop[0][j])
         self.decode_update(i, code1)
         self.decode_update(j, code2)
 

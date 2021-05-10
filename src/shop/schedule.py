@@ -115,10 +115,7 @@ class Schedule(Code):  # 调度资源融合类
             except TypeError:
                 early_start = max([0, b])
             if early_start + p <= c:
-                if self.direction == 0 or c == np.inf:
-                    self.job[i].task[j].start = early_start
-                else:
-                    self.job[i].task[j].start = c - p
+                self.job[i].task[j].start = early_start
                 self.job[i].task[j].end = self.job[i].task[j].start + p
                 if self.job[i].task[j].resumable is not None:
                     res1, res2 = self.constrain_timetable(i, j, k, p, c)
@@ -248,10 +245,7 @@ class Schedule(Code):  # 调度资源融合类
                 for r, (b, c) in enumerate(zip(self.machine[k].idle[0], self.machine[k].idle[1])):
                     early_start = max([delay_start, b])  # delay_start是满足等待时间有限约束的最早开始时间
                     if early_start + p <= c:
-                        if self.direction == 0 or c == np.inf:
-                            self.job[i].task[j].start = early_start
-                        else:
-                            self.job[i].task[j].start = c - p
+                        self.job[i].task[j].start = early_start
                         self.job[i].task[j].end = self.job[i].task[j].start + p
                         if self.job[i].task[j].resumable is not None:
                             res1, res2 = self.constrain_timetable(i, j, k, p, c)

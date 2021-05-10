@@ -24,6 +24,7 @@ class NSGA:
         self.max_generation = max_generation
         self.objective = objective
         self.schedule = schedule
+        self.direction = Utils.direction0none_multi(objective)
         self.p = [job.nop for job in self.schedule.job.values()]
         self.tech = [[task.machine for task in job.task.values()] for job in self.schedule.job.values()]
         self.num_obj = len(self.objective)
@@ -147,7 +148,7 @@ class NSGAJsp(NSGA):
         NSGA.__init__(self, pop_size, rc, rm, max_generation, objective, schedule)
 
     def decode_update(self, code):
-        info = self.schedule.decode(code)
+        info = self.schedule.decode(code, direction=self.direction)
         self.update_child(info)
 
     def do_init(self, pop=None):
@@ -157,7 +158,7 @@ class NSGAJsp(NSGA):
                 code = self.schedule.sequence_operation_based(self.schedule.n, self.p)
             else:
                 code = pop[0][i].code
-            info = self.schedule.decode(code)
+            info = self.schedule.decode(code, direction=self.direction)
             self.pop[0].append(info)
             self.pop[1].append(self.get_obj(info))
         self.record[1].append(time.perf_counter())

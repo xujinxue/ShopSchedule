@@ -8,6 +8,7 @@ import os
 import chardet
 import numpy as np
 from colorama import init, Fore
+from .objective import Objective
 
 dt = datetime.datetime
 init(autoreset=True)
@@ -67,8 +68,16 @@ class Utils:
         return schedule
 
     @staticmethod
-    def direction():  # 正向时间表或反向时间表
+    def direction():  # 正向时间表或反向时间表；反向时间表对拖期、完工时间之和、流程时间之和等目标有影响
         return 1 if np.random.random() < 0.5 else 0
+
+    @staticmethod
+    def direction0none(objective):
+        return None if objective in [Objective.makespan, ] else 0
+
+    @staticmethod
+    def direction0none_multi(objective_list):
+        return 0 if Objective.tardiness in objective_list else None
 
     @staticmethod
     def calculate_fitness(obj):  # 适应度函数

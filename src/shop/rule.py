@@ -30,7 +30,6 @@ class Rule:
         self.task_on_machine_operation = [[] for _ in range(3)]
         self.task_on_machine_duration = [[] for _ in range(3)]
         self.node_list = []
-        self.node_list_complete = []
 
     def rule_init_task_on_machine(self, m):
         self.task_on_machine_operation = [[] for _ in range(m)]
@@ -60,7 +59,6 @@ class Rule:
         self.job_copy = deepcopy(self.job)
         self.wait = [(i, 0) for i in self.job.keys()]
         self.node_list = []
-        self.node_list_complete = []
 
     def do_update(self, choice, wait_data):
         decision = self.wait[choice]
@@ -189,6 +187,7 @@ class RuleJsp(Rule):
 
     def spt_lpt_new(self, spt_or_lpt=0):
         self.reset_schedule_rule_new()
+        node_list_complete = []
         a = deepcopy(self.task_on_machine_operation)
         for i, j in enumerate(self.task_on_machine_duration):
             b = np.argsort(j)
@@ -235,7 +234,7 @@ class RuleJsp(Rule):
                     value = np.append(value, job)
                     node_new = Node(value, wait, job_copy)
                     if len(node_new.wait) == 0:
-                        self.node_list_complete.append(node_new)
+                        node_list_complete.append(node_new)
                     else:
                         self.node_list.append(node_new)
             elif index.shape[0] == 1:
@@ -249,5 +248,6 @@ class RuleJsp(Rule):
                 node.value = np.append(node.value, job)
                 self.node_list[0] = node
                 if len(node.wait) == 0:
-                    self.node_list_complete.append(node)
+                    node_list_complete.append(node)
                     self.node_list.pop(0)
+        return node_list_complete

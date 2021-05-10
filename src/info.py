@@ -422,11 +422,22 @@ class Info(GanttChart):
         code1[b], code2[c] = code2[c], code1[b]
         return code1, code2
 
-    def ga_crossover_sequence_mox(self, info):
+    def ga_crossover_sequence_mox1(self, info):
         code1 = deepcopy(self.code)
         code2 = deepcopy(info.code)
         a = np.random.choice(range(self.schedule.m), 1, replace=False)[0]
         b, c = self.schedule.machine[a].index_list, info.schedule.machine[a].index_list
+        code1[b], code2[c] = code2[c], code1[b]
+        return code1, code2
+
+    def ga_crossover_sequence_mox2(self, info):
+        code1 = deepcopy(self.code)
+        code2 = deepcopy(info.code)
+        a = np.random.choice(range(self.schedule.m), 2, replace=False)
+        b, c = [], []
+        for i in a:
+            b.extend(self.schedule.machine[i].index_list)
+            c.extend(info.schedule.machine[i].index_list)
         code1[b], code2[c] = code2[c], code1[b]
         return code1, code2
 

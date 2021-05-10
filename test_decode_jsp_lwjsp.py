@@ -8,15 +8,15 @@ def main(instance="example"):
     b = Utils.load_text("./src/data/limited_wait_jsp/%s.txt" % instance)
     c = Utils.string2data_wait(b, p, int, time_unit)
     problem = Utils.create_schedule(Jsp, n, m, p, tech, proc, limited_wait=c, time_unit=time_unit)
-    # problem.spt_lpt_new(spt_or_lpt=1)
-    # for node in problem.node_list_complete:
-    #     print(node.value + 1, problem.decode(node.value, direction=0).schedule.makespan)
+    """调度规则"""
+    node_list_complete = problem.spt_lpt_new(spt_or_lpt=0)
+    # for node in node_list_complete:
+    #     print(node.value + 1, problem.decode(node.value, direction=1).schedule.makespan)
+    code = node_list_complete[0].value
+    solution = problem.decode(code, direction=1)
     # """基于工序的编码"""
-    problem.spt_lpt_new(spt_or_lpt=0)
     # code = problem.spt()
-    code = problem.node_list_complete[0].value
-    # solution = problem.decode(code)
-    solution = problem.decode_limited_wait(code)
+    # solution = problem.decode_limited_wait(code)
     # solution = problem.decode_limited_wait_new(code)
     # solution = problem.decode_limited_wait_new_twice(code)
     # code = solution.trans_operation_based2machine_based()
@@ -36,4 +36,4 @@ def main(instance="example"):
 
 
 if __name__ == '__main__':
-    main(instance="example")
+    main(instance="example2")

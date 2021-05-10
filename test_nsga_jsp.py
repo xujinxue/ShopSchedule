@@ -17,7 +17,7 @@ def run(instance="ft06"):
     problem = Utils.create_schedule(Jsp, n, m, p, tech, proc, due_date=due_date, time_unit=time_unit)
     objective_list = [Objective.tardiness, Objective.makespan]
     nsga = NSGAJsp(pop_size=40, rc=0.85, rm=0.15, max_generation=50, objective=objective_list, schedule=problem)
-    c = nsga.do_evolution(key_block_move=False, pop=None, n_level=5, column=0)
+    c = nsga.do_evolution(key_block_move=True, pop=None, n_level=5, column=0)
     # 输出结果
     Utils.make_dir("./NSGA_JSP")
     Utils.make_dir("./NSGA_JSP/%s" % instance)
