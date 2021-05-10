@@ -1,7 +1,0 @@
-帕累托等级-1
-(<src.info.Info object at 0x000002175D19D7F0>, [0.0, 62.0])
-(<src.info.Info object at 0x000002175D40A5B0>, [1.0, 60.0])
-(<src.info.Info object at 0x000002175CF136D0>, [17.0, 55.0])
-帕累托等级-2
-(<src.info.Info object at 0x000002175D6E7640>, [8.0, 60.0])
-(<src.info.Info object at 0x000002175D549070>, [37.0, 58.0])

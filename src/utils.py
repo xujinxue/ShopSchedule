@@ -68,7 +68,7 @@ class Utils:
 
     @staticmethod
     def direction():  # 正向时间表或反向时间表
-        return 0 if np.random.random() < 0.5 else 1
+        return 1 if np.random.random() < 0.5 else 0
 
     @staticmethod
     def calculate_fitness(obj):  # 适应度函数

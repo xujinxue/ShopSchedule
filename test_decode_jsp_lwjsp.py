@@ -1,5 +1,3 @@
-import numpy as np
-
 from src import *
 
 
@@ -8,18 +6,17 @@ def main(instance="example"):
     a = jsp_benchmark.instance[instance]
     n, m, p, tech, proc = Utils.string2data_jsp_fsp(a, int, time_unit)
     b = Utils.load_text("./src/data/limited_wait_jsp/%s.txt" % instance)
-    # c = Utils.string2data_wait(b, p, int, time_unit)
-    problem = Utils.create_schedule(Jsp, n, m, p, tech, proc, limited_wait=None, time_unit=time_unit)
+    c = Utils.string2data_wait(b, p, int, time_unit)
+    problem = Utils.create_schedule(Jsp, n, m, p, tech, proc, limited_wait=c, time_unit=time_unit)
     # problem.spt_lpt_new(spt_or_lpt=1)
     # for node in problem.node_list_complete:
     #     print(node.value + 1, problem.decode(node.value, direction=0).schedule.makespan)
     # """基于工序的编码"""
-    # problem.spt_lpt_new(spt_or_lpt=0)
+    problem.spt_lpt_new(spt_or_lpt=0)
     # code = problem.spt()
-    # code = problem.node_list_complete[0].value
-    code = np.array([1, 2, 2, 1], dtype=int) - 1
-    solution = problem.decode(code, direction=1)
-    # solution = problem.decode_limited_wait(code)
+    code = problem.node_list_complete[0].value
+    # solution = problem.decode(code)
+    solution = problem.decode_limited_wait(code)
     # solution = problem.decode_limited_wait_new(code)
     # solution = problem.decode_limited_wait_new_twice(code)
     # code = solution.trans_operation_based2machine_based()
@@ -39,4 +36,4 @@ def main(instance="example"):
 
 
 if __name__ == '__main__':
-    main(instance="example3")
+    main(instance="example")
