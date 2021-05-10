@@ -2,8 +2,8 @@ from .algorithm import GaJsp, NSGAJsp
 from .algorithm import OrToolsJspSat
 from .data import fjsp_benchmark, fsp_benchmark, jsp_benchmark, hfsp_benchmark
 from .data import fjsp_simulation, fsp_simulation, jsp_simulation
-from .data import mrjsp_benchmark
 from .data import mrfjsp_benchmark
+from .data import mrjsp_benchmark
 from .info import GanttChart
 from .objective import Objective
 from .pareto import Pareto, SelectPareto

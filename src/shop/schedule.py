@@ -105,35 +105,30 @@ class Schedule(Code):  # 调度资源融合类
             self.machine[k].end = self.job[i].task[j].end
 
     def decode_common(self, i, j, k, p, v, g=None, save=True):
-        if p == 0:
-            self.job[i].task[j].start = 0
-            self.job[i].task[j].end = 0
-            self.save_update_decode(i, j, k, g)
-        else:
+        try:
+            a = self.job[i].task[v].end
+        except KeyError:
+            a = 0
+        for r, (b, c) in enumerate(zip(self.machine[k].idle[0], self.machine[k].idle[1])):
             try:
-                a = self.job[i].task[v].end
-            except KeyError:
-                a = 0
-            for r, (b, c) in enumerate(zip(self.machine[k].idle[0], self.machine[k].idle[1])):
-                try:
-                    early_start = max([a, b])
-                except TypeError:
-                    early_start = max([0, b])
-                if early_start + p <= c:
-                    self.job[i].task[j].start = early_start
-                    self.job[i].task[j].end = early_start + p
-                    if self.job[i].task[j].resumable is not None:
-                        res1, res2 = self.constrain_timetable(i, j, k, p, c)
-                        if res1 is False:
-                            continue
-                        self.job[i].task[j].start = res1
-                        self.job[i].task[j].end = res2
-                    self.decode_update_machine_idle(i, j, k, r, self.job[i].task[j].start)
-                    if save is True:
-                        self.save_update_decode(i, j, k, g)
-                    else:
-                        self.update_saved_start_end(i, j, g)
-                    break
+                early_start = max([a, b])
+            except TypeError:
+                early_start = max([0, b])
+            if early_start + p <= c:
+                self.job[i].task[j].start = early_start
+                self.job[i].task[j].end = early_start + p
+                if self.job[i].task[j].resumable is not None:
+                    res1, res2 = self.constrain_timetable(i, j, k, p, c)
+                    if res1 is False:
+                        continue
+                    self.job[i].task[j].start = res1
+                    self.job[i].task[j].end = res2
+                self.decode_update_machine_idle(i, j, k, r, self.job[i].task[j].start)
+                if save is True:
+                    self.save_update_decode(i, j, k, g)
+                else:
+                    self.update_saved_start_end(i, j, g)
+                break
 
     def decode_add_limited_wait(self, i, j, u):
         if self.job[i].task[j].limited_wait is not None:
@@ -226,9 +221,8 @@ class Schedule(Code):  # 调度资源融合类
             else:
                 k = mac[i][j]
                 p = self.job[i].task[j].duration[self.job[i].task[j].machine.index(k)]
-            if p != 0:
-                self.constrain_limited_wait_release_job(i, j, k, p)
-                self.decode_common(i, j, k, p, j_pre, g=self.job[i].index_list[j], save=False)
+            self.constrain_limited_wait_release_job(i, j, k, p)
+            self.decode_common(i, j, k, p, j_pre, g=self.job[i].index_list[j], save=False)
 
     def constrain_limited_wait(self, i, index, mac=None):  # 等待时间有限约束
         for cursor, (j, j_next) in enumerate(zip(index[1:], index[:-1])):  # index为工序索引
@@ -246,24 +240,23 @@ class Schedule(Code):  # 调度资源融合类
                 else:
                     k = mac[i][j]
                     p = self.job[i].task[j].duration[self.job[i].task[j].machine.index(k)]
-                if p != 0:
-                    delay_start = max([next_start - limited_wait - p, self.job[i].task[j].start])
-                    self.constrain_limited_wait_release_job(i, j, k, p)
-                    for r, (b, c) in enumerate(zip(self.machine[k].idle[0], self.machine[k].idle[1])):
-                        early_start = max([delay_start, b])  # delay_start是满足等待时间有限约束的最早开始时间
-                        if early_start + p <= c:
-                            self.job[i].task[j].start = early_start
-                            self.job[i].task[j].end = early_start + p
-                            if self.job[i].task[j].resumable is not None:
-                                res1, res2 = self.constrain_timetable(i, j, k, p, c)
-                                if res1 is False:
-                                    continue
-                                self.job[i].task[j].start = res1
-                                self.job[i].task[j].end = res2
-                            self.decode_update_machine_idle(i, j, k, r, self.job[i].task[j].start)
-                            self.update_saved_start_end(i, j, self.job[i].index_list[j])
-                            if next_start - self.job[i].task[j].end < 0:  # 相邻工序的时间间隔不合法
-                                self.constrain_limited_wait_repair_interval(i, index, cursor, mac)
-                                return False
-                            break
+                delay_start = max([next_start - limited_wait - p, self.job[i].task[j].start])
+                self.constrain_limited_wait_release_job(i, j, k, p)
+                for r, (b, c) in enumerate(zip(self.machine[k].idle[0], self.machine[k].idle[1])):
+                    early_start = max([delay_start, b])  # delay_start是满足等待时间有限约束的最早开始时间
+                    if early_start + p <= c:
+                        self.job[i].task[j].start = early_start
+                        self.job[i].task[j].end = early_start + p
+                        if self.job[i].task[j].resumable is not None:
+                            res1, res2 = self.constrain_timetable(i, j, k, p, c)
+                            if res1 is False:
+                                continue
+                            self.job[i].task[j].start = res1
+                            self.job[i].task[j].end = res2
+                        self.decode_update_machine_idle(i, j, k, r, self.job[i].task[j].start)
+                        self.update_saved_start_end(i, j, self.job[i].index_list[j])
+                        if next_start - self.job[i].task[j].end < 0:  # 相邻工序的时间间隔不合法
+                            self.constrain_limited_wait_repair_interval(i, index, cursor, mac)
+                            return False
+                        break
         return True

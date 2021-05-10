@@ -1,7 +1,7 @@
 import numpy as np
 
-from .task import Task
 from .route import Route
+from .task import Task
 
 
 class Job:  # 工件类

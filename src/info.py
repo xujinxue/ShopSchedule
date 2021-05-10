@@ -71,6 +71,9 @@ class GanttChart:
                 if end > self.schedule.machine[machine].end:
                     self.schedule.machine[machine].end = end
 
+    def not_dummy(self, i):
+        return True if self.schedule.sjike[0][i] != self.schedule.sjike[4][i] else False
+
     def key_route(self):
         critical_path = []
         node_list = []
@@ -101,16 +104,16 @@ class GanttChart:
                     g = self.schedule.machine[e].index_list[np.argwhere(machine_end[e] == c)[:, 0][0]]
                 except IndexError:
                     g = None
-                if f is not None and self.schedule.sjike[0][b] != self.schedule.sjike[0][f] and g is not None:
+                if f is not None and self.not_dummy(f) and g is not None and self.not_dummy(g):
                     index_f, index_g = deepcopy(index), deepcopy(index)
                     index_f.append(f)
                     index_g.append(g)
                     node_list.append(Node(index_f))
                     node_list.append(Node(index_g))
                     node_list.pop(0)
-                elif f is not None and self.schedule.sjike[0][b] != self.schedule.sjike[0][f] and g is None:
+                elif f is not None and self.not_dummy(f) and g is None:
                     node_list[0].index.append(f)
-                elif f is None and g is not None:
+                elif f is None and g is not None and self.not_dummy(g):
                     node_list[0].index.append(g)
                 else:
                     critical_path.extend(node_list[0].index)
@@ -384,7 +387,10 @@ class Info(GanttChart):
             self.code[k] = [self.code[k][u] for u in np.argsort(start)]
 
     def save_code_to_txt(self, file):
-        Utils.save_code_to_txt(file, {"code": self.code, "route": self.route, "mac": self.mac})
+        try:
+            Utils.save_code_to_txt(file, {"code": self.code.tolist(), "route": self.route, "mac": self.mac})
+        except AttributeError:
+            Utils.save_code_to_txt(file, {"code": self.code, "route": self.route, "mac": self.mac})
 
     def save_gantt_chart_to_csv(self, file):
         if not file.endswith(".csv"):
