@@ -160,6 +160,10 @@ class Ga:
             for i in range(self.pop_size):
                 if self.reach_best_known_solution():
                     break
+                if tabu_search:
+                    self.do_tabu_search(i)
+                if key_block_move:
+                    self.do_key_block_move(i)
                 if np.random.random() < self.rc:
                     j = np.random.choice(np.delete(np.arange(self.pop_size), i), 1, replace=False)[0]
                     if Utils.similarity(self.pop[0][i].code, self.pop[0][j].code) < 0.5:
@@ -169,10 +173,6 @@ class Ga:
                         self.dislocation(j, mode=1)
                 if np.random.random() < self.rm:
                     self.do_mutation(i)
-                if tabu_search:
-                    self.do_tabu_search(i)
-                if key_block_move:
-                    self.do_key_block_move(i)
             self.do_selection()
             self.record[1].append(time.perf_counter())
             self.show_generation(g)
