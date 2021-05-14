@@ -47,43 +47,46 @@ class Ga:
         self.record = [[], [], [], [], [], []]
         self.tabu_list = [[[] for _ in self.individual], [[] for _ in self.individual], [[] for _ in self.individual]]
 
-    def dislocation(self, i):
+    def get_obj_fit(self, info):
+        a = self.objective(info)
+        b = Utils.calculate_fitness(a)
+        return a, b
+
+    def dislocation(self, i, mode=0):
         pass
-
-    def update_individual(self, i, obj_new, info_new):
-        fit_new = Utils.calculate_fitness(obj_new)
-        if Utils.similarity(self.pop[0][i].code, info_new.code) > 0.5:
-            self.dislocation(i)
-        else:
-            self.pop[0].append(info_new)
-            self.pop[1].append(obj_new)
-            self.pop[2].append(fit_new)
-            if Utils.update_info(self.pop[1][i], obj_new):
-                for k in range(3):
-                    self.tabu_list[k][i] = []
-        for k in range(3):
-            self.tabu_list[k].append([])
-        if Utils.update_info(self.best[1], obj_new):
-            self.best[0] = info_new
-            self.best[1] = obj_new
-            self.best[2] = fit_new
-            for k in range(3):
-                self.best[3][k].append([])
-
-    def replace_individual(self, i, info_new):
-        obj_new = self.objective(info_new)
-        fit_new = Utils.calculate_fitness(obj_new)
-        self.pop[0][i] = info_new
-        self.pop[1][i] = obj_new
-        self.pop[2][i] = fit_new
-        for k in range(3):
-            self.tabu_list[k][i] = []
 
     def init_best(self):
         self.best[2] = max(self.pop[2])
         index = self.pop[2].index(self.best[2])
         self.best[1] = self.pop[1][index]
         self.best[0] = deepcopy(self.pop[0][index])
+
+    def append_individual(self, info_new):
+        obj_new, fit_new = self.get_obj_fit(info_new)
+        self.pop[0].append(info_new)
+        self.pop[1].append(obj_new)
+        self.pop[2].append(fit_new)
+        for k in range(3):
+            self.tabu_list[k].append([])
+        self.update_best(obj_new, info_new, fit_new)
+
+    def replace_individual(self, i, info_new):
+        obj_new, fit_new = self.get_obj_fit(info_new)
+        if Utils.update_info(self.pop[1][i], obj_new):
+            self.pop[0][i] = info_new
+            self.pop[1][i] = obj_new
+            self.pop[2][i] = fit_new
+            for k in range(3):
+                self.tabu_list[k][i] = []
+            self.update_best(obj_new, info_new, fit_new)
+
+    def update_best(self, obj_new, info_new, fit_new):
+        if Utils.update_info(self.best[1], obj_new):
+            self.best[0] = info_new
+            self.best[1] = obj_new
+            self.best[2] = fit_new
+            for k in range(3):
+                self.best[3][k] = []
 
     def show_generation(self, g):
         self.record[2].append(self.best[1])
@@ -159,7 +162,11 @@ class Ga:
                     break
                 if np.random.random() < self.rc:
                     j = np.random.choice(np.delete(np.arange(self.pop_size), i), 1, replace=False)[0]
-                    self.do_crossover(i, j)
+                    if Utils.similarity(self.pop[0][i].code, self.pop[0][j].code) < 0.5:
+                        self.do_crossover(i, j)
+                    else:
+                        self.dislocation(i, mode=0)
+                        self.dislocation(j, mode=1)
                 if np.random.random() < self.rm:
                     self.do_mutation(i)
                 if tabu_search:
@@ -176,14 +183,8 @@ class GaJsp(Ga):
     def __init__(self, pop_size, rc, rm, max_generation, objective, schedule, max_stay_generation=None):
         Ga.__init__(self, pop_size, rc, rm, max_generation, objective, schedule, max_stay_generation)
 
-    def decode_update(self, i, code):
-        info = self.schedule.decode(code, direction=self.direction)
-        self.update_individual(i, self.objective(info), info)
-
-    def dislocation(self, i):
-        code = self.pop[0][i].dislocation_operator()
-        info = self.schedule.decode(code, direction=self.direction)
-        self.replace_individual(i, info)
+    def decode(self, code):
+        return self.schedule.decode(code, direction=self.direction)
 
     def do_init(self, pop=None):
         self.record[0].append(time.perf_counter())
@@ -192,29 +193,34 @@ class GaJsp(Ga):
                 code = self.schedule.sequence_operation_based(self.schedule.n, self.p)
             else:
                 code = pop[0][i].code
-            info = self.schedule.decode(code, direction=self.direction)
+            info = self.decode(code)
+            obj, fit = self.get_obj_fit(info)
             self.pop[0].append(info)
-            self.pop[1].append(self.objective(info))
-            self.pop[2].append(Utils.calculate_fitness(self.pop[1][i]))
+            self.pop[1].append(obj)
+            self.pop[2].append(fit)
         self.init_best()
         self.record[1].append(time.perf_counter())
         self.show_generation(0)
 
     def do_crossover(self, i, j):
         code1, code2 = self.pop[0][i].ga_crossover_sequence_pox(self.pop[0][j])
-        self.decode_update(i, code1)
-        self.decode_update(j, code2)
+        self.append_individual(self.decode(code1))
+        self.append_individual(self.decode(code2))
+
+    def dislocation(self, i, mode=0):
+        code1 = self.pop[0][i].dislocation_operator(mode)
+        self.append_individual(self.decode(code1))
 
     def do_mutation(self, i):
         code1 = self.pop[0][i].ga_mutation_sequence_tpe()
-        self.decode_update(i, code1)
+        self.append_individual(self.decode(code1))
 
     def do_tabu_search(self, i):
         code1 = self.pop[0][i].ts_sequence_operation_based(self.tabu_list[0][i], self.max_tabu)
-        self.decode_update(i, code1)
+        self.replace_individual(i, self.decode(code1))
         if len(self.tabu_list[0][i]) >= self.max_tabu:
             self.tabu_list[0][i] = []
 
     def do_key_block_move(self, i):
         code1 = self.pop[0][i].key_block_move()
-        self.decode_update(i, code1)
+        self.replace_individual(i, self.decode(code1))

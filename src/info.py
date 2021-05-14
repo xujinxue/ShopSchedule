@@ -849,6 +849,6 @@ class Info(GanttChart):
     =============================================================================
     """
 
-    def dislocation_operator(self):
+    def dislocation_operator(self, mode=0):
         code = deepcopy(self.code)
-        return np.hstack([code[1:], code[0]])
+        return np.hstack([code[1:], code[0]]) if mode == 0 else np.hstack([code[-1], code[:-1]])

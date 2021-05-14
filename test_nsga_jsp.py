@@ -22,8 +22,8 @@ def run(instance="ft06"):
     Utils.make_dir("./NSGA_JSP")
     Utils.make_dir("./NSGA_JSP/%s" % instance)
     Utils.make_dir("./NSGA_JSP/%s/GanttChart" % instance)
-    Utils.clear_dir("./NSGA_JSP/%s" % instance)
-    Utils.clear_dir("./NSGA_JSP/%s/GanttChart" % instance)
+    # Utils.clear_dir("./NSGA_JSP/%s" % instance)
+    # Utils.clear_dir("./NSGA_JSP/%s/GanttChart" % instance)
     plt.figure(figsize=[9, 5])
     res = ""
     for i, j in enumerate(c):
