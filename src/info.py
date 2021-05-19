@@ -736,7 +736,9 @@ class Info(GanttChart):
             for u, v in enumerate(j):
                 task = self.schedule.job[i].route[route[i]].task[u]
                 if v not in task.machine:
-                    mac[i][j] = task.machine[task.duration.index(min(task.duration))]
+                    # mac[i][u] = task.machine[task.duration.index(min(task.duration))]
+                    mac[i][u] = np.random.choice(task.machine, 1, replace=False)[0]
+        return mac
 
     """"
     =============================================================================
@@ -794,6 +796,24 @@ class Info(GanttChart):
             except ValueError:
                 pass
         return code
+
+    def ts_assignment_job_based(self, tabu_list, max_tabu):
+        mac = deepcopy(self.mac)
+        n_try = 0
+        while n_try < max_tabu:
+            n_try += 1
+            try:
+                i = np.random.randint(0, self.schedule.n, 1)[0]
+                j = np.random.randint(0, self.schedule.job[i].nop, 1)[0]
+                k = np.random.choice(self.schedule.job[i].task[j].machine, 1, replace=False)[0]
+                tabu = {"j-%s" % i, "t-%s" % j, k}
+                if mac[i][j] != k and tabu not in tabu_list:
+                    tabu_list.append(tabu)
+                    mac[i][j] = k
+                    break
+            except ValueError:
+                pass
+        return mac
 
     """"
     =============================================================================

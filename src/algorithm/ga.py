@@ -30,6 +30,7 @@ class Ga:
         self.schedule = schedule
         self.max_stay_generation = max_stay_generation
         self.direction = Utils.direction0none(objective)
+        self.r = [job.nor for job in self.schedule.job.values()]
         self.p = [job.nop for job in self.schedule.job.values()]
         self.tech = [[task.machine for task in job.task.values()] for job in self.schedule.job.values()]
         self.best = [None, None, None, [[], [], []]]  # (info, objective, fitness, tabu)
@@ -46,6 +47,17 @@ class Ga:
         self.pop = [[], [], []]
         self.record = [[], [], [], [], [], []]
         self.tabu_list = [[[] for _ in self.individual], [[] for _ in self.individual], [[] for _ in self.individual]]
+
+    def update_p(self, route):
+        self.schedule.clear(route)
+        self.p = [job.nop for job in self.schedule.job.values()]
+
+    def update_tech(self, mode=0):
+        if mode == 0:
+            self.tech = [[task.machine for task in job.task.values()] for job in self.schedule.job.values()]
+        else:
+            self.tech = [[[task.machine for task in route.task.values()] for route in job.route.values()] for job in
+                         self.schedule.job.values()]
 
     def get_obj_fit(self, info):
         a = self.objective(info)
@@ -219,8 +231,168 @@ class GaJsp(Ga):
         code1 = self.pop[0][i].ts_sequence_operation_based(self.tabu_list[0][i], self.max_tabu)
         self.replace_individual(i, self.decode(code1))
         if len(self.tabu_list[0][i]) >= self.max_tabu:
-            self.tabu_list[0][i] = []
+            for k in range(3):
+                self.tabu_list[k][i] = []
 
     def do_key_block_move(self, i):
         code1 = self.pop[0][i].key_block_move()
         self.replace_individual(i, self.decode(code1))
+
+
+class GaMrJsp(Ga):
+    def __init__(self, pop_size, rc, rm, max_generation, objective, schedule, max_stay_generation=None):
+        Ga.__init__(self, pop_size, rc, rm, max_generation, objective, schedule, max_stay_generation)
+
+    def decode(self, code, route):
+        return self.schedule.decode(code, route, direction=self.direction)
+
+    def do_init(self, pop=None):
+        self.record[0].append(time.perf_counter())
+        for i in range(self.pop_size):
+            if pop is None:
+                route = self.schedule.assignment_route(self.schedule.n, self.r)
+                self.update_p(route)
+                code = self.schedule.sequence_operation_based(self.schedule.n, self.p)
+            else:
+                code = pop[0][i].code
+                route = pop[0][i].route
+            info = self.decode(code, route)
+            obj, fit = self.get_obj_fit(info)
+            self.pop[0].append(info)
+            self.pop[1].append(obj)
+            self.pop[2].append(fit)
+        self.init_best()
+        self.record[1].append(time.perf_counter())
+        self.show_generation(0)
+
+    def do_crossover(self, i, j):
+        code1, code2 = self.pop[0][i].ga_crossover_sequence_pox(self.pop[0][j])
+        route1, route2 = self.pop[0][i].ga_crossover_route(self.pop[0][j])
+        self.append_individual(self.decode(code1, route1))
+        self.append_individual(self.decode(code2, route2))
+
+    def do_mutation(self, i):
+        code1 = self.pop[0][i].ga_mutation_sequence_tpe()
+        route1 = self.pop[0][i].ga_mutation_route()
+        self.append_individual(self.decode(code1, route1))
+
+    def do_tabu_search(self, i):
+        code1 = self.pop[0][i].ts_sequence_operation_based(self.tabu_list[0][i], self.max_tabu)
+        self.replace_individual(i, self.decode(code1, self.pop[0][i].route))
+        if len(self.tabu_list[0][i]) >= self.max_tabu:
+            for k in range(3):
+                self.tabu_list[k][i] = []
+
+    def do_key_block_move(self, i):
+        code1 = self.pop[0][i].key_block_move()
+        self.replace_individual(i, self.decode(code1, self.pop[0][i].route))
+
+
+class GaMrFjsp(Ga):
+    def __init__(self, pop_size, rc, rm, max_generation, objective, schedule, max_stay_generation=None):
+        Ga.__init__(self, pop_size, rc, rm, max_generation, objective, schedule, max_stay_generation)
+
+    def decode(self, code, mac, route):
+        return self.schedule.decode(code, mac, route, direction=self.direction)
+
+    def do_init(self, pop=None):
+        self.record[0].append(time.perf_counter())
+        self.update_tech(mode=1)
+        for i in range(self.pop_size):
+            if pop is None:
+                route = self.schedule.assignment_route(self.schedule.n, self.r)
+                self.update_p(route)
+                mac = self.schedule.assignment_job_based_route(self.schedule.n, self.p, self.tech, route)
+                code = self.schedule.sequence_operation_based(self.schedule.n, self.p)
+            else:
+                code = pop[0][i].code
+                mac = pop[0][i].mac
+                route = pop[0][i].route
+            info = self.decode(code, mac, route)
+            obj, fit = self.get_obj_fit(info)
+            self.pop[0].append(info)
+            self.pop[1].append(obj)
+            self.pop[2].append(fit)
+        self.init_best()
+        self.record[1].append(time.perf_counter())
+        self.show_generation(0)
+
+    def do_crossover(self, i, j):
+        code1, code2 = self.pop[0][i].ga_crossover_sequence_ipox(self.pop[0][j])
+        mac1, mac2 = self.pop[0][i].ga_crossover_assignment(self.pop[0][j])
+        route1, route2 = self.pop[0][i].ga_crossover_route(self.pop[0][j])
+        mac1 = self.pop[0][i].repair_mac_route(mac1, route1)
+        mac2 = self.pop[0][j].repair_mac_route(mac2, route2)
+        self.append_individual(self.decode(code1, mac1, route1))
+        self.append_individual(self.decode(code2, mac2, route2))
+
+    def do_mutation(self, i):
+        code1 = self.pop[0][i].ga_mutation_sequence_tpe()
+        self.update_tech(mode=0)
+        mac1 = self.pop[0][i].ga_mutation_assignment(self.tech)
+        route1 = self.pop[0][i].ga_mutation_route()
+        mac1 = self.pop[0][i].repair_mac_route(mac1, route1)
+        self.append_individual(self.decode(code1, mac1, route1))
+
+    def do_tabu_search(self, i):
+        code1 = self.pop[0][i].ts_sequence_operation_based(self.tabu_list[0][i], self.max_tabu)
+        mac1 = self.pop[0][i].ts_assignment_job_based(self.tabu_list[1][i], self.max_tabu)
+        self.replace_individual(i, self.decode(code1, mac1, self.pop[0][i].route))
+        if len(self.tabu_list[0][i]) >= self.max_tabu:
+            for k in range(3):
+                self.tabu_list[k][i] = []
+
+    def do_key_block_move(self, i):
+        block = self.pop[0][i].key_block()
+        code1 = self.pop[0][i].key_block_move(block)
+        mac1 = self.pop[0][i].key_block_move_mac(block)
+        self.replace_individual(i, self.decode(code1, mac1, self.pop[0][i].route))
+
+
+class GaMrFjsp_New(Ga):
+    def __init__(self, pop_size, rc, rm, max_generation, objective, schedule, max_stay_generation=None):
+        Ga.__init__(self, pop_size, rc, rm, max_generation, objective, schedule, max_stay_generation)
+
+    def decode(self, code, route):
+        return self.schedule.decode_one(code, route, direction=self.direction)
+
+    def do_init(self, pop=None):
+        self.record[0].append(time.perf_counter())
+        for i in range(self.pop_size):
+            if pop is None:
+                route = self.schedule.assignment_route(self.schedule.n, self.r)
+                self.update_p(route)
+                code = self.schedule.sequence_operation_based(self.schedule.n, self.p)
+            else:
+                code = pop[0][i].code
+                route = pop[0][i].route
+            info = self.decode(code, route)
+            obj, fit = self.get_obj_fit(info)
+            self.pop[0].append(info)
+            self.pop[1].append(obj)
+            self.pop[2].append(fit)
+        self.init_best()
+        self.record[1].append(time.perf_counter())
+        self.show_generation(0)
+
+    def do_crossover(self, i, j):
+        code1, code2 = self.pop[0][i].ga_crossover_sequence_ipox(self.pop[0][j])
+        route1, route2 = self.pop[0][i].ga_crossover_route(self.pop[0][j])
+        self.append_individual(self.decode(code1, route1))
+        self.append_individual(self.decode(code2, route2))
+
+    def do_mutation(self, i):
+        code1 = self.pop[0][i].ga_mutation_sequence_tpe()
+        route1 = self.pop[0][i].ga_mutation_route()
+        self.append_individual(self.decode(code1, route1))
+
+    def do_tabu_search(self, i):
+        code1 = self.pop[0][i].ts_sequence_operation_based(self.tabu_list[0][i], self.max_tabu)
+        self.replace_individual(i, self.decode(code1, self.pop[0][i].route))
+        if len(self.tabu_list[0][i]) >= self.max_tabu:
+            for k in range(3):
+                self.tabu_list[k][i] = []
+
+    def do_key_block_move(self, i):
+        code1 = self.pop[0][i].key_block_move()
+        self.replace_individual(i, self.decode(code1, self.pop[0][i].route))

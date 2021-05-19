@@ -249,7 +249,7 @@ class Utils:
         return wait
 
     @staticmethod
-    def string2data_mrjsp(string, dtype=int, time_unit=1):
+    def string2data_mrjsp(string, dtype=int, time_unit=1, minus_one=False):
         try:
             a = string.split("\n")
             n, m = list(map(int, a[0].split()))
@@ -271,6 +271,8 @@ class Utils:
                         dummy = np.random.choice(range(m), p[job] - len(tech_r), replace=False)
                         tech_r.extend(dummy.tolist())
                         proc_r.extend([0] * len(dummy))
+                    if minus_one:
+                        tech_r = [i - 1 for i in tech_r]
                     tech[job].append(tech_r)
                     proc[job].append(proc_r)
                 job += 1
@@ -302,12 +304,11 @@ class Utils:
                         tech_r_j = []
                         proc_r_j = []
                         for k in range(tech_proc_r[index_nm]):
-                            if minus_one:
-                                tech_r_j.append(tech_proc_r[index_m] - 1)
-                            else:
-                                tech_r_j.append(tech_proc_r[index_m])
+                            tech_r_j.append(tech_proc_r[index_m])
                             proc_r_j.append(time_unit * tech_proc_r[index_p])
                             index_m, index_p = index_m + 2, index_p + 2
+                        if minus_one:
+                            tech_r_j = [i - 1 for i in tech_r_j]
                         tech_r.append(tech_r_j)
                         proc_r.append(proc_r_j)
                         index_nm = index_p - 1

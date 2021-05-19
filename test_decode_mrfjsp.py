@@ -10,10 +10,10 @@ def main(instance="example"):
     code = problem.sequence_operation_based(n, p)
     route = problem.assignment_route(n, r)
     """解码方式一：有机器编码，在迭代的过程中要保持mac和route匹配"""
-    # mac = problem.assignment_job_based_route(n, p, tech, route)
-    # solution = problem.decode(code, mac, route)
+    mac = problem.assignment_job_based_route(n, p, tech, route)
+    solution = problem.decode(code, mac, route)
     """解码方式二：无机器编码，可以在解码过程中保存机器编码"""
-    solution = problem.decode_one(code, route)
+    # solution = problem.decode_one(code, route)
     print(solution.code, "# solution.code")
     print(solution.route, "# solution.route")
     print(solution.mac, "# solution.mac")

@@ -5,13 +5,13 @@ __doc__ = """
 from src import *
 
 """Result"""
-file_dir = "./Result/GanttChart"  # 甘特图数据文件所在目录
-file = "example.csv"  # 甘特图数据文件
-file_save = "%s/%s" % (file_dir, file[:-4])  # 保存的甘特图名称
+# file_dir = "./Result/GanttChart"  # 甘特图数据文件所在目录
+# file = "example.csv"  # 甘特图数据文件
+# file_save = "%s/%s" % (file_dir, file[:-4])  # 保存的甘特图名称
 """Algorithm"""
-# file_dir = "./GA_JSP/ft06"  # 甘特图数据文件所在目录
-# file = "GanttChart.csv"  # 甘特图数据文件
-# file_save = "%s/GanttChart/%s" % (file_dir, file[:-4])  # 保存的甘特图名称
+file_dir = "./GA_MRJSP/example2"  # 甘特图数据文件所在目录
+file = "GanttChart.csv"  # 甘特图数据文件
+file_save = "%s/GanttChart/%s" % (file_dir, file[:-4])  # 保存的甘特图名称
 """===================================================================================="""
 a = GanttChart("%s/%s" % (file_dir, file))  # 调用甘特图生成类
 a.schedule.time_unit = 1  # 设置加工时间单位

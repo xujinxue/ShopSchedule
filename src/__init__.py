@@ -1,4 +1,6 @@
-from .algorithm import GaJsp, NSGAJsp
+from .algorithm import GaJsp, GaMrJsp
+from .algorithm import GaMrFjsp, GaMrFjsp_New
+from .algorithm import NSGAJsp
 from .algorithm import OrToolsJspSat
 from .data import fjsp_benchmark, fsp_benchmark, jsp_benchmark, hfsp_benchmark
 from .data import fjsp_simulation, fsp_simulation, jsp_simulation
