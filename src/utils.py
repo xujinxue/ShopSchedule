@@ -338,11 +338,11 @@ class Utils:
             file = file + ".csv"
         with open(file, "w", encoding="utf-8") as f:
             obj, n_iter, direction = [], [], []
-            f.writelines("{},{},{},{}\n".format("Test", "Objective", "Iteration", "Direction"))
+            f.writelines("{},{},{},{}\n".format("Test", "Objective", "IterationReachBest", "Direction"))
             for k, v in enumerate(data):
-                f.writelines("{},{},{},{}\n".format(k + 1, v[0], v[1] - 1, v[2]))
+                f.writelines("{},{},{},{}\n".format(k + 1, v[0], v[1], v[2]))
                 obj.append(v[0])
-                n_iter.append(v[1] - 1)
+                n_iter.append(v[1])
                 direction.append(v[2])
             f.writelines("{},{}\n".format("MinObj", min(obj)))
             f.writelines("{},{}\n".format("MaxObj", max(obj)))

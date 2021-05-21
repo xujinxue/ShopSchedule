@@ -8,19 +8,25 @@ def main(instance="example"):
     best_known = mrfjsp_benchmark.best_known[instance]
     problem = Utils.create_schedule(Fjsp, n, m, p, tech, proc, best_known=best_known, time_unit=time_unit,
                                     multi_route=True)
-    ga = GaMrFjsp(pop_size=20, rc=0.85, rm=0.15, max_generation=int(10e4), objective=Objective.makespan,
-                  schedule=problem, max_stay_generation=50)
-    ga.do_evolution(tabu_search=False, key_block_move=False)
+    ga = GaMrFjspNew(pop_size=20, rc=0.85, rm=0.15, max_generation=int(10e4), objective=Objective.makespan,
+                     schedule=problem, max_stay_generation=50)
+    obj_list = []
+    for i in range(1, N_EXP + 1):
+        ga.do_evolution(tabu_search=True, key_block_move=False, exp_no=i)
+        Utils.save_record_to_csv("./GA_MRFJSP/%s/%s-record.csv" % (instance, i), ga.record)
+        ga.best[0].save_code_to_txt("./GA_MRFJSP/%s/%s-code.txt" % (instance, i))
+        ga.best[0].save_gantt_chart_to_csv("./GA_MRFJSP/%s/%s-GanttChart.csv" % (instance, i))
+        obj_list.append([ga.best[1], ga.record[2].index(ga.best[1]), ga.best[0].schedule.direction])
+    Utils.save_obj_to_csv("./GA_MRFJSP/%s.csv" % instance, obj_list)
+
+
+def exp():
     Utils.make_dir("./GA_MRFJSP")
-    Utils.make_dir("./GA_MRFJSP/%s" % instance)
-    Utils.make_dir("./GA_MRFJSP/%s/GanttChart" % instance)
-    # Utils.clear_dir("./GA_MRFJSP/%s" % instance)
-    # Utils.clear_dir("./GA_MRFJSP/%s/GanttChart" % instance)
-    Utils.save_record_to_csv("./GA_MRFJSP/%s/record.csv" % instance, ga.record)
-    ga.best[0].save_code_to_txt("./GA_MRFJSP/%s/code.txt" % instance)
-    ga.best[0].save_gantt_chart_to_csv("./GA_MRFJSP/%s/GanttChart.csv" % instance)
-    # ga.best[0].gantt_chart_png("./GA_MRFJSP/%s/GanttChart/GanttChart.png" % instance, key_block=True)
+    for instance in INSTANCE_LIST_MRFJSP.split():
+        Utils.make_dir("./GA_MRFJSP/%s" % instance)
+        Utils.make_dir("./GA_MRFJSP/%s/GanttChart" % instance)
+        main(instance=instance)
 
 
 if __name__ == '__main__':
-    main(instance="example")
+    exp()

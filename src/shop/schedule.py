@@ -116,6 +116,8 @@ class Schedule(Code):  # 调度资源融合类
                 early_start = max([0, b])
             if early_start + p <= c:
                 self.job[i].task[j].start = early_start
+                if c != np.inf and self.direction == 1:
+                    self.job[i].task[j].start = c - p
                 self.job[i].task[j].end = self.job[i].task[j].start + p
                 if self.job[i].task[j].resumable is not None:
                     res1, res2 = self.constrain_timetable(i, j, k, p, c)
@@ -246,6 +248,8 @@ class Schedule(Code):  # 调度资源融合类
                     early_start = max([delay_start, b])  # delay_start是满足等待时间有限约束的最早开始时间
                     if early_start + p <= c:
                         self.job[i].task[j].start = early_start
+                        if c != np.inf and self.direction == 1:
+                            self.job[i].task[j].start = c - p
                         self.job[i].task[j].end = self.job[i].task[j].start + p
                         if self.job[i].task[j].resumable is not None:
                             res1, res2 = self.constrain_timetable(i, j, k, p, c)

@@ -53,6 +53,9 @@ class Hfsp(Schedule):
             j += 1
         return Info(self, code, mac=mac)
 
+    def decode_work_timetable(self, code):
+        return self.decode(code)
+
     def decode_hfsp(self, code, mac):
         self.clear()
         copy_code, j = deepcopy(code), 0

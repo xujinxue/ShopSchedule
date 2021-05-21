@@ -1,5 +1,5 @@
-from .algorithm import GaJsp, GaMrJsp
-from .algorithm import GaMrFjsp, GaMrFjsp_New
+from .algorithm import GaJsp, GaLwJsp, GaMrJsp
+from .algorithm import GaFjsp, GaMrFjsp, GaFjspNew, GaMrFjspNew
 from .algorithm import NSGAJsp
 from .algorithm import OrToolsJspSat
 from .data import fjsp_benchmark, fsp_benchmark, jsp_benchmark, hfsp_benchmark
@@ -16,12 +16,12 @@ from .utils import Utils
 Utils.make_dir("./Result")
 Utils.make_dir("./Result/Code")
 Utils.make_dir("./Result/GanttChart")
-
+N_EXP = 10
 INSTANCE_LIST_JSP = """
 ft06
 """
 INSTANCE_LIST_FJSP = """
-mk1
+kacem1
 """
 INSTANCE_LIST_FSP = """
 car1
@@ -31,4 +31,13 @@ real1
 """
 CASES_LIST = """
 case1
+"""
+INSTANCE_LIST_LWJSP = """
+ft06
+"""
+INSTANCE_LIST_MRJSP = """
+example
+"""
+INSTANCE_LIST_MRFJSP = """
+example
 """

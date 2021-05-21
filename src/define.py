@@ -1,2 +1,14 @@
 class Define:
-    pass
+    crossover = "crossover"
+    pox = "pox"
+    mox1 = "mox1"
+    mox2 = "mox2"
+    ipox = "ipox"
+    dpox = "dpox"
+    ox = "ox"
+    pmx = "pmx"
+    mutation = "mutation"
+    tpe = "tpe"
+    insert = "insert"
+    selection = "selection"
+    roulette = "roulette"
