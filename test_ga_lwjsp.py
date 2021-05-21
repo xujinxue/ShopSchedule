@@ -9,11 +9,11 @@ def main(instance="example"):
     best_known = jsp_benchmark.best_known_limited_wait[instance]
     problem = Utils.create_schedule(Jsp, n, m, p, tech, proc, limited_wait=lw, best_known=best_known,
                                     time_unit=time_unit)
-    ga = GaLwJsp(pop_size=20, rc=0.85, rm=0.15, max_generation=int(10e4), objective=Objective.makespan,
-                 schedule=problem, max_stay_generation=50)
+    ga = GaLwJsp(pop_size=50, rc=0.85, rm=0.15, max_generation=int(10e4), objective=Objective.makespan,
+                 schedule=problem, max_stay_generation=500)
     obj_list = []
     for i in range(1, N_EXP + 1):
-        ga.do_evolution(tabu_search=True, key_block_move=False, exp_no=i)
+        ga.do_evolution(tabu_search=True, key_block_move=True, exp_no=i)
         Utils.save_record_to_csv("./GA_LWJSP/%s/%s-record.csv" % (instance, i), ga.record)
         ga.best[0].save_code_to_txt("./GA_LWJSP/%s/%s-code.txt" % (instance, i))
         ga.best[0].save_gantt_chart_to_csv("./GA_LWJSP/%s/%s-GanttChart.csv" % (instance, i))

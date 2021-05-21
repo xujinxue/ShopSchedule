@@ -16,7 +16,6 @@ from .utils import Utils
 Utils.make_dir("./Result")
 Utils.make_dir("./Result/Code")
 Utils.make_dir("./Result/GanttChart")
-N_EXP = 10
 INSTANCE_LIST_JSP = """
 ft06
 """
@@ -33,7 +32,9 @@ CASES_LIST = """
 case1
 """
 INSTANCE_LIST_LWJSP = """
-ft06
+ft06 ft10 ft20
+la01 la02 la03 la04 la05 la06 la07 la08 la09 la10
+la11 la12 la13 la14 la15 la16 la17 la19 la19 la20
 """
 INSTANCE_LIST_MRJSP = """
 example
@@ -41,3 +42,4 @@ example
 INSTANCE_LIST_MRFJSP = """
 example
 """
+N_EXP = 10
