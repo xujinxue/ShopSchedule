@@ -87,7 +87,7 @@ class SelectPareto:
         self.num_max_front = int(0.8 * scale_fix)
         self.n_max_rank = max(self.rank[:, 0])
 
-    def elite_strategy(self, ):
+    def elite_strategy(self):
         ret = []
         len_f0 = len(self.f[0])
         if len_f0 > self.num_max_front and self.n_max_rank > 1:
@@ -117,7 +117,7 @@ class SelectPareto:
                     break
         return ret
 
-    def champion(self, ):
+    def champion(self):
         ret = []
         num_pareto_front = 0
         for i in range(self.scale_fix):

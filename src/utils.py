@@ -8,6 +8,7 @@ import os
 import chardet
 import numpy as np
 from colorama import init, Fore
+
 from .objective import Objective
 
 dt = datetime.datetime

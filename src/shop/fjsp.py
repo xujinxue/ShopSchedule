@@ -26,7 +26,7 @@ class Fjsp(Schedule):
             k = mac[i][j]
             p = self.job[i].task[j].duration[self.job[i].task[j].machine.index(k)]
             self.decode_common(i, j, k, p, v, g)
-            self.decode_add_limited_wait(i, j, u)
+            self.decode_add_limited_wait(i, j, u, mac=mac)
         return Info(self, code, mac=mac, route=route)
 
     def decode_one(self, code, route=None, direction=None):
@@ -76,7 +76,7 @@ class Fjsp(Schedule):
             self.job[i].task[j].end = end[choice]
             self.decode_update_machine_idle(i, j, k, r, start[choice])
             self.save_update_decode(i, j, k, g)
-            self.decode_add_limited_wait(i, j, u)
+            self.decode_add_limited_wait(i, j, u, mac=mac)
         return Info(self, code, mac=mac, route=route)
 
     def decode_limited_wait(self, code, mac, route=None, direction=None):
@@ -89,7 +89,7 @@ class Fjsp(Schedule):
     def decode_limited_wait_one(self, code, route=None, direction=None):
         info = self.decode_one(code, route, direction)
         info.std_code()
-        info2 = self.decode_one(info.code, info.route, info.schedule.direction)
+        info2 = self.decode(info.code, info.mac, info.route, info.schedule.direction)
         info = info if info.schedule.makespan < info2.schedule.makespan else info2
         return info
 

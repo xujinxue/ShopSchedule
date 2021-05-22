@@ -9,6 +9,7 @@ import plotly as py
 import plotly.figure_factory as ff
 from matplotlib import colors as mcolors
 
+from .define import Crossover, Mutation
 from .utils import Utils
 
 deepcopy = copy.deepcopy
@@ -22,7 +23,7 @@ COLORS_REMOVE.extend([i for i in COLORS if i.startswith('light')])
 [COLORS.remove(i) for i in COLORS_REMOVE]
 LEN_COLORS = len(COLORS)
 [COLORS.pop(j - i) for i, j in enumerate(range(12))]
-[COLORS.pop(j - i) for i, j in enumerate([6, ])]
+[COLORS.pop(j - i) for i, j in enumerate([6, 10, ])]
 BLOCK_COLORS = ["dimgray", "darkred", "darkorange", "darkgoldenrod", "darkgreen",
                 "darkblue", "darkmagenta", "darkviolet", "crimson", "indigo",
                 "darkcyan", "springgreen", "firebrick", "chocolate", "darkgoldenrod"
@@ -86,7 +87,8 @@ class GanttChart:
         a = np.argwhere(self.schedule.sjike[4] == self.schedule.makespan)[:, 0]
         if a.shape[0] > 1:
             for i in a:
-                node_list.append(Node([i]))
+                if self.not_dummy(i):
+                    node_list.append(Node([i]))
         else:
             node_list.append(Node([a[0]]))
         while len(node_list):
@@ -408,6 +410,49 @@ class Info(GanttChart):
                     f.writelines("{},{},{},{},{},{}\n".format(
                         job.index + 1, task.index + 1, machine + 1, task.start, duration, task.end))
 
+    def ga_crossover_sequence(self, info):
+        func_dict = {
+            Crossover.default: self.ga_crossover_sequence_pox,
+            Crossover.pox: self.ga_crossover_sequence_pox,
+            Crossover.mox1: self.ga_crossover_sequence_mox1,
+            Crossover.mox2: self.ga_crossover_sequence_mox2,
+            Crossover.ipox: self.ga_crossover_sequence_ipox,
+            Crossover.dpox: self.ga_crossover_sequence_dpox,
+            Crossover.ox: self.ga_crossover_sequence_ox,
+            Crossover.pmx: self.ga_crossover_sequence_pmx,
+        }
+        func = func_dict[self.schedule.ga_operator[Crossover.name]]
+        return func(info)
+
+    def ga_mutation_sequence(self):
+        func_dict = {
+            Mutation.default: self.ga_mutation_sequence_tpe,
+            Mutation.tpe: self.ga_mutation_sequence_tpe,
+            Mutation.insert: self.ga_mutation_sequence_insert,
+            Mutation.sub_reverse: self.ga_mutation_sequence_sr,
+        }
+        func = func_dict[self.schedule.ga_operator[Mutation.name]]
+        return func()
+
+    def ga_crossover_sequence_permutation(self, info):
+        func_dict = {
+            Crossover.default: self.ga_crossover_sequence_permutation_pmx,
+            Crossover.pmx: self.ga_crossover_sequence_permutation_pmx,
+            Crossover.ox: self.ga_crossover_sequence_permutation_ox,
+        }
+        func = func_dict[self.schedule.ga_operator[Crossover.name]]
+        return func(info)
+
+    def ga_mutation_sequence_permutation(self):
+        func_dict = {
+            Mutation.default: self.ga_mutation_sequence_permutation_tpe,
+            Mutation.tpe: self.ga_mutation_sequence_permutation_tpe,
+            Mutation.insert: self.ga_mutation_sequence_permutation_insert,
+            Mutation.sub_reverse: self.ga_mutation_sequence_permutation_sr,
+        }
+        func = func_dict[self.schedule.ga_operator[Mutation.name]]
+        return func()
+
     """"
     =============================================================================
     Genetic operator: operation based code
@@ -454,11 +499,10 @@ class Info(GanttChart):
         code1[d], code2[e] = code2[e], code1[d]
         return code1, code2
 
-    def ga_crossover_sequence_ox(self, info, a=None, b=None):
+    def ga_crossover_sequence_ox(self, info):
         code1 = deepcopy(self.code)
         code2 = deepcopy(info.code)
-        if a is None or b is None:
-            a, b = np.random.choice(range(1, self.schedule.length - 1), 2, replace=False)
+        a, b = np.random.choice(range(1, self.schedule.length - 1), 2, replace=False)
         if a > b:
             a, b = b, a
         r_a_b = range(a, b + 1)
@@ -680,7 +724,7 @@ class Info(GanttChart):
     =============================================================================
     """
 
-    def ga_crossover_assignment(self, info):
+    def ga_crossover_assignment(self, info, tech):
         mac1 = deepcopy(self.mac)
         mac2 = deepcopy(info.mac)
         for i, (p, q) in enumerate(zip(mac1, mac2)):

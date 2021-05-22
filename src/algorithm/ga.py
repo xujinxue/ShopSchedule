@@ -10,6 +10,7 @@ import time
 
 import numpy as np
 
+from ..define import Selection
 from ..utils import Utils
 
 deepcopy = copy.deepcopy
@@ -64,8 +65,12 @@ class Ga:
         b = Utils.calculate_fitness(a)
         return a, b
 
-    def dislocation(self, i, mode=0):
+    def decode(self, code, mac=None, route=None):
         pass
+
+    def dislocation(self, i, mode=0):
+        code1 = self.pop[0][i].dislocation_operator(mode)
+        self.append_individual(self.decode(code1, self.pop[0][i].mac, self.pop[0][i].route))
 
     def init_best(self):
         self.best[2] = max(self.pop[2])
@@ -110,7 +115,14 @@ class Ga:
                 g, self.record[1][g] - self.record[0][g], self.record[3][g], self.record[4][g], self.record[5][g],
                 self.record[2][g]))
 
-    def do_selection(self):
+    def save_best(self):
+        self.pop[0][0] = self.best[0]
+        self.pop[1][0] = self.best[1]
+        self.pop[2][0] = self.best[2]
+        for k in range(3):
+            self.tabu_list[k][0] = self.best[3][k]
+
+    def selection_roulette(self):
         a = np.array(self.pop[2]) / sum(self.pop[2])
         b = np.array([])
         for i in range(a.shape[0]):
@@ -126,19 +138,39 @@ class Ga:
             self.pop[2].append(pop[2][j])
             for k in range(3):
                 self.tabu_list[k][i] = tabu_list[k][j]
-        self.pop[0][0] = self.best[0]
-        self.pop[1][0] = self.best[1]
-        self.pop[2][0] = self.best[2]
-        for k in range(3):
-            self.tabu_list[k][0] = self.best[3][k]
+        self.save_best()
+
+    def selection_champion2(self):
+        pop = deepcopy(self.pop)
+        tabu_list = deepcopy(self.tabu_list)
+        self.pop = [[], [], []]
+        self.tabu_list = [[[] for _ in self.individual], [[] for _ in self.individual], [[] for _ in self.individual]]
+        for i in range(self.pop_size):
+            a = np.random.choice(range(self.pop_size), 2, replace=False)
+            j = a[0] if pop[2][a[0]] > pop[2][a[1]] else a[1]
+            self.pop[0].append(pop[0][j])
+            self.pop[1].append(pop[1][j])
+            self.pop[2].append(pop[2][j])
+            for k in range(3):
+                self.tabu_list[k][i] = tabu_list[k][j]
+        self.save_best()
+
+    def do_selection(self):
+        func_dict = {
+            Selection.default: self.selection_roulette,
+            Selection.roulette: self.selection_roulette,
+            Selection.champion2: self.selection_champion2,
+        }
+        func = func_dict[self.schedule.ga_operator[Selection.name]]
+        func()
 
     def do_init(self, pop=None):
         pass
 
-    def do_crossover(self, i, j):
+    def do_crossover(self, i, j, p):
         pass
 
-    def do_mutation(self, i):
+    def do_mutation(self, i, p):
         pass
 
     def do_tabu_search(self, i):
@@ -158,7 +190,7 @@ class Ga:
             return True
         return False
 
-    def do_evolution(self, tabu_search=True, key_block_move=False, pop=None, exp_no=None):
+    def do_evolution(self, pop=None, exp_no=None):
         exp_no = "" if exp_no is None else exp_no
         Utils.print("{}Evolution {}  start{}".format("=" * 48, exp_no, "=" * 48), fore=Utils.fore().LIGHTYELLOW_EX)
         self.clear()
@@ -173,19 +205,21 @@ class Ga:
             for i in range(self.pop_size):
                 if self.reach_best_known_solution():
                     break
-                if tabu_search:
-                    self.do_tabu_search(i)
-                if key_block_move:
+                if self.schedule.para_key_block_move:
                     self.do_key_block_move(i)
-                if np.random.random() < self.rc:
+                if self.schedule.para_tabu:
+                    self.do_tabu_search(i)
+                p, q = np.random.random(3), np.random.random(3)
+                j = np.random.choice(np.delete(np.arange(self.pop_size), i), 1, replace=False)[0]
+                if p[0] < self.rc:
                     j = np.random.choice(np.delete(np.arange(self.pop_size), i), 1, replace=False)[0]
-                    if Utils.similarity(self.pop[0][i].code, self.pop[0][j].code) < 0.5:
-                        self.do_crossover(i, j)
-                    else:
+                    code1, code2 = self.pop[0][i].code, self.pop[0][j].code
+                    if self.schedule.para_dislocation and Utils.similarity(code1, code2) >= 0.5:
                         self.dislocation(i, mode=0)
                         self.dislocation(j, mode=1)
-                if np.random.random() < self.rm:
-                    self.do_mutation(i)
+                        p[0] = 1
+                self.do_crossover(i, j, p)
+                self.do_mutation(i, q)
             self.do_selection()
             self.record[1].append(time.perf_counter())
             self.show_generation(g)
@@ -196,7 +230,7 @@ class GaJsp(Ga):
     def __init__(self, pop_size, rc, rm, max_generation, objective, schedule, max_stay_generation=None):
         Ga.__init__(self, pop_size, rc, rm, max_generation, objective, schedule, max_stay_generation)
 
-    def decode(self, code):
+    def decode(self, code, mac=None, route=None):
         return self.schedule.decode(code, direction=self.direction)
 
     def do_init(self, pop=None):
@@ -215,18 +249,16 @@ class GaJsp(Ga):
         self.record[1].append(time.perf_counter())
         self.show_generation(0)
 
-    def do_crossover(self, i, j):
-        code1, code2 = self.pop[0][i].ga_crossover_sequence_pox(self.pop[0][j])
-        self.append_individual(self.decode(code1))
-        self.append_individual(self.decode(code2))
+    def do_crossover(self, i, j, p):
+        if p[0] < self.rc:
+            code1, code2 = self.pop[0][i].ga_crossover_sequence(self.pop[0][j])
+            self.append_individual(self.decode(code1))
+            self.append_individual(self.decode(code2))
 
-    def dislocation(self, i, mode=0):
-        code1 = self.pop[0][i].dislocation_operator(mode)
-        self.append_individual(self.decode(code1))
-
-    def do_mutation(self, i):
-        code1 = self.pop[0][i].ga_mutation_sequence_tpe()
-        self.append_individual(self.decode(code1))
+    def do_mutation(self, i, p):
+        if p[0] < self.rm:
+            code1 = self.pop[0][i].ga_mutation_sequence()
+            self.append_individual(self.decode(code1))
 
     def do_tabu_search(self, i):
         code1 = self.pop[0][i].ts_sequence_operation_based(self.tabu_list[0][i], self.max_tabu)
@@ -244,36 +276,15 @@ class GaLwJsp(GaJsp):
     def __init__(self, pop_size, rc, rm, max_generation, objective, schedule, max_stay_generation=None):
         GaJsp.__init__(self, pop_size, rc, rm, max_generation, objective, schedule, max_stay_generation)
 
-    def decode(self, code):
+    def decode(self, code, mac=None, route=None):
         return self.schedule.decode_limited_wait(code, direction=self.direction)
-
-    def do_init(self, pop=None):
-        self.record[0].append(time.perf_counter())
-        for i in range(self.pop_size):
-            if pop is None:
-                code = self.schedule.sequence_operation_based(self.schedule.n, self.p)
-            else:
-                code = pop[0][i].code
-            info = self.decode(code)
-            obj, fit = self.get_obj_fit(info)
-            self.pop[0].append(info)
-            self.pop[1].append(obj)
-            self.pop[2].append(fit)
-        self.init_best()
-        self.record[1].append(time.perf_counter())
-        self.show_generation(0)
-
-    def do_crossover(self, i, j):
-        code1, code2 = self.pop[0][i].ga_crossover_sequence_ox(self.pop[0][j])
-        self.append_individual(self.decode(code1))
-        self.append_individual(self.decode(code2))
 
 
 class GaMrJsp(Ga):
     def __init__(self, pop_size, rc, rm, max_generation, objective, schedule, max_stay_generation=None):
         Ga.__init__(self, pop_size, rc, rm, max_generation, objective, schedule, max_stay_generation)
 
-    def decode(self, code, route):
+    def decode(self, code, mac=None, route=None):
         return self.schedule.decode(code, route, direction=self.direction)
 
     def do_init(self, pop=None):
@@ -286,7 +297,7 @@ class GaMrJsp(Ga):
             else:
                 code = pop[0][i].code
                 route = pop[0][i].route
-            info = self.decode(code, route)
+            info = self.decode(code, route=route)
             obj, fit = self.get_obj_fit(info)
             self.pop[0].append(info)
             self.pop[1].append(obj)
@@ -295,46 +306,54 @@ class GaMrJsp(Ga):
         self.record[1].append(time.perf_counter())
         self.show_generation(0)
 
-    def do_crossover(self, i, j):
-        code1, code2 = self.pop[0][i].ga_crossover_sequence_pox(self.pop[0][j])
-        route1, route2 = self.pop[0][i].ga_crossover_route(self.pop[0][j])
-        self.append_individual(self.decode(code1, route1))
-        self.append_individual(self.decode(code2, route2))
+    def do_crossover(self, i, j, p):
+        if p[0] < self.rc or p[2] < self.rc:
+            if p[0] < self.rc:
+                code1, code2 = self.pop[0][i].ga_crossover_sequence(self.pop[0][j])
+            else:
+                code1, code2 = self.pop[0][i].code, self.pop[0][j].code
+            if p[2] < self.rc:
+                route1, route2 = self.pop[0][i].ga_crossover_route(self.pop[0][j])
+            else:
+                route1, route2 = self.pop[0][i].route, self.pop[0][j].route
+            self.append_individual(self.decode(code1, route=route1))
+            self.append_individual(self.decode(code2, route=route2))
 
-    def do_mutation(self, i):
-        code1 = self.pop[0][i].ga_mutation_sequence_tpe()
-        route1 = self.pop[0][i].ga_mutation_route()
-        self.append_individual(self.decode(code1, route1))
+    def do_mutation(self, i, p):
+        if p[0] < self.rm or p[2] < self.rm:
+            code1 = self.pop[0][i].ga_mutation_sequence() if p[0] < self.rm else self.pop[0][i].code
+            route1 = self.pop[0][i].ga_mutation_route() if p[2] < self.rm else self.pop[0][i].route
+            self.append_individual(self.decode(code1, route=route1))
 
     def do_tabu_search(self, i):
         code1 = self.pop[0][i].ts_sequence_operation_based(self.tabu_list[0][i], self.max_tabu)
-        self.replace_individual(i, self.decode(code1, self.pop[0][i].route))
+        self.replace_individual(i, self.decode(code1, route=self.pop[0][i].route))
         if len(self.tabu_list[0][i]) >= self.max_tabu:
             for k in range(3):
                 self.tabu_list[k][i] = []
 
     def do_key_block_move(self, i):
         code1 = self.pop[0][i].key_block_move()
-        self.replace_individual(i, self.decode(code1, self.pop[0][i].route))
+        self.replace_individual(i, self.decode(code1, route=self.pop[0][i].route))
 
 
 class GaFjsp(Ga):
     def __init__(self, pop_size, rc, rm, max_generation, objective, schedule, max_stay_generation=None):
         Ga.__init__(self, pop_size, rc, rm, max_generation, objective, schedule, max_stay_generation)
 
-    def decode(self, code, mac):
+    def decode(self, code, mac=None, route=None):
         return self.schedule.decode(code, mac, direction=self.direction)
 
     def do_init(self, pop=None):
         self.record[0].append(time.perf_counter())
         for i in range(self.pop_size):
             if pop is None:
-                mac = self.schedule.assignment_job_based(self.schedule.n, self.p, self.tech)
                 code = self.schedule.sequence_operation_based(self.schedule.n, self.p)
+                mac = self.schedule.assignment_job_based(self.schedule.n, self.p, self.tech)
             else:
                 code = pop[0][i].code
                 mac = pop[0][i].mac
-            info = self.decode(code, mac)
+            info = self.decode(code, mac=mac)
             obj, fit = self.get_obj_fit(info)
             self.pop[0].append(info)
             self.pop[1].append(obj)
@@ -343,21 +362,29 @@ class GaFjsp(Ga):
         self.record[1].append(time.perf_counter())
         self.show_generation(0)
 
-    def do_crossover(self, i, j):
-        code1, code2 = self.pop[0][i].ga_crossover_sequence_ipox(self.pop[0][j])
-        mac1, mac2 = self.pop[0][i].ga_crossover_assignment(self.pop[0][j])
-        self.append_individual(self.decode(code1, mac1))
-        self.append_individual(self.decode(code2, mac2))
+    def do_crossover(self, i, j, p):
+        if p[0] < self.rc or p[1] < self.rc:
+            if p[0] < self.rc:
+                code1, code2 = self.pop[0][i].ga_crossover_sequence(self.pop[0][j])
+            else:
+                code1, code2 = self.pop[0][i].code, self.pop[0][j].code
+            if p[1] < self.rc:
+                mac1, mac2 = self.pop[0][i].ga_crossover_assignment(self.pop[0][j])
+            else:
+                mac1, mac2 = self.pop[0][i].mac, self.pop[0][j].mac
+            self.append_individual(self.decode(code1, mac=mac1))
+            self.append_individual(self.decode(code2, mac=mac2))
 
-    def do_mutation(self, i):
-        code1 = self.pop[0][i].ga_mutation_sequence_tpe()
-        mac1 = self.pop[0][i].ga_mutation_assignment(self.tech)
-        self.append_individual(self.decode(code1, mac1))
+    def do_mutation(self, i, p):
+        if p[0] < self.rm or p[1] < self.rm:
+            code1 = self.pop[0][i].ga_mutation_sequence() if p[0] < self.rm else self.pop[0][i].code
+            mac1 = self.pop[0][i].ga_mutation_assignment(self.tech) if p[1] < self.rm else self.pop[0][i].mac
+            self.append_individual(self.decode(code1, mac=mac1))
 
     def do_tabu_search(self, i):
         code1 = self.pop[0][i].ts_sequence_operation_based(self.tabu_list[0][i], self.max_tabu)
         mac1 = self.pop[0][i].ts_assignment_job_based(self.tabu_list[1][i], self.max_tabu)
-        self.replace_individual(i, self.decode(code1, mac1))
+        self.replace_individual(i, self.decode(code1, mac=mac1))
         if len(self.tabu_list[0][i]) >= self.max_tabu:
             for k in range(3):
                 self.tabu_list[k][i] = []
@@ -366,14 +393,22 @@ class GaFjsp(Ga):
         block = self.pop[0][i].key_block()
         code1 = self.pop[0][i].key_block_move(block)
         mac1 = self.pop[0][i].key_block_move_mac(block)
-        self.replace_individual(i, self.decode(code1, mac1))
+        self.replace_individual(i, self.decode(code1, mac=mac1))
+
+
+class GaLwFjsp(GaFjsp):
+    def __init__(self, pop_size, rc, rm, max_generation, objective, schedule, max_stay_generation=None):
+        GaFjsp.__init__(self, pop_size, rc, rm, max_generation, objective, schedule, max_stay_generation)
+
+    def decode(self, code, mac=None, route=None):
+        return self.schedule.decode_limited_wait(code, mac, direction=self.direction)
 
 
 class GaMrFjsp(Ga):
     def __init__(self, pop_size, rc, rm, max_generation, objective, schedule, max_stay_generation=None):
         Ga.__init__(self, pop_size, rc, rm, max_generation, objective, schedule, max_stay_generation)
 
-    def decode(self, code, mac, route):
+    def decode(self, code, mac=None, route=None):
         return self.schedule.decode(code, mac, route, direction=self.direction)
 
     def do_init(self, pop=None):
@@ -398,22 +433,33 @@ class GaMrFjsp(Ga):
         self.record[1].append(time.perf_counter())
         self.show_generation(0)
 
-    def do_crossover(self, i, j):
-        code1, code2 = self.pop[0][i].ga_crossover_sequence_ipox(self.pop[0][j])
-        mac1, mac2 = self.pop[0][i].ga_crossover_assignment(self.pop[0][j])
-        route1, route2 = self.pop[0][i].ga_crossover_route(self.pop[0][j])
-        mac1 = self.pop[0][i].repair_mac_route(mac1, route1)
-        mac2 = self.pop[0][j].repair_mac_route(mac2, route2)
-        self.append_individual(self.decode(code1, mac1, route1))
-        self.append_individual(self.decode(code2, mac2, route2))
+    def do_crossover(self, i, j, p):
+        if p[0] < self.rc or p[1] < self.rc or p[2] < self.rc:
+            if p[0] < self.rc:
+                code1, code2 = self.pop[0][i].ga_crossover_sequence(self.pop[0][j])
+            else:
+                code1, code2 = self.pop[0][i].code, self.pop[0][j].code
+            if p[1] < self.rc:
+                mac1, mac2 = self.pop[0][i].ga_crossover_assignment(self.pop[0][j])
+            else:
+                mac1, mac2 = self.pop[0][i].mac, self.pop[0][j].mac
+            if p[2] < self.rc:
+                route1, route2 = self.pop[0][i].ga_crossover_route(self.pop[0][j])
+            else:
+                route1, route2 = self.pop[0][i].route, self.pop[0][i].route
+            mac1 = self.pop[0][i].repair_mac_route(mac1, route1)
+            mac2 = self.pop[0][j].repair_mac_route(mac2, route2)
+            self.append_individual(self.decode(code1, mac1, route1))
+            self.append_individual(self.decode(code2, mac2, route2))
 
-    def do_mutation(self, i):
-        code1 = self.pop[0][i].ga_mutation_sequence_tpe()
-        self.update_tech(mode=0)
-        mac1 = self.pop[0][i].ga_mutation_assignment(self.tech)
-        route1 = self.pop[0][i].ga_mutation_route()
-        mac1 = self.pop[0][i].repair_mac_route(mac1, route1)
-        self.append_individual(self.decode(code1, mac1, route1))
+    def do_mutation(self, i, p):
+        if p[0] < self.rm or p[1] < self.rm or p[2] < self.rm:
+            self.update_tech(mode=0)
+            code1 = self.pop[0][i].ga_mutation_sequence() if p[0] < self.rm else self.pop[0][i].code
+            mac1 = self.pop[0][i].ga_mutation_assignment(self.tech) if p[1] < self.rm else self.pop[0][i].mac
+            route1 = self.pop[0][i].ga_mutation_route() if p[2] < self.rm else self.pop[0][i].route
+            mac1 = self.pop[0][i].repair_mac_route(mac1, route1)
+            self.append_individual(self.decode(code1, mac1, route1))
 
     def do_tabu_search(self, i):
         code1 = self.pop[0][i].ts_sequence_operation_based(self.tabu_list[0][i], self.max_tabu)
@@ -434,7 +480,7 @@ class GaFjspNew(Ga):
     def __init__(self, pop_size, rc, rm, max_generation, objective, schedule, max_stay_generation=None):
         Ga.__init__(self, pop_size, rc, rm, max_generation, objective, schedule, max_stay_generation)
 
-    def decode(self, code):
+    def decode(self, code, mac=None, route=None):
         return self.schedule.decode_one(code, direction=self.direction)
 
     def do_init(self, pop=None):
@@ -453,14 +499,16 @@ class GaFjspNew(Ga):
         self.record[1].append(time.perf_counter())
         self.show_generation(0)
 
-    def do_crossover(self, i, j):
-        code1, code2 = self.pop[0][i].ga_crossover_sequence_dpox(self.pop[0][j])
-        self.append_individual(self.decode(code1))
-        self.append_individual(self.decode(code2))
+    def do_crossover(self, i, j, p):
+        if p[0] < self.rc:
+            code1, code2 = self.pop[0][i].ga_crossover_sequence(self.pop[0][j])
+            self.append_individual(self.decode(code1))
+            self.append_individual(self.decode(code2))
 
-    def do_mutation(self, i):
-        code1 = self.pop[0][i].ga_mutation_sequence_tpe()
-        self.append_individual(self.decode(code1))
+    def do_mutation(self, i, p):
+        if p[0] < self.rm:
+            code1 = self.pop[0][i].ga_mutation_sequence()
+            self.append_individual(self.decode(code1))
 
     def do_tabu_search(self, i):
         code1 = self.pop[0][i].ts_sequence_operation_based(self.tabu_list[0][i], self.max_tabu)
@@ -474,11 +522,19 @@ class GaFjspNew(Ga):
         self.replace_individual(i, self.decode(code1))
 
 
+class GaLwFjspNew(GaFjspNew):
+    def __init__(self, pop_size, rc, rm, max_generation, objective, schedule, max_stay_generation=None):
+        GaFjspNew.__init__(self, pop_size, rc, rm, max_generation, objective, schedule, max_stay_generation)
+
+    def decode(self, code, mac=None, route=None):
+        return self.schedule.decode_limited_wait_one(code, direction=self.direction)
+
+
 class GaMrFjspNew(Ga):
     def __init__(self, pop_size, rc, rm, max_generation, objective, schedule, max_stay_generation=None):
         Ga.__init__(self, pop_size, rc, rm, max_generation, objective, schedule, max_stay_generation)
 
-    def decode(self, code, route):
+    def decode(self, code, mac=None, route=None):
         return self.schedule.decode_one(code, route, direction=self.direction)
 
     def do_init(self, pop=None):
@@ -491,7 +547,7 @@ class GaMrFjspNew(Ga):
             else:
                 code = pop[0][i].code
                 route = pop[0][i].route
-            info = self.decode(code, route)
+            info = self.decode(code, route=route)
             obj, fit = self.get_obj_fit(info)
             self.pop[0].append(info)
             self.pop[1].append(obj)
@@ -500,34 +556,42 @@ class GaMrFjspNew(Ga):
         self.record[1].append(time.perf_counter())
         self.show_generation(0)
 
-    def do_crossover(self, i, j):
-        code1, code2 = self.pop[0][i].ga_crossover_sequence_dpox(self.pop[0][j])
-        route1, route2 = self.pop[0][i].ga_crossover_route(self.pop[0][j])
-        self.append_individual(self.decode(code1, route1))
-        self.append_individual(self.decode(code2, route2))
+    def do_crossover(self, i, j, p):
+        if p[0] < self.rc or p[2] < self.rc:
+            if p[0] < self.rc:
+                code1, code2 = self.pop[0][i].ga_crossover_sequence(self.pop[0][j])
+            else:
+                code1, code2 = self.pop[0][i].code, self.pop[0][j].code
+            if p[2] < self.rc:
+                route1, route2 = self.pop[0][i].ga_crossover_route(self.pop[0][j])
+            else:
+                route1, route2 = self.pop[0][i].route, self.pop[0][j].route
+            self.append_individual(self.decode(code1, route=route1))
+            self.append_individual(self.decode(code2, route=route2))
 
-    def do_mutation(self, i):
-        code1 = self.pop[0][i].ga_mutation_sequence_tpe()
-        route1 = self.pop[0][i].ga_mutation_route()
-        self.append_individual(self.decode(code1, route1))
+    def do_mutation(self, i, p):
+        if p[0] < self.rm or p[2] < self.rm:
+            code1 = self.pop[0][i].ga_mutation_sequence() if p[0] < self.rm else self.pop[0][i].code
+            route1 = self.pop[0][i].ga_mutation_route() if p[2] < self.rm else self.pop[0][i].route
+            self.append_individual(self.decode(code1, route=route1))
 
     def do_tabu_search(self, i):
         code1 = self.pop[0][i].ts_sequence_operation_based(self.tabu_list[0][i], self.max_tabu)
-        self.replace_individual(i, self.decode(code1, self.pop[0][i].route))
+        self.replace_individual(i, self.decode(code1, route=self.pop[0][i].route))
         if len(self.tabu_list[0][i]) >= self.max_tabu:
             for k in range(3):
                 self.tabu_list[k][i] = []
 
     def do_key_block_move(self, i):
         code1 = self.pop[0][i].key_block_move()
-        self.replace_individual(i, self.decode(code1, self.pop[0][i].route))
+        self.replace_individual(i, self.decode(code1, route=self.pop[0][i].route))
 
 
 class GaFspHfsp(Ga):
     def __init__(self, pop_size, rc, rm, max_generation, objective, schedule, max_stay_generation=None):
         Ga.__init__(self, pop_size, rc, rm, max_generation, objective, schedule, max_stay_generation)
 
-    def decode(self, code):
+    def decode(self, code, mac=None, route=None):
         return self.schedule.decode(code)
 
     def do_init(self, pop=None):
@@ -546,14 +610,16 @@ class GaFspHfsp(Ga):
         self.record[1].append(time.perf_counter())
         self.show_generation(0)
 
-    def do_crossover(self, i, j):
-        code1, code2 = self.pop[0][i].ga_crossover_sequence_permutation_pmx(self.pop[0][j])
-        self.append_individual(self.decode(code1))
-        self.append_individual(self.decode(code2))
+    def do_crossover(self, i, j, p):
+        if p[0] < self.rc:
+            code1, code2 = self.pop[0][i].ga_crossover_sequence_permutation(self.pop[0][j])
+            self.append_individual(self.decode(code1))
+            self.append_individual(self.decode(code2))
 
-    def do_mutation(self, i):
-        code1 = self.pop[0][i].ga_mutation_sequence_permutation_tpe()
-        self.append_individual(self.decode(code1))
+    def do_mutation(self, i, p):
+        if p[0] < self.rm:
+            code1 = self.pop[0][i].ga_mutation_sequence_permutation()
+            self.append_individual(self.decode(code1))
 
     def do_tabu_search(self, i):
         code1 = self.pop[0][i].ts_sequence_permutation_based(self.tabu_list[0][i], self.max_tabu)
@@ -567,5 +633,5 @@ class GaFspHfspWorkTimetable(GaFspHfsp):
     def __init__(self, pop_size, rc, rm, max_generation, objective, schedule, max_stay_generation=None):
         GaFspHfsp.__init__(self, pop_size, rc, rm, max_generation, objective, schedule, max_stay_generation)
 
-    def decode(self, code):
+    def decode(self, code, mac=None, route=None):
         return self.schedule.decode_work_timetable(code)

@@ -182,7 +182,7 @@ class TimeTable:  # 工作时间表类
         return rest_start, rest_duration, rest_end
 
     @staticmethod
-    def consistent_timetable_b8w5t2(m, year, month, day, duration, connect_internet=False, save=False, show=False):
+    def consistent5d8h(m, year, month, day, duration, connect_internet=False, save=False, show=False):
         m_start_date = [dt(year, month, day) for _ in range(m)]
         m_end_date = [m_start_date[k] + time_delta(duration) for k in range(m)]
         m_day_work_start = [8 for _ in range(m)]

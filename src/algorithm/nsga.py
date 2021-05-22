@@ -10,6 +10,7 @@ import time
 
 import numpy as np
 
+from ..define import Selection
 from ..pareto import Pareto, SelectPareto
 from ..utils import Utils
 
@@ -58,6 +59,14 @@ class NSGA:
         Utils.print("Generation {:<4} Runtime {:<8.4f} Pareto rate: {:<.2f}".format(
             g, self.record[1][g] - self.record[0][g], self.record[2][g]))
 
+    @staticmethod
+    def selection_elite_strategy(select_pareto):
+        return select_pareto.elite_strategy()
+
+    @staticmethod
+    def selection_champion(select_pareto):
+        return select_pareto.champion()
+
     def do_selection(self):
         if len(self.pop_child[0]) != 0:
             info_new = []
@@ -82,7 +91,13 @@ class NSGA:
         rank = pareto.rank
         cd = pareto.cd
         select_pareto = SelectPareto(self.pop_size, scale, f, rank, cd)
-        index = select_pareto.elite_strategy()  # 精英策略
+        func_dict = {
+            Selection.default: self.selection_elite_strategy,
+            Selection.elite_strategy: self.selection_elite_strategy,
+            Selection.champion: self.selection_champion,
+        }
+        func = func_dict[self.schedule.ga_operator[Selection.name]]
+        index = func(select_pareto)
         pareto_front = []
         self.pop = [[], [], []]
         for i in range(self.pop_size):
@@ -97,16 +112,16 @@ class NSGA:
     def do_init(self, pop=None):
         pass
 
-    def do_crossover(self, i, j):
+    def do_crossover(self, i, j, p):
         pass
 
-    def do_mutation(self, i):
+    def do_mutation(self, i, p):
         pass
 
     def do_key_block_move(self, i):
         pass
 
-    def do_evolution(self, key_block_move=False, pop=None, n_level=5, column=0):
+    def do_evolution(self, pop=None, n_level=5, column=0):
         Utils.print("{}Evolution  start{}".format("=" * 48, "=" * 48), fore=Utils.fore().LIGHTYELLOW_EX)
         self.clear()
         self.do_init(pop)
@@ -115,13 +130,12 @@ class NSGA:
         for g in range(1, self.max_generation + 1):
             self.record[0].append(time.perf_counter())
             for i in range(self.pop_size):
-                if np.random.random() < self.rc:
-                    j = np.random.choice(np.delete(np.arange(self.pop_size), i), 1, replace=False)[0]
-                    self.do_crossover(i, j)
-                if np.random.random() < self.rm:
-                    self.do_mutation(i)
-                if key_block_move:
+                if self.schedule.para_key_block_move:
                     self.do_key_block_move(i)
+                p, q = np.random.random(3), np.random.random(3)
+                j = np.random.choice(np.delete(np.arange(self.pop_size), i), 1, replace=False)[0]
+                self.do_crossover(i, j, p)
+                self.do_mutation(i, q)
             self.do_selection()
             self.record[1].append(time.perf_counter())
             self.show_generation(g)
@@ -163,14 +177,16 @@ class NSGAJsp(NSGA):
             self.pop[1].append(self.get_obj(info))
         self.record[1].append(time.perf_counter())
 
-    def do_crossover(self, i, j):
-        code1, code2 = self.pop[0][i].ga_crossover_sequence_pox(self.pop[0][j])
-        self.decode_update(code1)
-        self.decode_update(code2)
+    def do_crossover(self, i, j, p):
+        if p[0] < self.rc:
+            code1, code2 = self.pop[0][i].ga_crossover_sequence(self.pop[0][j])
+            self.decode_update(code1)
+            self.decode_update(code2)
 
-    def do_mutation(self, i):
-        code1 = self.pop[0][i].ga_mutation_sequence_tpe()
-        self.decode_update(code1)
+    def do_mutation(self, i, p):
+        if p[0] < self.rm:
+            code1 = self.pop[0][i].ga_mutation_sequence()
+            self.decode_update(code1)
 
     def do_key_block_move(self, i):
         code1 = self.pop[0][i].key_block_move()

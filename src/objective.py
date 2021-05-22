@@ -1,3 +1,6 @@
+import numpy as np
+
+
 class Objective:
     @staticmethod
     def makespan(info):  # 工期
@@ -10,6 +13,11 @@ class Objective:
     @staticmethod
     def total_flow_time(info):  # 工件的流程时间之和
         return sum([job.end - job.start for job in info.schedule.job.values()]) / info.schedule.time_unit
+
+    @staticmethod
+    def n_tardiness_job(info):  # 拖期工件数量
+        time_unit = info.schedule.time_unit
+        return sum([max([0, np.sign(job.end - job.due_date)]) for job in info.schedule.job.values()]) / time_unit
 
     @staticmethod
     def tardiness(info):  # 拖期

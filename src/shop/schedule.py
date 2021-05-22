@@ -1,5 +1,6 @@
 import numpy as np
 
+from ..define import Crossover, Mutation, Selection
 from ..resource.code import Code
 from ..resource.job import Job
 from ..resource.machine import Machine
@@ -16,6 +17,11 @@ class Schedule(Code):  # 调度资源融合类
         self.sjike = {0: np.zeros(self.length), 1: np.zeros(self.length, dtype=int),
                       2: np.zeros(self.length, dtype=int), 3: np.zeros(self.length, dtype=int),
                       4: np.zeros(self.length)}
+        self.ga_operator = {Crossover.name: Crossover.default, Mutation.name: Mutation.default,
+                            Selection.name: Selection.default}
+        self.para_tabu = False
+        self.para_key_block_move = False
+        self.para_dislocation = False
 
     def clear(self, route=None):  # 解码前要进行清空, 方便快速地进行下一次解码
         for i in self.job.keys():
@@ -116,8 +122,8 @@ class Schedule(Code):  # 调度资源融合类
                 early_start = max([0, b])
             if early_start + p <= c:
                 self.job[i].task[j].start = early_start
-                if c != np.inf and self.direction == 1:
-                    self.job[i].task[j].start = c - p
+                # if c != np.inf and self.direction == 1:
+                #     self.job[i].task[j].start = c - p
                 self.job[i].task[j].end = self.job[i].task[j].start + p
                 if self.job[i].task[j].resumable is not None:
                     res1, res2 = self.constrain_timetable(i, j, k, p, c)
@@ -132,13 +138,13 @@ class Schedule(Code):  # 调度资源融合类
                     self.update_saved_start_end(i, j, g)
                 break
 
-    def decode_add_limited_wait(self, i, j, u):
+    def decode_add_limited_wait(self, i, j, u, mac=None):
         if self.job[i].task[j].limited_wait is not None:
             if self.direction == 0:
                 index = range(u, -1, -1)
             else:
                 index = range(self.job[i].nop - u - 1, self.job[i].nop, 1)
-            while self.constrain_limited_wait(i, index, None) is False:
+            while self.constrain_limited_wait(i, index, mac) is False:
                 pass
 
     def constrain_timetable(self, i, j, k, p, c=None):  # 工作时间表约束
@@ -248,8 +254,8 @@ class Schedule(Code):  # 调度资源融合类
                     early_start = max([delay_start, b])  # delay_start是满足等待时间有限约束的最早开始时间
                     if early_start + p <= c:
                         self.job[i].task[j].start = early_start
-                        if c != np.inf and self.direction == 1:
-                            self.job[i].task[j].start = c - p
+                        # if c != np.inf and self.direction == 1:
+                        #     self.job[i].task[j].start = c - p
                         self.job[i].task[j].end = self.job[i].task[j].start + p
                         if self.job[i].task[j].resumable is not None:
                             res1, res2 = self.constrain_timetable(i, j, k, p, c)
