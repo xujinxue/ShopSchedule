@@ -102,6 +102,7 @@ class Utils:
     @staticmethod
     def update_info(old_obj, new_obj):  # 更新个体的条件
         return True if new_obj < old_obj else False
+
     @staticmethod
     def similarity(a, b):
         return 1 - np.count_nonzero(a - b) / a.shape[0]
@@ -160,8 +161,8 @@ class Utils:
         except PermissionError:
             pass
         if stage2 is not None:
-            a = ["./%s/%s/Code" % (save, instance), "./%s/%s/GanttChart" % (save, instance),
-                 "./%s/%s/GanttChartPngHtml" % (save, instance), "./%s/%s/Record" % (save, instance)]
+            a = ["./%s/%s/Code2" % (save, instance), "./%s/%s/GanttChart2" % (save, instance),
+                 "./%s/%s/GanttChartPngHtml2" % (save, instance), "./%s/%s/Record2" % (save, instance)]
             [Utils.make_dir(i) for i in a]
             try:
                 [Utils.clear_dir(i) for i in a]

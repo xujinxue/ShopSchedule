@@ -270,8 +270,6 @@
     </property>
     <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
-    <addaction name="actionEdit"/>
-    <addaction name="actionSave"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">

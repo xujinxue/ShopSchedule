@@ -156,8 +156,6 @@ class Ui_MainWindow(object):
         self.actionAbout.setObjectName("actionAbout")
         self.menufile.addAction(self.actionNew)
         self.menufile.addAction(self.actionOpen)
-        self.menufile.addAction(self.actionEdit)
-        self.menufile.addAction(self.actionSave)
         self.menuHelp.addAction(self.actionAbout)
         self.menuBar.addAction(self.menufile.menuAction())
         self.menuBar.addAction(self.menuHelp.menuAction())
