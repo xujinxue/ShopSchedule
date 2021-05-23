@@ -211,11 +211,6 @@
            </item>
            <item>
             <property name="text">
-             <string>考虑工人的作业车间</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
              <string>考虑工人的柔性作业车间</string>
             </property>
            </item>
@@ -236,11 +231,6 @@
            <item>
             <property name="text">
              <string>输入数据</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>均匀分布</string>
             </property>
            </item>
            <item>

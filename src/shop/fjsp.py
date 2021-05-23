@@ -155,12 +155,12 @@ class Fjsp(Schedule):
                 t_start, t_end, t_index = [], [], []
                 for w, p in zip(w_list, p_list):
                     try:
-                        a = max([a, self.worker[w].end])
+                        d = max([a, self.worker[w].end])
                     except TypeError:
-                        a = self.worker[w].end if a is None else a
+                        d = a if a is not None else self.worker[w].end
                     for r, (b, c) in enumerate(zip(self.machine[k].idle[0], self.machine[k].idle[1])):
                         try:
-                            early_start = max([a, b])
+                            early_start = max([d, b])
                         except TypeError:
                             early_start = max([0, b])
                         if early_start + p <= c:
@@ -191,6 +191,6 @@ class Fjsp(Schedule):
             self.job[i].task[j].start = self.worker[w].start = start[choice]
             self.job[i].task[j].end = self.worker[w].end = end[choice]
             self.decode_update_machine_idle(i, j, k, r, start[choice])
-            self.save_update_decode(i, j, k, g)
+            self.save_update_decode(i, j, k, g, w)
             self.decode_add_limited_wait(i, j, u, mac=mac, wok=wok)
         return Info(self, code, mac=mac, wok=wok)

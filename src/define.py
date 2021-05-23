@@ -36,8 +36,7 @@ class Name:
     hfsp = "混合流水车间"
     mrjsp = "多加工路径作业车间"
     mrfjsp = "多加工路径柔性作业车间"
-    jspwcw = "考虑工人的作业车间"
-    fjspwcw = "考虑工人的柔性作业车间"
+    drcfjsp = "考虑工人的柔性作业车间"
     # 数据来源
     input_data = "输入数据"
     uniform_distribute = "均匀分布"

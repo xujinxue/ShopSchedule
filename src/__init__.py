@@ -1,5 +1,5 @@
-from .algorithm import GaFjsp, GaLwFjsp, GaMrFjsp
-from .algorithm import GaFjspNew, GaLwFjspNew, GaMrFjspNew
+from .algorithm import GaFjsp, GaLwFjsp, GaDrcFjsp, GaMrFjsp
+from .algorithm import GaFjspNew, GaLwFjspNew, GaDrcFjspNew, GaMrFjspNew
 from .algorithm import GaFspHfsp, GaFspHfspWorkTimetable
 from .algorithm import GaJsp, GaLwJsp, GaMrJsp
 from .algorithm import NsgaJsp
@@ -8,6 +8,7 @@ from .data import fjsp_benchmark, fsp_benchmark, jsp_benchmark, hfsp_benchmark
 from .data import fjsp_simulation, fsp_simulation, jsp_simulation
 from .data import mrfjsp_benchmark
 from .data import mrjsp_benchmark
+from .data import drcfjsp_benchmark
 from .define import Crossover, Mutation, Selection
 from .info import GanttChart
 from .objective import Objective
@@ -49,4 +50,7 @@ example2
 """
 INSTANCE_LIST_MRFJSP = """
 example
+"""
+INSTANCE_LIST_DRCFJSP = """
+DMFJS01
 """

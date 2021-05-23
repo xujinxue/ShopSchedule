@@ -6,7 +6,7 @@ def main(instance="example"):
     a = jsp_benchmark.instance[instance]
     n, m, p, tech, proc = Utils.string2data_jsp_fsp(a, int, time_unit)
     b = Utils.load_text("./src/data/limited_wait_jsp/%s.txt" % instance)
-    c = Utils.string2data_wait(b, p, int, time_unit)
+    c = [None, Utils.string2data_wait(b, p, int, time_unit)][0]
     problem = Utils.create_schedule(Jsp, n, m, p, tech, proc, limited_wait=c, time_unit=time_unit)
     """调度规则"""
     node_list_complete = problem.spt_lpt_new(spt_or_lpt=0)
@@ -29,7 +29,7 @@ def main(instance="example"):
     solution.print()
     solution.save_code_to_txt("./Result/Code/%s.txt" % instance)
     solution.save_gantt_chart_to_csv("./Result/GanttChart/%s.csv" % instance)
-    # solution.gantt_chart_png("./Result/GanttChartPngHtml/%s.png" % instance, key_block=True)
+    solution.gantt_chart_png("./Result/GanttChartPngHtml/%s.png" % instance, key_block=True)
 
 
 if __name__ == '__main__':

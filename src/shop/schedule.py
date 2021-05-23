@@ -15,10 +15,10 @@ class Schedule(Code):  # 调度资源融合类
         self.best_known = None  # 已知下界值
         self.time_unit = 1  # 加工时间单位
         self.direction = 0  # 解码：正向时间表、反向时间表（仅Jsp, Fjsp）
-        # 找关键路径：加工开始时间、加工任务（工序）索引、工件索引、机器索引、加工完成时间
-        self.sjike = {0: np.zeros(self.length), 1: np.zeros(self.length, dtype=int),
-                      2: np.zeros(self.length, dtype=int), 3: np.zeros(self.length, dtype=int),
-                      4: np.zeros(self.length)}
+        # 找关键路径：加工开始时间、加工任务（工序）索引、工件索引、机器索引、加工完成时间、工人
+        self.sjikew = {0: np.zeros(self.length), 1: np.zeros(self.length, dtype=int),
+                       2: np.zeros(self.length, dtype=int), 3: np.zeros(self.length, dtype=int),
+                       4: np.zeros(self.length), 5: np.zeros(self.length, dtype=int), }
         self.ga_operator = {Crossover.name: Crossover.default, Mutation.name: Mutation.default,
                             Selection.name: Selection.default}
         self.para_tabu = False
@@ -32,10 +32,12 @@ class Schedule(Code):  # 调度资源融合类
             self.job[i].clear()
         for i in self.machine.keys():
             self.machine[i].clear()
+        for i in self.worker.keys():
+            self.worker[i].clear()
         self.direction = 0
-        self.sjike = {0: np.zeros(self.length), 1: np.zeros(self.length, dtype=int),
-                      2: np.zeros(self.length, dtype=int), 3: np.zeros(self.length, dtype=int),
-                      4: np.zeros(self.length)}
+        self.sjikew = {0: np.zeros(self.length), 1: np.zeros(self.length, dtype=int),
+                       2: np.zeros(self.length, dtype=int), 3: np.zeros(self.length, dtype=int),
+                       4: np.zeros(self.length), 5: np.zeros(self.length, dtype=int), }
 
     @property
     def n(self):  # 工件数量
@@ -80,7 +82,7 @@ class Schedule(Code):  # 调度资源融合类
     def add_worker(self, name=None, index=None):  # 添加工人
         if index is None:
             index = self.w
-        self.job[index] = Worker(index, name)
+        self.worker[index] = Worker(index, name)
 
     def add_machine(self, name=None, timetable=None, index=None):  # 添加机器
         if index is None:
@@ -92,22 +94,27 @@ class Schedule(Code):  # 调度资源融合类
             index = self.n
         self.job[index] = Job(index, due_date, name)
 
-    def save_sjike(self, i, j, k, g):  # 保存信息: 加工开始时间、加工任务（工序）索引、工件索引、机器索引、加工完成时间
-        for u, v in enumerate([self.job[i].task[j].start, j, i, k, self.job[i].task[j].end]):
-            self.sjike[u][g] = v
+    def save_sjikew(self, i, j, k, g, w=None):  # 保存信息: 加工开始时间、加工任务（工序）索引、工件索引、机器索引、加工完成时间、工人
+        for u, v in enumerate([self.job[i].task[j].start, j, i, k, self.job[i].task[j].end, w]):
+            try:
+                self.sjikew[u][g] = v
+            except TypeError:
+                self.sjikew[u][g] = -1
 
     def update_saved_start_end(self, i, j, g):  # 更新信息: 工件索引、 加工任务（工序）索引、基因座位置
         try:
-            self.sjike[0][g] = self.job[i].task[j].start
-            self.sjike[4][g] = self.job[i].task[j].end
+            self.sjikew[0][g] = self.job[i].task[j].start
+            self.sjikew[4][g] = self.job[i].task[j].end
         except TypeError:
             pass
 
-    def save_update_decode(self, i, j, k, g):  # 解码用: 保存更新信息
+    def save_update_decode(self, i, j, k, g, w=None):  # 解码用: 保存更新信息
         self.job[i].nd += 1
         self.job[i].index_list[j] = g
         self.machine[k].index_list.append(g)
-        self.save_sjike(i, j, k, g)
+        if w is not None:
+            self.worker[w].index_list.append(g)
+        self.save_sjikew(i, j, k, g, w)
 
     def decode_update_machine_idle(self, i, j, k, r, early_start):  # 解码：更新机器空闲时间
         if self.machine[k].idle[1][r] - self.job[i].task[j].end > 0:  # 添加空闲时间段
@@ -136,12 +143,15 @@ class Schedule(Code):  # 调度资源融合类
                 index = self.job[i].task[j].worker[index_k].index(w)
                 p = self.job[i].task[j].duration[index_k][index]
             try:
-                a = max([a, self.worker[w].end])
+                d = max([a, self.worker[w].end])
             except TypeError:
-                a = self.worker[w].end if a is None else a
+                d = a if a is not None else self.worker[w].end
+        else:
+            w = None
+            d = a
         for r, (b, c) in enumerate(zip(self.machine[k].idle[0], self.machine[k].idle[1])):
             try:
-                early_start = max([a, b])
+                early_start = max([d, b])
             except TypeError:
                 early_start = max([0, b])
             if early_start + p <= c:
@@ -157,7 +167,7 @@ class Schedule(Code):  # 调度资源融合类
                     self.worker[wok[i][j]].start, self.worker[wok[i][j]].end = res1, res2
                 self.decode_update_machine_idle(i, j, k, r, self.job[i].task[j].start)
                 if save is True:
-                    self.save_update_decode(i, j, k, g)
+                    self.save_update_decode(i, j, k, g, w)
                 else:
                     self.update_saved_start_end(i, j, g)
                 break

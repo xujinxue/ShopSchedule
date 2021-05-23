@@ -13,7 +13,7 @@ instance = {
 """,
 }
 best_known = {
-    "example": None,
+    "example": 10,
 }
 
 """3 3 工件数量 工序数量

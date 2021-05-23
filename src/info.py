@@ -61,29 +61,32 @@ class GanttChart:
             for i in range(self.n):
                 self.schedule.add_job(name=i, index=i)
             try:
-                self.wok = [[] for _ in range(self.n)]
                 for i in range(self.w):
                     self.schedule.add_worker(name=i, index=i)
+                self.wok = [[] for _ in range(self.n)]
             except TypeError:
-                pass
-            for g, (start, operation, job, machine, end, duration) in enumerate(zip(
+                self.w = None
+            for g, (start, operation, job, machine, end, duration, worker) in enumerate(zip(
                     self.data.loc[:, "Start"], self.data.loc[:, "Operation"], self.data.loc[:, "Job"],
-                    self.data.loc[:, "Machine"], self.data.loc[:, "End"], self.data.loc[:, "Duration"])):
+                    self.data.loc[:, "Machine"], self.data.loc[:, "End"], self.data.loc[:, "Duration"],
+                    self.data.loc[:, "Worker"])):
                 job, operation, machine = job - 1, operation - 1, machine - 1
-                for i, val in enumerate([start, operation, job, machine, end]):
-                    self.schedule.sjike[i] = np.append(self.schedule.sjike[i], val)
+                if self.w is not None:
+                    worker -= 1
+                    self.wok[job].append(worker)
+                    self.schedule.worker[worker].index_list.append(g)
+                for i, val in enumerate([start, operation, job, machine, end, worker]):
+                    self.schedule.sjikew[i] = np.append(self.schedule.sjikew[i], val)
                 self.schedule.job[job].add_task(machine=machine, duration=duration, name=operation, index=operation)
                 self.schedule.job[job].task[operation].start = start
                 self.schedule.job[job].task[operation].end = end
                 self.schedule.job[job].index_list.append(g)
                 self.schedule.machine[machine].index_list.append(g)
-                if self.w is not None:
-                    self.wok[job].append(self.data.loc[g, "Worker"])
                 if end > self.schedule.machine[machine].end:
                     self.schedule.machine[machine].end = end
 
     def not_dummy(self, i):
-        return True if self.schedule.sjike[0][i] != self.schedule.sjike[4][i] else False
+        return True if self.schedule.sjikew[0][i] != self.schedule.sjikew[4][i] else False
 
     def key_route(self):
         critical_path = []
@@ -91,10 +94,10 @@ class GanttChart:
         job_end = {}
         machine_end = {}
         for i in self.schedule.job.keys():
-            job_end[i] = self.schedule.sjike[4][self.schedule.job[i].index_list]
+            job_end[i] = self.schedule.sjikew[4][self.schedule.job[i].index_list]
         for i in self.schedule.machine.keys():
-            machine_end[i] = self.schedule.sjike[4][self.schedule.machine[i].index_list]
-        a = np.argwhere(self.schedule.sjike[4] == self.schedule.makespan)[:, 0]
+            machine_end[i] = self.schedule.sjikew[4][self.schedule.machine[i].index_list]
+        a = np.argwhere(self.schedule.sjikew[4] == self.schedule.makespan)[:, 0]
         if a.shape[0] > 1:
             for i in a:
                 if self.not_dummy(i):
@@ -105,9 +108,9 @@ class GanttChart:
             while True:
                 index = node_list[0].index
                 b = index[-1]
-                c = self.schedule.sjike[0][b]
-                d = self.schedule.sjike[2][b]
-                e = self.schedule.sjike[3][b]
+                c = self.schedule.sjikew[0][b]
+                d = self.schedule.sjikew[2][b]
+                e = self.schedule.sjikew[3][b]
                 try:
                     f = self.schedule.job[d].index_list[np.argwhere(job_end[d] == c)[:, 0][0]]
                 except IndexError:
@@ -117,11 +120,11 @@ class GanttChart:
                 except IndexError:
                     g = None
                 if f is not None and self.not_dummy(f) and g is not None and self.not_dummy(g):
-                    index_f, index_g = deepcopy(index), deepcopy(index)
-                    index_f.append(f)
-                    index_g.append(g)
-                    node_list.append(Node(index_f))
-                    node_list.append(Node(index_g))
+                    z = {f, g}
+                    for v in z:
+                        index_a = deepcopy(index)
+                        index_a.append(v)
+                        node_list.append(Node(index_a))
                     node_list.pop(0)
                 elif f is not None and self.not_dummy(f) and g is None:
                     node_list[0].index.append(f)
@@ -133,29 +136,110 @@ class GanttChart:
                     break
         return critical_path
 
-    def key_block(self):
-        index = list(set(self.key_route()))
-        index_start = self.schedule.sjike[0][index]
+    def key_route_worker(self):
+        critical_path = []
+        node_list = []
+        job_end = {}
+        machine_end = {}
+        worker_end = {}
+        for i in self.schedule.job.keys():
+            job_end[i] = self.schedule.sjikew[4][self.schedule.job[i].index_list]
+        for i in self.schedule.machine.keys():
+            machine_end[i] = self.schedule.sjikew[4][self.schedule.machine[i].index_list]
+        for i in self.schedule.worker.keys():
+            worker_end[i] = self.schedule.sjikew[4][self.schedule.worker[i].index_list]
+        a = np.argwhere(self.schedule.sjikew[4] == self.schedule.makespan)[:, 0]
+        if a.shape[0] > 1:
+            for i in a:
+                if self.not_dummy(i):
+                    node_list.append(Node([i]))
+        else:
+            node_list.append(Node([a[0]]))
+        while len(node_list):
+            while True:
+                index = node_list[0].index
+                b = index[-1]
+                c = self.schedule.sjikew[0][b]
+                d = self.schedule.sjikew[2][b]
+                e = self.schedule.sjikew[3][b]
+                w = self.schedule.sjikew[5][b]
+                try:
+                    f = self.schedule.job[d].index_list[np.argwhere(job_end[d] == c)[:, 0][0]]
+                except IndexError:
+                    f = None
+                try:
+                    g = self.schedule.machine[e].index_list[np.argwhere(machine_end[e] == c)[:, 0][0]]
+                except IndexError:
+                    g = None
+                try:
+                    h = self.schedule.worker[w].index_list[np.argwhere(worker_end[w] == c)[:, 0][0]]
+                except IndexError:
+                    h = None
+                if f is not None and self.not_dummy(f) and g is not None and self.not_dummy(
+                        g) and h is not None and self.not_dummy(h):
+                    z = {f, g, h}
+                    for v in z:
+                        index_a = deepcopy(index)
+                        index_a.append(v)
+                        node_list.append(Node(index_a))
+                    node_list.pop(0)
+                elif f is not None and self.not_dummy(f) and g is not None and self.not_dummy(g) and h is None:
+                    z = {f, g}
+                    for v in z:
+                        index_a = deepcopy(index)
+                        index_a.append(v)
+                        node_list.append(Node(index_a))
+                    node_list.pop(0)
+                elif f is not None and self.not_dummy(f) and h is not None and self.not_dummy(h) and g is None:
+                    z = {f, h}
+                    for v in z:
+                        index_a = deepcopy(index)
+                        index_a.append(v)
+                        node_list.append(Node(index_a))
+                    node_list.pop(0)
+                elif g is not None and self.not_dummy(g) and h is not None and self.not_dummy(h) and f is None:
+                    z = {g, h}
+                    for v in z:
+                        index_a = deepcopy(index)
+                        index_a.append(v)
+                        node_list.append(Node(index_a))
+                    node_list.pop(0)
+                elif f is not None and self.not_dummy(f) and g is None and h is None:
+                    node_list[0].index.append(f)
+                elif f is None and g is not None and self.not_dummy(g) and h is None:
+                    node_list[0].index.append(g)
+                elif f is None and g is None and h is not None and self.not_dummy(h):
+                    node_list[0].index.append(h)
+                else:
+                    critical_path.extend(node_list[0].index)
+                    node_list.pop(0)
+                    break
+        return critical_path
+
+    def key_block(self, func=None):
+        func = self.key_route if func is None else func
+        index = list(set(func()))
+        index_start = self.schedule.sjikew[0][index]
         index = [index[i] for i in np.argsort(-index_start)]
-        a = self.schedule.sjike[3][index]
+        a = self.schedule.sjikew[3][index]
         b = set(a)
         c = 0
         block = {}
         for i in b:
             block[c] = np.array([], dtype=int)
             d = np.argwhere(a == i)[:, 0]
-            start = self.schedule.sjike[0][[index[j] for j in d]].tolist()
+            start = self.schedule.sjikew[0][[index[j] for j in d]].tolist()
             for cur, j in enumerate(d):
                 g = index[j]
                 try:
-                    end = self.schedule.sjike[4][g]
+                    end = self.schedule.sjikew[4][g]
                     start.index(end)
                 except ValueError:
                     if cur != 0:
                         c += 1
                         block[c] = np.array([], dtype=int)
-                self.schedule.job[self.schedule.sjike[2][g]].task[
-                    self.schedule.sjike[1][g]].block = c
+                self.schedule.job[self.schedule.sjikew[2][g]].task[
+                    self.schedule.sjikew[1][g]].block = c
                 block[c] = np.append(block[c], g)
             c += 1
         return block
@@ -165,8 +249,11 @@ class GanttChart:
                         with_operation=True, with_start_end=False, key_block=False, show=False):
         if random_colors:
             random.shuffle(COLORS)
-        if key_block:  # JSP,FJSP
-            self.key_block()
+        if key_block:
+            if self.wok is None:
+                self.key_block()
+            else:
+                self.key_block(self.key_route_worker)
         plt.figure(figsize=[fig_width, fig_height])
         plt.yticks(range([self.schedule.m, self.schedule.n][y_based]),
                    range(1, [self.schedule.m, self.schedule.n][y_based] + 1))
@@ -181,7 +268,10 @@ class GanttChart:
                         machine = task.machine
                     else:
                         machine = self.mac[job.index][task.index]
-                    y_values = [machine, job.index]
+                    if self.wok is None:
+                        y_values = [machine, job.index]
+                    else:
+                        y_values = [machine, self.wok[job.index][task.index]]
                     y = y_values[y_based]
                     width = task.end - task.start
                     left = [task.start, self.schedule.makespan - task.end][self.schedule.direction]
@@ -220,13 +310,17 @@ class GanttChart:
                                 rotation=rotation,
                             )
         if y_based == 0:
-            for job in self.schedule.job.values():
-                plt.barh(0, 0, color=COLORS[job.index % LEN_COLORS], label=job.index + 1)
+            if self.wok is None:
+                for job in self.schedule.job.values():
+                    plt.barh(0, 0, color=COLORS[job.index % LEN_COLORS], label=job.index + 1)
+            else:
+                for worker in self.schedule.worker.values():
+                    plt.barh(0, 0, color=COLORS[worker.index % LEN_COLORS], label=worker.index + 1)
             plt.barh(y=0, width=self.schedule.makespan / scale_more, left=self.schedule.makespan, color="white")
             if lang == 0:
-                title = r"${Job}$"
+                title = r"${Job}$" if self.wok is None else r"${Worker}$"
             else:
-                title = "工件"
+                title = "工件" if self.wok is None else "工人"
             plt.legend(loc="best", title=title)
         if y_based == 1:
             for machine in self.schedule.machine.values():
@@ -334,16 +428,17 @@ class Info(GanttChart):
         code = self.code.tolist() if type(self.code) is np.ndarray else self.code
         a = {"code": code, "mac": self.mac, "route": self.route, "wok": self.wok,
              "direction": self.schedule.direction, "makespan": self.schedule.makespan,
-             "sjike[2]": self.schedule.sjike[2].tolist(), "sjike[1]": self.schedule.sjike[1].tolist(),
-             "sjike[3]": self.schedule.sjike[3].tolist(), "id": self, "schedule_id": self.schedule}
+             "sjikew[2]": self.schedule.sjikew[2].tolist(), "sjikew[1]": self.schedule.sjikew[1].tolist(),
+             "sjikew[3]": self.schedule.sjikew[3].tolist(), "sjikew[5]": self.schedule.sjikew[5].tolist(), "id": self,
+             "schedule_id": self.schedule}
         for i, j in a.items():
             print("%s: %s" % (i, j))
 
     def trans_operation_based2machine_based(self):  # 转码：基于工序的编码->基于机器的编码
         code = [[] for _ in self.schedule.machine.keys()]
         for i, machine in self.schedule.machine.items():
-            job = self.schedule.sjike[2][machine.index_list]
-            operation = self.schedule.sjike[1][machine.index_list]
+            job = self.schedule.sjikew[2][machine.index_list]
+            operation = self.schedule.sjikew[1][machine.index_list]
             for a, b in zip(job, operation):
                 code[i].append((a, b))
         return code
@@ -353,14 +448,14 @@ class Info(GanttChart):
             std_direction = Utils.direction()
         if self.schedule.direction == 0:
             if std_direction == 0:
-                index = np.argsort(self.schedule.sjike[0])
+                index = np.argsort(self.schedule.sjikew[0])
             else:
-                index = np.argsort(-self.schedule.sjike[0])[::-1]
+                index = np.argsort(-self.schedule.sjikew[0])[::-1]
         else:
             if std_direction == 0:
-                index = np.argsort(self.schedule.sjike[0])[::-1]
+                index = np.argsort(self.schedule.sjikew[0])[::-1]
             else:
-                index = np.argsort(-self.schedule.sjike[0])
+                index = np.argsort(-self.schedule.sjikew[0])
         self.code = self.code[index]
         for i in self.schedule.job.keys():
             self.schedule.job[i].nd = 0
@@ -381,7 +476,7 @@ class Info(GanttChart):
                 self.schedule.job[i].index_list[j] = g
                 self.schedule.machine[k].index_list.append(g)
                 for u, v in enumerate([self.schedule.job[i].task[j].start, j, i, k, self.schedule.job[i].task[j].end]):
-                    self.schedule.sjike[u][g] = v
+                    self.schedule.sjikew[u][g] = v
                 self.schedule.job[i].nd += 1
         except KeyError:
             code = self.schedule.trans_random_key2operation_based(self.code)
@@ -398,7 +493,7 @@ class Info(GanttChart):
                 self.schedule.job[i].index_list[j] = g
                 self.schedule.machine[k].index_list.append(g)
                 for u, v in enumerate([self.schedule.job[i].task[j].start, j, i, k, self.schedule.job[i].task[j].end]):
-                    self.schedule.sjike[u][g] = v
+                    self.schedule.sjikew[u][g] = v
                 self.schedule.job[i].nd += 1
 
     def std_code_machine_based(self):
@@ -422,16 +517,26 @@ class Info(GanttChart):
             f.writelines("Job,Operation,Machine,Start,Duration,End,Worker\n")
             for job in self.schedule.job.values():
                 for task in job.task.values():
-                    if self.mac is None:
-                        machine = task.machine
-                        duration = task.duration
-                    else:
-                        machine = self.mac[job.index][task.index]
-                        duration = task.duration[task.machine.index(machine)]
                     if self.wok is None:
                         worker = task.worker
                     else:
                         worker = self.wok[job.index][task.index]
+                    if self.mac is None:
+                        machine = task.machine
+                        if self.wok is None:
+                            duration = task.duration
+                        else:
+                            duration = task.duration[task.worker.index(worker)]
+                    else:
+                        machine = self.mac[job.index][task.index]
+                        index_machine = task.machine.index(machine)
+                        if self.wok is None:
+                            duration = task.duration[index_machine]
+                        else:
+                            index_worker = task.worker[index_machine].index(worker)
+                            duration = task.duration[index_machine][index_worker]
+                    if self.wok is not None:
+                        worker += 1
                     f.writelines("{},{},{},{},{},{},{}\n".format(
                         job.index + 1, task.index + 1, machine + 1, task.start, duration, task.end, worker))
 
@@ -534,7 +639,7 @@ class Info(GanttChart):
         left_a, right_b = range(a), range(b + 1, self.schedule.length)
         left_b_a = np.hstack([right_b, left_a])
         middle1, middle2 = code1[r_a_b], code2[r_a_b]
-        number1, number2 = self.schedule.sjike[1][r_a_b], info.schedule.sjike[1][r_a_b]
+        number1, number2 = self.schedule.sjikew[1][r_a_b], info.schedule.sjikew[1][r_a_b]
         left1, left2 = code1[left_a], code2[left_a]
         right1, right2 = code1[right_b], code2[right_b]
         cycle1, cycle2 = np.hstack([right1, left1, middle1]), np.hstack([right2, left2, middle2])
@@ -561,8 +666,8 @@ class Info(GanttChart):
     def ga_crossover_sequence_pmx(self, info):
         code1 = deepcopy(self.code)
         code2 = deepcopy(info.code)
-        number1 = self.schedule.sjike[1]
-        number2 = info.schedule.sjike[1]
+        number1 = self.schedule.sjikew[1]
+        number2 = info.schedule.sjikew[1]
         a, b = np.random.choice(range(1, self.schedule.length - 1), 2, replace=False)
         if a > b:
             a, b = b, a
@@ -801,6 +906,7 @@ class Info(GanttChart):
     """
 
     def repair_mac_route(self, mac, route):
+        mac = deepcopy(mac)
         for i, j in enumerate(mac):
             for u, v in enumerate(j):
                 task = self.schedule.job[i].route[route[i]].task[u]
@@ -808,6 +914,47 @@ class Info(GanttChart):
                     # mac[i][u] = task.machine[task.duration.index(min(task.duration))]
                     mac[i][u] = np.random.choice(task.machine, 1, replace=False)[0]
         return mac
+
+    """"
+    =============================================================================
+    Genetic operator: worker assignment problem
+    =============================================================================
+    """
+
+    def ga_crossover_worker(self, info):
+        wok1 = deepcopy(self.wok)
+        wok2 = deepcopy(info.wok)
+        for i, (p, q) in enumerate(zip(wok1, wok2)):
+            for j, (u, v) in enumerate(zip(p, q)):
+                if np.random.random() < 0.5:
+                    wok1[i][j], wok2[i][j] = v, u
+        return wok1, wok2
+
+    def ga_mutation_worker(self, mac):
+        wok = deepcopy(self.wok)
+        for i in range(self.schedule.n):
+            for j, k in enumerate(wok[i]):
+                if np.random.random() < 0.5:
+                    try:
+                        task = self.schedule.job[i].task[j]
+                        index_k = task.machine.index(mac[i][j])
+                        a = [v for v in task.worker[index_k] if v != k]
+                        wok[i][j] = np.random.choice(a, 1, replace=False)[0]
+                    except ValueError:
+                        pass
+        return wok
+
+    def repair_mac_wok(self, mac, wok):
+        wok = deepcopy(wok)
+        for i, j in enumerate(mac):
+            for u, v in enumerate(j):
+                task = self.schedule.job[i].task[u]
+                index_k = task.machine.index(v)
+                if wok[i][u] not in task.worker[index_k]:
+                    # index = task.duration[index_k].index(min(task.duration[index_k]))
+                    # wok[i][u] = task.worker[index_k][index]
+                    wok[i][u] = np.random.choice(task.worker[index_k], 1, replace=False)[0]
+        return wok
 
     """"
     =============================================================================
@@ -884,17 +1031,38 @@ class Info(GanttChart):
                 pass
         return mac
 
+    def ts_wok_job_based(self, mac, tabu_list, max_tabu):
+        wok = deepcopy(self.wok)
+        n_try = 0
+        while n_try < max_tabu:
+            n_try += 1
+            try:
+                i = np.random.randint(0, self.schedule.n, 1)[0]
+                j = np.random.randint(0, self.schedule.job[i].nop, 1)[0]
+                task = self.schedule.job[i].task[j]
+                index_k = task.machine.index(mac[i][j])
+                w = np.random.choice(task.worker[index_k], 1, replace=False)[0]
+                tabu = {"j-%s" % i, "t-%s" % j, w}
+                if wok[i][j] != w and tabu not in tabu_list:
+                    tabu_list.append(tabu)
+                    wok[i][j] = w
+                    break
+            except ValueError:
+                pass
+        return wok
+
     """"
     =============================================================================
     Local operator
     =============================================================================
     """
 
-    def key_block_move(self, block=None):
+    def key_block_move(self, block=None, func=None):
         self.std_code()
         code = deepcopy(self.code)
+        func = self.key_route if func is None else func
         if block is None:
-            block = self.key_block()
+            block = self.key_block(func)
         for i, j in block.items():
             if j.shape[0] >= 2:
                 head, tail = j[0], j[-1]
@@ -917,20 +1085,39 @@ class Info(GanttChart):
                         code[tail], code[index] = code[index], code[tail]
         return code
 
-    def key_block_move_mac(self, block=None):
+    def key_block_move_mac(self, block=None, func=None):
         mac = deepcopy(self.mac)
+        func = self.key_route if func is None else func
         if block is None:
-            block = self.key_block()
+            block = self.key_block(func)
         for i, j in block.items():
             for g in j:
                 if np.random.random() < 0.5:
                     try:
-                        a, b = self.schedule.sjike[2][g], self.schedule.sjike[1][g]
+                        a, b = self.schedule.sjikew[2][g], self.schedule.sjikew[1][g]
                         c = [v for v in self.schedule.job[a].task[b].machine if v != mac[a][b]]
                         mac[a][b] = np.random.choice(c, 1, replace=False)[0]
                     except ValueError:
                         pass
         return mac
+
+    def key_block_move_wok(self, mac, block=None, func=None):
+        wok = deepcopy(self.wok)
+        func = self.key_route_worker if func is None else func
+        if block is None:
+            block = self.key_block(func)
+        for i, j in block.items():
+            for g in j:
+                if np.random.random() < 0.5:
+                    try:
+                        a, b = self.schedule.sjikew[2][g], self.schedule.sjikew[1][g]
+                        task = self.schedule.job[a].task[b]
+                        index_k = task.machine.index(mac[a][b])
+                        c = [v for v in task.worker[index_k] if v != wok[a][b]]
+                        wok[a][b] = np.random.choice(c, 1, replace=False)[0]
+                    except ValueError:
+                        pass
+        return wok
 
     """"
     =============================================================================
@@ -938,6 +1125,6 @@ class Info(GanttChart):
     =============================================================================
     """
 
-    def dislocation_operator(self, mode=0):
+    def dislocation_operator(self, direction=0):
         code = deepcopy(self.code)
-        return np.hstack([code[1:], code[0]]) if mode == 0 else np.hstack([code[-1], code[:-1]])
+        return np.hstack([code[1:], code[0]]) if direction == 0 else np.hstack([code[-1], code[:-1]])

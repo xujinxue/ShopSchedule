@@ -18,7 +18,7 @@ init(autoreset=True)
 class Utils:
     @staticmethod
     def create_schedule(shop, n, m, p, tech, proc, multi_route=False, limited_wait=None, rest_start_end=None,
-                        resumable=None, worker=None, due_date=None, best_known=None, time_unit=1):  # 创建一个车间调度对象
+                        resumable=None, w=None, worker=None, due_date=None, best_known=None, time_unit=1):  # 创建一个车间调度对象
         schedule = shop()  # shop是车间类, 在shop包里面, 如Jsp, Fjsp, Fsp, Hfsp
         schedule.best_known = best_known  # 已知最优目标值
         schedule.time_unit = time_unit  # 加工时间单位
@@ -27,6 +27,9 @@ class Utils:
                 schedule.add_machine(name=i, timetable={0: rest_start_end[0][i], 1: rest_start_end[1][i]})
             else:
                 schedule.add_machine(name=i)
+        if w is not None:
+            for i in range(w):
+                schedule.add_worker(name=i)
         for i in range(n):  # 添加工件, 方法add_job也定义在resource包的schedule模块的Schedule类里面
             try:
                 val_due_date = time_unit * due_date[i]  # 工件的交货期数据, due_date是一个包含n个元素的列表, 对应n个工件的交货期
@@ -93,9 +96,12 @@ class Utils:
         return 1 / (1 + obj)
 
     @staticmethod
+    def update_info_accept_equal(old_obj, new_obj):  # 更新个体的条件
+        return True if new_obj <= old_obj else False
+
+    @staticmethod
     def update_info(old_obj, new_obj):  # 更新个体的条件
         return True if new_obj < old_obj else False
-
     @staticmethod
     def similarity(a, b):
         return 1 - np.count_nonzero(a - b) / a.shape[0]

@@ -79,7 +79,7 @@ class Code:  # 编码类
         return a
 
     @staticmethod
-    def code_worker_assignment(n, p, tech, worker, mac):
+    def assignment_worker(n, p, tech, worker, mac):
         """工人安排问题"""
         a = []
         for i in range(n):
@@ -90,7 +90,7 @@ class Code:  # 编码类
         return a
 
     @staticmethod
-    def code_machine_assignment_bml(n, m, p, tech, proc):
+    def assignment_machine_bml(n, m, p, tech, proc):
         a, b = [], [0] * m
         for i in range(n):
             a.append([])
@@ -105,7 +105,7 @@ class Code:  # 编码类
         return a
 
     @staticmethod
-    def code_machine_assignment_bml_worker(n, m, p, tech, proc):
+    def assignment_machine_bml_worker(n, m, p, tech, proc):
         a, b = [], [0] * m
         for i in range(n):
             a.append([])
@@ -121,7 +121,7 @@ class Code:  # 编码类
         return a
 
     @staticmethod
-    def code_worker_assignment_bwl(n, w, p, tech, worker, proc, mac):
+    def assignment_worker_bwl(n, w, p, tech, worker, proc, mac):
         a, b = [], [0] * w
         for i in range(n):
             a.append([])
