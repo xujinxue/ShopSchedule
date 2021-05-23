@@ -6,8 +6,9 @@ from src import *
 
 """Result"""
 # file_dir = "./Result/GanttChart"  # 甘特图数据文件所在目录
+# save_dir = "./Result/GanttChartPngHtml"  # 生成的甘特图保存目录
 # file = "example.csv"  # 甘特图数据文件
-# file_save = "%s/%s" % (file_dir, file[:-4])  # 保存的甘特图名称
+# file_save = "%s/%s" % (save_dir, file[:-4])  # 保存的甘特图名称
 """Algorithm"""
 file_dir = "./GA_JSP/ft06/GanttChart"  # 甘特图数据文件所在目录
 save_dir = "./GA_JSP/ft06/GanttChartPngHtml"  # 生成的甘特图保存目录
