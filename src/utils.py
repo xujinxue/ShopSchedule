@@ -18,7 +18,7 @@ init(autoreset=True)
 class Utils:
     @staticmethod
     def create_schedule(shop, n, m, p, tech, proc, multi_route=False, limited_wait=None, rest_start_end=None,
-                        resumable=None, due_date=None, best_known=None, time_unit=1):  # 创建一个车间调度对象
+                        resumable=None, worker=None, due_date=None, best_known=None, time_unit=1):  # 创建一个车间调度对象
         schedule = shop()  # shop是车间类, 在shop包里面, 如Jsp, Fjsp, Fsp, Hfsp
         schedule.best_known = best_known  # 已知最优目标值
         schedule.time_unit = time_unit  # 加工时间单位
@@ -44,8 +44,12 @@ class Utils:
                         val_resumable = resumable[i][j]
                     except TypeError:
                         val_resumable = None
+                    if worker is None:
+                        val_wok = None
+                    else:
+                        val_wok = worker[i][j]
                     schedule.job[i].add_task(tech[i][j], proc[i][j], name=j, limited_wait=val_limited_wait,
-                                             resumable=val_resumable)
+                                             resumable=val_resumable, worker=val_wok)
             else:
                 for r, (route, duration) in enumerate(zip(tech[i], proc[i])):
                     schedule.job[i].add_route(name=r)
@@ -59,9 +63,13 @@ class Utils:
                             val_resumable = resumable[r][i][j]
                         except TypeError:
                             val_resumable = None
+                        if worker is None:
+                            val_wok = None
+                        else:
+                            val_wok = worker[r][i][j]
                         schedule.job[i].route[r].add_task(route[j], duration[j], name=j,
                                                           limited_wait=val_limited_wait,
-                                                          resumable=val_resumable)
+                                                          resumable=val_resumable, worker=val_wok)
         try:
             schedule.rule_init_task_on_machine(m)
         except AttributeError:
@@ -133,6 +141,26 @@ class Utils:
                 os.remove("%s/%s" % (dir_name, i))
         except PermissionError:
             pass
+
+    @staticmethod
+    def make_dir_save(save, instance, stage2=None):
+        Utils.make_dir("./%s" % save)
+        Utils.make_dir("./%s/%s" % (save, instance))
+        a = ["./%s/%s" % (save, instance), "./%s/%s/Code" % (save, instance), "./%s/%s/GanttChart" % (save, instance),
+             "./%s/%s/GanttChartPngHtml" % (save, instance), "./%s/%s/Record" % (save, instance)]
+        [Utils.make_dir(i) for i in a]
+        try:
+            [Utils.clear_dir(i) for i in a]
+        except PermissionError:
+            pass
+        if stage2 is not None:
+            a = ["./%s/%s/Code" % (save, instance), "./%s/%s/GanttChart" % (save, instance),
+                 "./%s/%s/GanttChartPngHtml" % (save, instance), "./%s/%s/Record" % (save, instance)]
+            [Utils.make_dir(i) for i in a]
+            try:
+                [Utils.clear_dir(i) for i in a]
+            except PermissionError:
+                pass
 
     @staticmethod
     def load_text(file_name):
@@ -327,11 +355,59 @@ class Utils:
             return None, None, None, None, None
 
     @staticmethod
+    def string2data_drcfjsp(string, dtype=int, time_unit=1, minus_one=True):
+        try:
+            a = string.split("\n")
+            n, m, w = list(map(int, a[0].split()))
+            p = list(map(int, a[1].split()))
+            n_job = 0
+            tech, worker, proc = [], [], []
+            b = [[], [], []]
+            for val in a[2:]:
+                c, d, e = [], [], []
+                data = list(map(dtype, val.split()))
+                index_m, index_mn, index_nw, index_wn, index_t = 0, 1, 2, 3, 4
+                n_machine = int(data[index_m])
+                for k in range(n_machine):
+                    c.append(int(data[index_mn]))
+                    n_worker = int(data[index_nw])
+                    f, g = [], []
+                    for cur in range(n_worker):
+                        f.append(int(data[index_wn]))
+                        g.append(time_unit * data[index_t])
+                        index_wn += 2
+                        index_t += 2
+                    if minus_one is True:
+                        f = [v - 1 for v in f]
+                    d.append(f)
+                    e.append(g)
+                    index_mn = index_t - 1
+                    index_nw, index_wn, index_t = index_mn + 1, index_mn + 2, index_mn + 3
+                if minus_one is True:
+                    c = [v - 1 for v in c]
+                b[0].append(c)
+                b[1].append(d)
+                b[2].append(e)
+                if len(b[0]) == p[n_job]:
+                    tech.append(b[0])
+                    worker.append(b[1])
+                    proc.append(b[2])
+                    n_job += 1
+                    b = [[], [], []]
+            return n, m, w, p, tech, worker, proc
+        except ValueError:
+            return None, None, None, None, None, None, None
+
+    @staticmethod
     def save_code_to_txt(file, data):
         if not file.endswith(".txt"):
             file = file + ".txt"
         with open(file, "w", encoding="utf-8") as f:
-            f.writelines(str(data))
+            for i, j in enumerate(str(data)):
+                f.writelines(j)
+                if (i + 1) % 100 == 0:
+                    f.writelines("\n")
+            f.writelines("\n")
 
     @staticmethod
     def save_obj_to_csv(file, data):

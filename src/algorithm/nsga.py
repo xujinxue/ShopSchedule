@@ -1,7 +1,7 @@
 __doc__ = """
 Non-dominate sort genetic algorithm: 非支配排序遗传算法
-class NSGA: 定义的基类
-class NSGAJsp(NSGA): Jsp的NSGA, 重载了***
+class Nsga: 定义的基类
+class NsgaJsp(Nsga): Jsp的Nsga, 重载了***
 ...
 """
 
@@ -17,7 +17,7 @@ from ..utils import Utils
 deepcopy = copy.deepcopy
 
 
-class NSGA:
+class Nsga:
     def __init__(self, pop_size, rc, rm, max_generation, objective, schedule):
         self.pop_size = pop_size
         self.rc = rc
@@ -121,8 +121,9 @@ class NSGA:
     def do_key_block_move(self, i):
         pass
 
-    def do_evolution(self, pop=None, n_level=5, column=0):
-        Utils.print("{}Evolution  start{}".format("=" * 48, "=" * 48), fore=Utils.fore().LIGHTYELLOW_EX)
+    def do_evolution(self, pop=None, n_level=5, column=0, exp_no=None):
+        exp_no = "" if exp_no is None else exp_no
+        Utils.print("{}Evolution {}  start{}".format("=" * 48, exp_no, "=" * 48), fore=Utils.fore().LIGHTYELLOW_EX)
         self.clear()
         self.do_init(pop)
         self.do_selection()
@@ -139,7 +140,7 @@ class NSGA:
             self.do_selection()
             self.record[1].append(time.perf_counter())
             self.show_generation(g)
-        Utils.print("{}Evolution finish{}".format("=" * 48, "=" * 48), fore=Utils.fore().LIGHTRED_EX)
+        Utils.print("{}Evolution {} finish{}".format("=" * 48, exp_no, "=" * 48), fore=Utils.fore().LIGHTRED_EX)
         # 对结果进行处理
         pareto = Pareto(self.pop_size, self.pop[1], self.num_obj)
         pareto.fast_non_dominate_sort()
@@ -157,9 +158,9 @@ class NSGA:
         return all_res
 
 
-class NSGAJsp(NSGA):
+class NsgaJsp(Nsga):
     def __init__(self, pop_size, rc, rm, max_generation, objective, schedule):
-        NSGA.__init__(self, pop_size, rc, rm, max_generation, objective, schedule)
+        Nsga.__init__(self, pop_size, rc, rm, max_generation, objective, schedule)
 
     def decode_update(self, code):
         info = self.schedule.decode(code, direction=self.direction)

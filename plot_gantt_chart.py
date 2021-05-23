@@ -9,9 +9,10 @@ from src import *
 # file = "example.csv"  # 甘特图数据文件
 # file_save = "%s/%s" % (file_dir, file[:-4])  # 保存的甘特图名称
 """Algorithm"""
-file_dir = "./GA_MRJSP/example2"  # 甘特图数据文件所在目录
-file = "6-GanttChart.csv"  # 甘特图数据文件
-file_save = "%s/GanttChart/%s" % (file_dir, file[:-4])  # 保存的甘特图名称
+file_dir = "./GA_JSP/ft06/GanttChart"  # 甘特图数据文件所在目录
+save_dir = "./GA_JSP/ft06/GanttChartPngHtml"  # 生成的甘特图保存目录
+file = "1.csv"  # 甘特图数据文件
+file_save = "%s/%s" % (save_dir, file[:-4])  # 保存的甘特图名称
 """===================================================================================="""
 a = GanttChart("%s/%s" % (file_dir, file))  # 调用甘特图生成类
 a.gantt_chart_png(filename=file_save, fig_width=9, fig_height=5, random_colors=False, lang=1, dpi=200,

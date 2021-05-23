@@ -11,7 +11,7 @@ class Route:
     def nop(self):  # 工序数量
         return len(self.task)
 
-    def add_task(self, machine, duration, name=None, limited_wait=None, resumable=None, index=None):
+    def add_task(self, machine, duration, name=None, limited_wait=None, resumable=None, worker=None, index=None):
         if index is None:
             index = self.nop
-        self.task[index] = Task(index, machine, duration, name, limited_wait, resumable)
+        self.task[index] = Task(index, machine, duration, name, limited_wait, resumable, worker)

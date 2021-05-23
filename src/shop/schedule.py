@@ -4,12 +4,14 @@ from ..define import Crossover, Mutation, Selection
 from ..resource.code import Code
 from ..resource.job import Job
 from ..resource.machine import Machine
+from ..resource.worker import Worker
 
 
 class Schedule(Code):  # 调度资源融合类
     def __init__(self):
         self.job = {}  # 工件
         self.machine = {}  # 机器
+        self.worker = {}  # 工人
         self.best_known = None  # 已知下界值
         self.time_unit = 1  # 加工时间单位
         self.direction = 0  # 解码：正向时间表、反向时间表（仅Jsp, Fjsp）
@@ -44,6 +46,10 @@ class Schedule(Code):  # 调度资源融合类
         return len(self.machine)
 
     @property
+    def w(self):
+        return len(self.worker)
+
+    @property
     def length(self):  # 总的工序数量
         return sum([job.nop for job in self.job.values()])
 
@@ -70,6 +76,11 @@ class Schedule(Code):  # 调度资源融合类
 
     def any_task_not_done(self):  # 解码：判断是否解码结束（基于机器的编码、混合流水车间、考虑作息时间的流水车间）
         return any([any([task.start is None for task in job.task.values()]) for job in self.job.values()])
+
+    def add_worker(self, name=None, index=None):  # 添加工人
+        if index is None:
+            index = self.w
+        self.job[index] = Worker(index, name)
 
     def add_machine(self, name=None, timetable=None, index=None):  # 添加机器
         if index is None:
@@ -110,27 +121,40 @@ class Schedule(Code):  # 调度资源融合类
         if self.machine[k].end < self.job[i].task[j].end:  # 更新机器上的最大完工时间
             self.machine[k].end = self.job[i].task[j].end
 
-    def decode_common(self, i, j, k, p, v, g=None, save=True):
+    def decode_common(self, i, j, k, p, v, g=None, wok=None, save=True):
         try:
             a = self.job[i].task[v].end
         except KeyError:
             a = 0
+        if wok is not None:
+            w = wok[i][j]
+            if type(self.job[i].task[j].machine) is int:
+                index = self.job[i].task[j].woker.index(w)
+                p = self.job[i].task[j].duration[index]
+            else:
+                index_k = self.job[i].task[j].machine.index(k)
+                index = self.job[i].task[j].worker[index_k].index(w)
+                p = self.job[i].task[j].duration[index_k][index]
+            try:
+                a = max([a, self.worker[w].end])
+            except TypeError:
+                a = self.worker[w].end if a is None else a
         for r, (b, c) in enumerate(zip(self.machine[k].idle[0], self.machine[k].idle[1])):
             try:
                 early_start = max([a, b])
             except TypeError:
                 early_start = max([0, b])
             if early_start + p <= c:
-                self.job[i].task[j].start = early_start
+                res1, res2 = early_start, early_start + p
                 # if c != np.inf and self.direction == 1:
-                #     self.job[i].task[j].start = c - p
-                self.job[i].task[j].end = self.job[i].task[j].start + p
+                #     res1, res2 = c - p, c
                 if self.job[i].task[j].resumable is not None:
                     res1, res2 = self.constrain_timetable(i, j, k, p, c)
                     if res1 is False:
                         continue
-                    self.job[i].task[j].start = res1
-                    self.job[i].task[j].end = res2
+                self.job[i].task[j].start, self.job[i].task[j].end = res1, res2
+                if wok is not None:
+                    self.worker[wok[i][j]].start, self.worker[wok[i][j]].end = res1, res2
                 self.decode_update_machine_idle(i, j, k, r, self.job[i].task[j].start)
                 if save is True:
                     self.save_update_decode(i, j, k, g)
@@ -138,13 +162,13 @@ class Schedule(Code):  # 调度资源融合类
                     self.update_saved_start_end(i, j, g)
                 break
 
-    def decode_add_limited_wait(self, i, j, u, mac=None):
+    def decode_add_limited_wait(self, i, j, u, mac=None, wok=None):
         if self.job[i].task[j].limited_wait is not None:
             if self.direction == 0:
                 index = range(u, -1, -1)
             else:
                 index = range(self.job[i].nop - u - 1, self.job[i].nop, 1)
-            while self.constrain_limited_wait(i, index, mac) is False:
+            while self.constrain_limited_wait(i, index, mac, wok) is False:
                 pass
 
     def constrain_timetable(self, i, j, k, p, c=None):  # 工作时间表约束
@@ -221,18 +245,29 @@ class Schedule(Code):  # 调度资源融合类
             else:  # 工件紧前是工件, 紧后是机器的空闲时间段
                 self.machine[k].idle[0][index_next] = self.job[i].task[j].start
 
-    def constrain_limited_wait_repair_interval(self, i, index, cursor, mac=None):  # 等待时间有限约束：合法化加工时间间隔
+    def constrain_limited_wait_repair_interval(self, i, index, cursor, mac=None, wok=None):  # 等待时间有限约束：合法化加工时间间隔
         for j, j_pre in zip(index[:cursor + 1][::-1], index[1:cursor + 2][::-1]):
             if mac is None:
                 k = self.job[i].task[j].machine
-                p = self.job[i].task[j].duration
+                if wok is None:
+                    p = self.job[i].task[j].duration
+                else:
+                    w = wok[i][j]
+                    index = self.job[i].task[j].woker.index(w)
+                    p = self.job[i].task[j].duration[index]
             else:
                 k = mac[i][j]
-                p = self.job[i].task[j].duration[self.job[i].task[j].machine.index(k)]
+                if wok is None:
+                    p = self.job[i].task[j].duration[self.job[i].task[j].machine.index(k)]
+                else:
+                    w = wok[i][j]
+                    index_k = self.job[i].task[j].machine.index(k)
+                    index = self.job[i].task[j].worker[index_k].index(w)
+                    p = self.job[i].task[j].duration[index_k][index]
             self.constrain_limited_wait_release_job(i, j, k, p)
-            self.decode_common(i, j, k, p, j_pre, g=self.job[i].index_list[j], save=False)
+            self.decode_common(i, j, k, p, j_pre, g=self.job[i].index_list[j], wok=wok, save=False)
 
-    def constrain_limited_wait(self, i, index, mac=None):  # 等待时间有限约束
+    def constrain_limited_wait(self, i, index, mac=None, wok=None):  # 等待时间有限约束
         for cursor, (j, j_next) in enumerate(zip(index[1:], index[:-1])):  # index为工序索引
             if self.direction == 0:  # 正向时间表
                 limited_wait = self.job[i].task[j].limited_wait
@@ -244,29 +279,40 @@ class Schedule(Code):  # 调度资源融合类
             if interval_time > limited_wait:  # 不满足等待时间有限约束
                 if mac is None:
                     k = self.job[i].task[j].machine
-                    p = self.job[i].task[j].duration
+                    if wok is None:
+                        p = self.job[i].task[j].duration
+                    else:
+                        w = wok[i][j]
+                        index = self.job[i].task[j].woker.index(w)
+                        p = self.job[i].task[j].duration[index]
                 else:
                     k = mac[i][j]
-                    p = self.job[i].task[j].duration[self.job[i].task[j].machine.index(k)]
+                    if wok is None:
+                        p = self.job[i].task[j].duration[self.job[i].task[j].machine.index(k)]
+                    else:
+                        w = wok[i][j]
+                        index_k = self.job[i].task[j].machine.index(k)
+                        index = self.job[i].task[j].worker[index_k].index(w)
+                        p = self.job[i].task[j].duration[index_k][index]
                 delay_start = max([next_start - limited_wait - p, self.job[i].task[j].start])
                 self.constrain_limited_wait_release_job(i, j, k, p)
                 for r, (b, c) in enumerate(zip(self.machine[k].idle[0], self.machine[k].idle[1])):
                     early_start = max([delay_start, b])  # delay_start是满足等待时间有限约束的最早开始时间
                     if early_start + p <= c:
-                        self.job[i].task[j].start = early_start
+                        res1, res2 = early_start, early_start + p
                         # if c != np.inf and self.direction == 1:
-                        #     self.job[i].task[j].start = c - p
-                        self.job[i].task[j].end = self.job[i].task[j].start + p
+                        #     res1, res2 = c - p, c
                         if self.job[i].task[j].resumable is not None:
                             res1, res2 = self.constrain_timetable(i, j, k, p, c)
                             if res1 is False:
                                 continue
-                            self.job[i].task[j].start = res1
-                            self.job[i].task[j].end = res2
+                        self.job[i].task[j].start, self.job[i].task[j].end = res1, res2
+                        if wok is not None:
+                            self.worker[wok[i][j]].start, self.worker[wok[i][j]].end = res1, res2
                         self.decode_update_machine_idle(i, j, k, r, self.job[i].task[j].start)
                         self.update_saved_start_end(i, j, self.job[i].index_list[j])
                         if next_start - self.job[i].task[j].end < 0:  # 相邻工序的时间间隔不合法
-                            self.constrain_limited_wait_repair_interval(i, index, cursor, mac)
+                            self.constrain_limited_wait_repair_interval(i, index, cursor, mac, wok)
                             return False
                         break
         return True

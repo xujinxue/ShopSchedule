@@ -39,14 +39,16 @@ class Node:
 
 
 class GanttChart:
-    def __init__(self, file=None, schedule=None, mac=None):
+    def __init__(self, file=None, schedule=None, mac=None, wok=None):
         self.schedule = schedule
         self.mac = mac
+        self.wok = wok
         if file is not None:
             from .shop.schedule import Schedule
             self.data = pd.read_csv(file)
             self.n = max(self.data.loc[:, "Job"])
             self.m = max(self.data.loc[:, "Machine"])
+            self.w = max(self.data.loc[:, "Worker"])
             self.makespan = max(self.data.loc[:, "End"])
             self.schedule = Schedule()
             if self.data.loc[0, "Start"] > self.data.loc[1, "Start"]:
@@ -58,6 +60,12 @@ class GanttChart:
                 self.schedule.add_machine(name=i, index=i)
             for i in range(self.n):
                 self.schedule.add_job(name=i, index=i)
+            try:
+                self.wok = [[] for _ in range(self.n)]
+                for i in range(self.w):
+                    self.schedule.add_worker(name=i, index=i)
+            except TypeError:
+                pass
             for g, (start, operation, job, machine, end, duration) in enumerate(zip(
                     self.data.loc[:, "Start"], self.data.loc[:, "Operation"], self.data.loc[:, "Job"],
                     self.data.loc[:, "Machine"], self.data.loc[:, "End"], self.data.loc[:, "Duration"])):
@@ -69,6 +77,8 @@ class GanttChart:
                 self.schedule.job[job].task[operation].end = end
                 self.schedule.job[job].index_list.append(g)
                 self.schedule.machine[machine].index_list.append(g)
+                if self.w is not None:
+                    self.wok[job].append(self.data.loc[g, "Worker"])
                 if end > self.schedule.machine[machine].end:
                     self.schedule.machine[machine].end = end
 
@@ -312,12 +322,22 @@ class GanttChart:
 
 
 class Info(GanttChart):
-    def __init__(self, schedule, code, mac=None, route=None):
+    def __init__(self, schedule, code, mac=None, route=None, wok=None):
         self.schedule = deepcopy(schedule)
         self.code = code
         self.mac = mac
         self.route = route
-        GanttChart.__init__(self, schedule=self.schedule, mac=self.mac)
+        self.wok = wok
+        GanttChart.__init__(self, schedule=self.schedule, mac=self.mac, wok=self.wok)
+
+    def print(self):
+        code = self.code.tolist() if type(self.code) is np.ndarray else self.code
+        a = {"code": code, "mac": self.mac, "route": self.route, "wok": self.wok,
+             "direction": self.schedule.direction, "makespan": self.schedule.makespan,
+             "sjike[2]": self.schedule.sjike[2].tolist(), "sjike[1]": self.schedule.sjike[1].tolist(),
+             "sjike[3]": self.schedule.sjike[3].tolist(), "id": self, "schedule_id": self.schedule}
+        for i, j in a.items():
+            print("%s: %s" % (i, j))
 
     def trans_operation_based2machine_based(self):  # 转码：基于工序的编码->基于机器的编码
         code = [[] for _ in self.schedule.machine.keys()]
@@ -390,15 +410,16 @@ class Info(GanttChart):
 
     def save_code_to_txt(self, file):
         try:
-            Utils.save_code_to_txt(file, {"code": self.code.tolist(), "route": self.route, "mac": self.mac})
+            Utils.save_code_to_txt(file,
+                                   {"code": self.code.tolist(), "route": self.route, "mac": self.mac, "wok": self.wok})
         except AttributeError:
-            Utils.save_code_to_txt(file, {"code": self.code, "route": self.route, "mac": self.mac})
+            Utils.save_code_to_txt(file, {"code": self.code, "route": self.route, "mac": self.mac, "wok": self.wok})
 
     def save_gantt_chart_to_csv(self, file):
         if not file.endswith(".csv"):
             file = file + ".csv"
         with open(file, "w", encoding="utf-8") as f:
-            f.writelines("Job,Operation,Machine,Start,Duration,End\n")
+            f.writelines("Job,Operation,Machine,Start,Duration,End,Worker\n")
             for job in self.schedule.job.values():
                 for task in job.task.values():
                     if self.mac is None:
@@ -407,8 +428,12 @@ class Info(GanttChart):
                     else:
                         machine = self.mac[job.index][task.index]
                         duration = task.duration[task.machine.index(machine)]
-                    f.writelines("{},{},{},{},{},{}\n".format(
-                        job.index + 1, task.index + 1, machine + 1, task.start, duration, task.end))
+                    if self.wok is None:
+                        worker = task.worker
+                    else:
+                        worker = self.wok[job.index][task.index]
+                    f.writelines("{},{},{},{},{},{},{}\n".format(
+                        job.index + 1, task.index + 1, machine + 1, task.start, duration, task.end, worker))
 
     def ga_crossover_sequence(self, info):
         func_dict = {
@@ -724,7 +749,7 @@ class Info(GanttChart):
     =============================================================================
     """
 
-    def ga_crossover_assignment(self, info, tech):
+    def ga_crossover_assignment(self, info):
         mac1 = deepcopy(self.mac)
         mac2 = deepcopy(info.mac)
         for i, (p, q) in enumerate(zip(mac1, mac2)):

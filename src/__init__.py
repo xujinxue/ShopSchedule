@@ -2,7 +2,7 @@ from .algorithm import GaFjsp, GaLwFjsp, GaMrFjsp
 from .algorithm import GaFjspNew, GaLwFjspNew, GaMrFjspNew
 from .algorithm import GaFspHfsp, GaFspHfspWorkTimetable
 from .algorithm import GaJsp, GaLwJsp, GaMrJsp
-from .algorithm import NSGAJsp
+from .algorithm import NsgaJsp
 from .algorithm import OrToolsJspSat
 from .data import fjsp_benchmark, fsp_benchmark, jsp_benchmark, hfsp_benchmark
 from .data import fjsp_simulation, fsp_simulation, jsp_simulation
@@ -14,11 +14,13 @@ from .objective import Objective
 from .pareto import Pareto, SelectPareto
 from .resource import Code, Job, Machine, Task, TimeTable
 from .shop import Jsp, Fjsp, Fsp, Hfsp
+from .template import GaTemplate, NsgaTemplate
 from .utils import Utils
 
 Utils.make_dir("./Result")
 Utils.make_dir("./Result/Code")
 Utils.make_dir("./Result/GanttChart")
+Utils.make_dir("./Result/GanttChartPngHtml")
 INSTANCE_LIST_JSP = """
 ft06
 """
@@ -48,4 +50,3 @@ example2
 INSTANCE_LIST_MRFJSP = """
 example
 """
-N_EXP = 10

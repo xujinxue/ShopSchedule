@@ -14,15 +14,10 @@ def main(instance="example"):
     solution = problem.decode(code, mac, route)
     """解码方式二：无机器编码，可以在解码过程中保存机器编码"""
     # solution = problem.decode_one(code, route)
-    print(solution.code, "# solution.code")
-    print(solution.route, "# solution.route")
-    print(solution.mac, "# solution.mac")
-    print(solution.schedule.direction, "# solution.schedule.direction")
-    print(solution.schedule.makespan, "# solution.schedule.makespan")
-    print(solution.schedule.sjike[2], "# solution.schedule.sjike[2]")
+    solution.print()
     solution.save_code_to_txt("./Result/Code/%s.txt" % instance)
     solution.save_gantt_chart_to_csv("./Result/GanttChart/%s.csv" % instance)
-    # solution.gantt_chart_png("./Result/GanttChart/%s.png" % instance, key_block=True)
+    # solution.gantt_chart_png("./Result/GanttChartPngHtml/%s.png" % instance, key_block=True)
 
 
 if __name__ == '__main__':

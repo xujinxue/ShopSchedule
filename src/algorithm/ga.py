@@ -481,7 +481,7 @@ class GaFjspNew(Ga):
         Ga.__init__(self, pop_size, rc, rm, max_generation, objective, schedule, max_stay_generation)
 
     def decode(self, code, mac=None, route=None):
-        return self.schedule.decode_one(code, direction=self.direction)
+        return self.schedule.decode_new(code, direction=self.direction)
 
     def do_init(self, pop=None):
         self.record[0].append(time.perf_counter())
@@ -535,7 +535,7 @@ class GaMrFjspNew(Ga):
         Ga.__init__(self, pop_size, rc, rm, max_generation, objective, schedule, max_stay_generation)
 
     def decode(self, code, mac=None, route=None):
-        return self.schedule.decode_one(code, route, direction=self.direction)
+        return self.schedule.decode_new(code, route, direction=self.direction)
 
     def do_init(self, pop=None):
         self.record[0].append(time.perf_counter())

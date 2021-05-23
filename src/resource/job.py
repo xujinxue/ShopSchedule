@@ -31,13 +31,13 @@ class Job:  # 工件类
     def nor(self):  # 加工路径数量
         return len(self.route)
 
-    def add_task(self, machine, duration, name=None, limited_wait=None, resumable=None, index=None):
+    def add_task(self, machine, duration, name=None, limited_wait=None, resumable=None, worker=None, index=None):
         """
         添加加工任务（工序）
         """
         if index is None:
             index = self.nop
-        self.task[index] = Task(index, machine, duration, name, limited_wait, resumable)
+        self.task[index] = Task(index, machine, duration, name, limited_wait, resumable, worker)
 
     def add_route(self, name=None, index=None):
         """
