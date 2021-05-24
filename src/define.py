@@ -24,8 +24,8 @@ class Selection(Define):
     name = "selection"
     roulette = "roulette"
     champion2 = "champion2"
-    elite_strategy = "elite_strategy"
-    champion = "champion"
+    nsga_elite_strategy = "nsga_elite_strategy"
+    nsga_champion = "nsga_champion"
 
 
 class Name:

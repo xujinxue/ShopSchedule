@@ -93,8 +93,8 @@ class Nsga:
         select_pareto = SelectPareto(self.pop_size, scale, f, rank, cd)
         func_dict = {
             Selection.default: self.selection_elite_strategy,
-            Selection.elite_strategy: self.selection_elite_strategy,
-            Selection.champion: self.selection_champion,
+            Selection.nsga_elite_strategy: self.selection_elite_strategy,
+            Selection.nsga_champion: self.selection_champion,
         }
         func = func_dict[self.schedule.ga_operator[Selection.name]]
         index = func(select_pareto)

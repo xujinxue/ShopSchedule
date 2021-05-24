@@ -17,7 +17,7 @@ def run(instance="ft06"):
     nsga = NsgaJsp(pop_size=40, rc=0.85, rm=0.15, max_generation=50, objective=objective_list, schedule=problem)
     nsga.schedule.ga_operator[Crossover.name] = Crossover.pox
     nsga.schedule.ga_operator[Mutation.name] = Mutation.tpe
-    nsga.schedule.ga_operator[Selection.name] = Selection.elite_strategy
+    nsga.schedule.ga_operator[Selection.name] = Selection.nsga_elite_strategy
     nsga.schedule.para_key_block_move = False
     NsgaTemplate(save="NSGA_JSP", instance=instance, nsga=nsga, n_exp=10, n_level=5, column=0)
 
