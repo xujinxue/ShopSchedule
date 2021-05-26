@@ -511,3 +511,23 @@ class Utils:
                         for u, v in zip(tech[i][j][k], proc[i][j][k]):
                             b += "%s %s " % (u, v)
                     f.writelines("%s\n" % b)
+
+    @staticmethod
+    def route_list(n, r_min, r_max):
+        return np.random.randint(r_min, r_max + 1, n).tolist()
+
+    @staticmethod
+    def p_list(n, r, p_min, p_max):
+        a = []
+        for i in range(n):
+            a.append(Utils.route_list(r[i], p_min, p_max))
+        return a
+
+    @staticmethod
+    def q_list(n, r, p, q_min, q_max):
+        a = []
+        for i in range(n):
+            a.append([])
+            for j in range(r[i]):
+                a[i].append(Utils.route_list(p[i][j], q_min, q_max))
+        return a
