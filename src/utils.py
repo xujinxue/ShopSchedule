@@ -370,37 +370,40 @@ class Utils:
             n_job = 0
             tech, worker, proc = [], [], []
             b = [[], [], []]
-            for val in a[2:]:
-                c, d, e = [], [], []
-                data = list(map(dtype, val.split()))
-                index_m, index_mn, index_nw, index_wn, index_t = 0, 1, 2, 3, 4
-                n_machine = int(data[index_m])
-                for k in range(n_machine):
-                    c.append(int(data[index_mn]))
-                    n_worker = int(data[index_nw])
-                    f, g = [], []
-                    for cur in range(n_worker):
-                        f.append(int(data[index_wn]))
-                        g.append(time_unit * data[index_t])
-                        index_wn += 2
-                        index_t += 2
+            try:
+                for val in a[2:]:
+                    c, d, e = [], [], []
+                    data = list(map(dtype, val.split()))
+                    index_m, index_mn, index_nw, index_wn, index_t = 0, 1, 2, 3, 4
+                    n_machine = int(data[index_m])
+                    for k in range(n_machine):
+                        c.append(int(data[index_mn]))
+                        n_worker = int(data[index_nw])
+                        f, g = [], []
+                        for cur in range(n_worker):
+                            f.append(int(data[index_wn]))
+                            g.append(time_unit * data[index_t])
+                            index_wn += 2
+                            index_t += 2
+                        if minus_one is True:
+                            f = [v - 1 for v in f]
+                        d.append(f)
+                        e.append(g)
+                        index_mn = index_t - 1
+                        index_nw, index_wn, index_t = index_mn + 1, index_mn + 2, index_mn + 3
                     if minus_one is True:
-                        f = [v - 1 for v in f]
-                    d.append(f)
-                    e.append(g)
-                    index_mn = index_t - 1
-                    index_nw, index_wn, index_t = index_mn + 1, index_mn + 2, index_mn + 3
-                if minus_one is True:
-                    c = [v - 1 for v in c]
-                b[0].append(c)
-                b[1].append(d)
-                b[2].append(e)
-                if len(b[0]) == p[n_job]:
-                    tech.append(b[0])
-                    worker.append(b[1])
-                    proc.append(b[2])
-                    n_job += 1
-                    b = [[], [], []]
+                        c = [v - 1 for v in c]
+                    b[0].append(c)
+                    b[1].append(d)
+                    b[2].append(e)
+                    if len(b[0]) == p[n_job]:
+                        tech.append(b[0])
+                        worker.append(b[1])
+                        proc.append(b[2])
+                        n_job += 1
+                        b = [[], [], []]
+            except IndexError:
+                pass
             return n, m, w, p, tech, worker, proc
         except ValueError:
             return None, None, None, None, None, None, None
@@ -451,3 +454,60 @@ class Utils:
                 for j in range(n_column):
                     a += "%s," % data[j][i]
                 f.writelines(a[:-1] + "\n")
+
+    @staticmethod
+    def data_mrjsp(file, n, m, r, p, low, high, reenter=False, dtype=int):
+        tech, proc = [], []
+        for i in range(n):
+            tech.append([])
+            proc.append([])
+            for j in range(r[i]):
+                tech[i].append(np.random.choice(range(m), p[i][j], replace=reenter).tolist())
+                proc[i].append(np.random.uniform(low, high, p[i][j]).astype(dtype).tolist())
+        Utils.save_mrjsp(file, n, m, r, p, tech, proc)
+
+    @staticmethod
+    def save_mrjsp(file, n, m, r, p, tech, proc):
+        with open(file, "w", encoding="utf-8") as f:
+            f.writelines("%s %s\n" % (n, m))
+            for i in range(n):
+                a = "%s " % r[i]
+                for j in range(r[i]):
+                    a += "%s " % p[i][j]
+                f.writelines("%s\n" % a)
+                for j in range(r[i]):
+                    b = ""
+                    for u, v in zip(tech[i][j], proc[i][j]):
+                        b += "%s %s " % (u, v)
+                    f.writelines("%s\n" % b)
+
+    @staticmethod
+    def data_mrfjsp(file, n, m, r, p, q, low, high, reenter=False, dtype=int):
+        tech, proc = [], []
+        for i in range(n):
+            tech.append([])
+            proc.append([])
+            for j in range(r[i]):
+                tech[i].append([])
+                proc[i].append([])
+                for k in range(p[i][j]):
+                    tech[i][j].append((np.random.choice(range(m), q[i][j][k], replace=reenter) + 1).tolist())
+                    proc[i][j].append(np.random.uniform(low, high, q[i][j][k]).astype(dtype).tolist())
+        Utils.save_mrfjsp(file, n, m, r, p, q, tech, proc)
+
+    @staticmethod
+    def save_mrfjsp(file, n, m, r, p, q, tech, proc):
+        with open(file, "w", encoding="utf-8") as f:
+            f.writelines("%s %s\n" % (n, m))
+            for i in range(n):
+                a = "%s " % r[i]
+                for j in range(r[i]):
+                    a += "%s " % p[i][j]
+                f.writelines("%s\n" % a)
+                for j in range(r[i]):
+                    b = ""
+                    for k in range(p[i][j]):
+                        b += "%s " % q[i][j][k]
+                        for u, v in zip(tech[i][j][k], proc[i][j][k]):
+                            b += "%s %s " % (u, v)
+                    f.writelines("%s\n" % b)

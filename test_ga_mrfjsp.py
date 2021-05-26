@@ -3,9 +3,12 @@ from src import *
 
 def main(instance="example"):
     time_unit = 1
-    a = mrfjsp_benchmark.instance[instance]
+    # a = mrfjsp_benchmark.instance[instance]
+    # n, m, p, tech, proc = Utils.string2data_mrfjsp(a, int, time_unit)
+    # best_known = mrfjsp_benchmark.best_known[instance]
+    a = Utils.load_text("./src/data/mrfjsp/%s.txt" % instance)
     n, m, p, tech, proc = Utils.string2data_mrfjsp(a, int, time_unit)
-    best_known = mrfjsp_benchmark.best_known[instance]
+    best_known = None
     problem = Utils.create_schedule(Fjsp, n, m, p, tech, proc, best_known=best_known, time_unit=time_unit,
                                     multi_route=True)
     ga = GaMrFjsp(pop_size=20, rc=0.85, rm=0.15, max_generation=int(10e4), objective=Objective.makespan,

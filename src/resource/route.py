@@ -7,6 +7,10 @@ class Route:
         self.index = index
         self.task = {}
 
+    def clear(self):
+        for i in self.task.keys():
+            self.task[i].clear()
+
     @property
     def nop(self):  # 工序数量
         return len(self.task)

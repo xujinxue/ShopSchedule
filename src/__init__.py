@@ -46,10 +46,10 @@ INSTANCE_LIST_LWFJSP = """
 mk1
 """
 INSTANCE_LIST_MRJSP = """
-example2
+n3m4-1
 """
 INSTANCE_LIST_MRFJSP = """
-example
+n3m4-1
 """
 INSTANCE_LIST_DRCFJSP = """
 DMFJS01
