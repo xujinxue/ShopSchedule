@@ -367,7 +367,7 @@ class GaMrJspNew(GaMrJsp):
         GaMrJsp.__init__(self, pop_size, rc, rm, max_generation, objective, schedule, max_stay_generation)
 
     def decode(self, code, mac=None, route=None, wok=None):
-        return self.schedule.decode_new(code, direction=self.direction)
+        return self.schedule.decode_new(code, route=route, direction=self.direction)
 
 
 class GaFjsp(Ga):
