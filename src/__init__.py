@@ -2,6 +2,7 @@ from .algorithm import GaFjsp, GaLwFjsp, GaDrcFjsp, GaMrFjsp
 from .algorithm import GaFjspNew, GaLwFjspNew, GaDrcFjspNew, GaMrFjspNew
 from .algorithm import GaFspHfsp, GaFspHfspWorkTimetable
 from .algorithm import GaJsp, GaLwJsp, GaMrJsp
+from .algorithm import GaJspNew, GaLwJspNew, GaLwJspNew2, GaMrJspNew
 from .algorithm import NsgaJsp
 from .algorithm import OrToolsJspSat
 from .data import fjsp_benchmark, fsp_benchmark, jsp_benchmark, hfsp_benchmark

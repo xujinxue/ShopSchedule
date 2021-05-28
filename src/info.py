@@ -602,7 +602,9 @@ class Info(GanttChart):
         code2 = deepcopy(info.code)
         a = np.random.choice(range(self.schedule.m), 1, replace=False)[0]
         b, c = self.schedule.machine[a].index_list, info.schedule.machine[a].index_list
-        code1[b], code2[c] = code2[c], code1[b]
+        # code1[b], code2[c] = code2[c], code1[b]
+        d, e = np.delete(range(self.schedule.length), b), np.delete(range(self.schedule.length), c)
+        code1[d], code2[e] = code2[e], code1[d]
         return code1, code2
 
     def ga_crossover_sequence_mox2(self, info):
@@ -613,7 +615,9 @@ class Info(GanttChart):
         for i in a:
             b.extend(self.schedule.machine[i].index_list)
             c.extend(info.schedule.machine[i].index_list)
-        code1[b], code2[c] = code2[c], code1[b]
+        # code1[b], code2[c] = code2[c], code1[b]
+        d, e = np.delete(range(self.schedule.length), b), np.delete(range(self.schedule.length), c)
+        code1[d], code2[e] = code2[e], code1[d]
         return code1, code2
 
     def ga_crossover_sequence_ipox(self, info):

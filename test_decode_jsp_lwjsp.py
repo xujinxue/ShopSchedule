@@ -9,13 +9,16 @@ def main(instance="example"):
     c = [None, Utils.string2data_wait(b, p, int, time_unit)][0]
     problem = Utils.create_schedule(Jsp, n, m, p, tech, proc, limited_wait=c, time_unit=time_unit)
     """调度规则"""
-    node_list_complete = problem.spt_lpt_new(spt_or_lpt=0)
-    for node in node_list_complete:
-        print(node.value + 1, problem.decode(node.value, direction=1).schedule.makespan)
-    code = node_list_complete[0].value
-    solution = problem.decode(code, direction=1)
+    # node_list_complete = problem.spt_lpt_new(spt_or_lpt=0)
+    # for node in node_list_complete:
+    #     print(node.value + 1, problem.decode(node.value, direction=1).schedule.makespan)
+    # code = node_list_complete[0].value
+    # solution = problem.decode(code, direction=1)
     # """基于工序的编码"""
-    # code = problem.spt()
+    code = problem.spt()
+    solution = problem.decode(code)
+    # solution = problem.decode_new(code)
+    # solution = problem.decode_new_twice(code)
     # solution = problem.decode_limited_wait(code)
     # solution = problem.decode_limited_wait_new(code)
     # solution = problem.decode_limited_wait_new_twice(code)
