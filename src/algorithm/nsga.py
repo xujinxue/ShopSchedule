@@ -12,6 +12,7 @@ import numpy as np
 
 from ..define import Selection
 from ..pareto import Pareto, SelectPareto
+from ..resource.code import Code
 from ..utils import Utils
 
 deepcopy = copy.deepcopy
@@ -170,7 +171,7 @@ class NsgaJsp(Nsga):
         self.record[0].append(time.perf_counter())
         for i in range(self.pop_size):
             if pop is None:
-                code = self.schedule.sequence_operation_based(self.schedule.n, self.p)
+                code = Code.sequence_operation_based(self.schedule.n, self.p)
             else:
                 code = pop[0][i].code
             info = self.schedule.decode(code, direction=self.direction)

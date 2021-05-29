@@ -11,6 +11,7 @@ import time
 import numpy as np
 
 from ..define import Selection
+from ..resource.code import Code
 from ..utils import Utils
 
 deepcopy = copy.deepcopy
@@ -116,13 +117,6 @@ class Ga:
                 g, self.record[1][g] - self.record[0][g], self.record[3][g], self.record[4][g], self.record[5][g],
                 self.record[2][g]))
 
-    def save_best(self):
-        self.pop[0][0] = self.best[0]
-        self.pop[1][0] = self.best[1]
-        self.pop[2][0] = self.best[2]
-        for k in range(3):
-            self.tabu_list[k][0] = self.best[3][k]
-
     def selection_roulette(self):
         a = np.array(self.pop[2]) / sum(self.pop[2])
         b = np.array([])
@@ -139,7 +133,6 @@ class Ga:
             self.pop[2].append(pop[2][j])
             for k in range(3):
                 self.tabu_list[k][i] = tabu_list[k][j]
-        self.save_best()
 
     def selection_champion2(self):
         pop = deepcopy(self.pop)
@@ -154,7 +147,19 @@ class Ga:
             self.pop[2].append(pop[2][j])
             for k in range(3):
                 self.tabu_list[k][i] = tabu_list[k][j]
-        self.save_best()
+
+    def save_best(self):
+        self.pop[0][0] = self.best[0]
+        self.pop[1][0] = self.best[1]
+        self.pop[2][0] = self.best[2]
+        for k in range(3):
+            self.tabu_list[k][0] = self.best[3][k]
+        # index = self.pop[2].index(max(self.pop[2]))
+        # self.pop[0][index] = self.best[0]
+        # self.pop[1][index] = self.best[1]
+        # self.pop[2][index] = self.best[2]
+        # for k in range(3):
+        #     self.tabu_list[k][index] = self.best[3][k]
 
     def do_selection(self):
         func_dict = {
@@ -164,6 +169,7 @@ class Ga:
         }
         func = func_dict[self.schedule.ga_operator[Selection.name]]
         func()
+        self.save_best()
 
     def do_init(self, pop=None):
         pass
@@ -238,7 +244,7 @@ class GaJsp(Ga):
         self.record[0].append(time.perf_counter())
         for i in range(self.pop_size):
             if pop is None:
-                code = self.schedule.sequence_operation_based(self.schedule.n, self.p)
+                code = Code.sequence_operation_based(self.schedule.n, self.p)
             else:
                 code = pop[0][i].code
             info = self.decode(code)
@@ -269,7 +275,8 @@ class GaJsp(Ga):
                 self.tabu_list[k][i] = []
 
     def do_key_block_move(self, i):
-        code1 = self.pop[0][i].key_block_move()
+        # code1 = self.pop[0][i].key_block_move()
+        code1 = self.pop[0][i].key_block_move_complete()
         self.replace_individual(i, self.decode(code1))
 
 
@@ -292,9 +299,9 @@ class GaMrJsp(Ga):
         self.record[0].append(time.perf_counter())
         for i in range(self.pop_size):
             if pop is None:
-                route = self.schedule.assignment_route(self.schedule.n, self.r)
+                route = Code.assignment_route(self.schedule.n, self.r)
                 self.update_p(route)
-                code = self.schedule.sequence_operation_based(self.schedule.n, self.p)
+                code = Code.sequence_operation_based(self.schedule.n, self.p)
             else:
                 code = pop[0][i].code
                 route = pop[0][i].route
@@ -334,7 +341,8 @@ class GaMrJsp(Ga):
                 self.tabu_list[k][i] = []
 
     def do_key_block_move(self, i):
-        code1 = self.pop[0][i].key_block_move()
+        # code1 = self.pop[0][i].key_block_move()
+        code1 = self.pop[0][i].key_block_move_complete()
         self.replace_individual(i, self.decode(code1, route=self.pop[0][i].route))
 
 
@@ -381,8 +389,8 @@ class GaFjsp(Ga):
         self.record[0].append(time.perf_counter())
         for i in range(self.pop_size):
             if pop is None:
-                code = self.schedule.sequence_operation_based(self.schedule.n, self.p)
-                # mac = self.schedule.assignment_job_based(self.schedule.n, self.p, self.tech)
+                code = Code.sequence_operation_based(self.schedule.n, self.p)
+                # mac = Code.assignment_job_based(self.schedule.n, self.p, self.tech)
                 # info = self.decode(code, mac=mac)
                 info = self.schedule.decode_new(code)
             else:
@@ -425,7 +433,8 @@ class GaFjsp(Ga):
                 self.tabu_list[k][i] = []
 
     def do_key_block_move(self, i):
-        block = self.pop[0][i].key_block()
+        # block = self.pop[0][i].key_block()
+        block = self.pop[0][i].key_block_complete()
         code1 = self.pop[0][i].key_block_move(block)
         mac1 = self.pop[0][i].key_block_move_mac(block)
         self.replace_individual(i, self.decode(code1, mac=mac1))
@@ -451,10 +460,10 @@ class GaMrFjsp(Ga):
         # self.update_tech(mode=1)
         for i in range(self.pop_size):
             if pop is None:
-                route = self.schedule.assignment_route(self.schedule.n, self.r)
+                route = Code.assignment_route(self.schedule.n, self.r)
                 self.update_p(route)
-                code = self.schedule.sequence_operation_based(self.schedule.n, self.p)
-                # mac = self.schedule.assignment_job_based_route(self.schedule.n, self.p, self.tech, route)
+                code = Code.sequence_operation_based(self.schedule.n, self.p)
+                # mac = Code.assignment_job_based_route(self.schedule.n, self.p, self.tech, route)
                 # info = self.decode(code, mac, route)
                 info = self.schedule.decode_new(code, route)
             else:
@@ -507,7 +516,8 @@ class GaMrFjsp(Ga):
                 self.tabu_list[k][i] = []
 
     def do_key_block_move(self, i):
-        block = self.pop[0][i].key_block()
+        # block = self.pop[0][i].key_block()
+        block = self.pop[0][i].key_block_complete()
         code1 = self.pop[0][i].key_block_move(block)
         mac1 = self.pop[0][i].key_block_move_mac(block)
         self.replace_individual(i, self.decode(code1, mac1, self.pop[0][i].route))
@@ -524,9 +534,9 @@ class GaDrcFjsp(Ga):
         self.record[0].append(time.perf_counter())
         for i in range(self.pop_size):
             if pop is None:
-                code = self.schedule.sequence_operation_based(self.schedule.n, self.p)
-                # mac = self.schedule.assignment_job_based(self.schedule.n, self.p, self.tech)
-                # wok = self.schedule.assignment_worker(self.schedule.n, self.p, self.tech, self.worker, mac)
+                code = Code.sequence_operation_based(self.schedule.n, self.p)
+                # mac = Code.assignment_job_based(self.schedule.n, self.p, self.tech)
+                # wok = Code.assignment_worker(self.schedule.n, self.p, self.tech, self.worker, mac)
                 # info = self.decode(code, mac, wok=wok)
                 info = self.schedule.decode_worker_new(code)
             else:
@@ -581,7 +591,8 @@ class GaDrcFjsp(Ga):
 
     def do_key_block_move(self, i):
         block = self.pop[0][i].key_block(self.pop[0][i].key_route_worker)
-        code1 = self.pop[0][i].key_block_move(block)
+        # code1 = self.pop[0][i].key_block_move(block)
+        code1 = self.pop[0][i].key_block_move_complete(block)
         mac1 = self.pop[0][i].key_block_move_mac(block)
         wok1 = self.pop[0][i].key_block_move_wok(self.pop[0][i].mac, block)
         wok1 = self.pop[0][i].repair_mac_wok(mac1, wok1)
@@ -599,7 +610,7 @@ class GaFjspNew(Ga):
         self.record[0].append(time.perf_counter())
         for i in range(self.pop_size):
             if pop is None:
-                code = self.schedule.sequence_operation_based(self.schedule.n, self.p)
+                code = Code.sequence_operation_based(self.schedule.n, self.p)
             else:
                 code = pop[0][i].code
             info = self.decode(code)
@@ -630,7 +641,8 @@ class GaFjspNew(Ga):
                 self.tabu_list[k][i] = []
 
     def do_key_block_move(self, i):
-        code1 = self.pop[0][i].key_block_move()
+        # code1 = self.pop[0][i].key_block_move()
+        code1 = self.pop[0][i].key_block_move_complete()
         self.replace_individual(i, self.decode(code1))
 
 
@@ -661,9 +673,9 @@ class GaMrFjspNew(Ga):
         self.record[0].append(time.perf_counter())
         for i in range(self.pop_size):
             if pop is None:
-                route = self.schedule.assignment_route(self.schedule.n, self.r)
+                route = Code.assignment_route(self.schedule.n, self.r)
                 self.update_p(route)
-                code = self.schedule.sequence_operation_based(self.schedule.n, self.p)
+                code = Code.sequence_operation_based(self.schedule.n, self.p)
             else:
                 code = pop[0][i].code
                 route = pop[0][i].route
@@ -703,7 +715,8 @@ class GaMrFjspNew(Ga):
                 self.tabu_list[k][i] = []
 
     def do_key_block_move(self, i):
-        code1 = self.pop[0][i].key_block_move()
+        # code1 = self.pop[0][i].key_block_move()
+        code1 = self.pop[0][i].key_block_move_complete()
         self.replace_individual(i, self.decode(code1, route=self.pop[0][i].route))
 
 
@@ -718,7 +731,7 @@ class GaFspHfsp(Ga):
         self.record[0].append(time.perf_counter())
         for i in range(self.pop_size):
             if pop is None:
-                code = self.schedule.sequence_permutation(self.schedule.n)
+                code = Code.sequence_permutation(self.schedule.n)
             else:
                 code = pop[0][i].code
             info = self.decode(code)

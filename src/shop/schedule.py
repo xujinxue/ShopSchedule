@@ -1,13 +1,12 @@
 import numpy as np
 
 from ..define import Crossover, Mutation, Selection
-from ..resource.code import Code
 from ..resource.job import Job
 from ..resource.machine import Machine
 from ..resource.worker import Worker
 
 
-class Schedule(Code):  # 调度资源融合类
+class Schedule:  # 调度资源融合类
     def __init__(self):
         self.job = {}  # 工件
         self.machine = {}  # 机器

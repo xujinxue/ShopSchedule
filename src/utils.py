@@ -146,7 +146,7 @@ class Utils:
         try:
             for i in os.listdir(dir_name):
                 os.remove("%s/%s" % (dir_name, i))
-        except PermissionError:
+        except IsADirectoryError:
             pass
 
     @staticmethod

@@ -88,15 +88,28 @@ class GanttChart:
     def not_dummy(self, i):
         return True if self.schedule.sjikew[0][i] != self.schedule.sjikew[4][i] else False
 
+    def get_job_end(self):
+        job_end = {}
+        for i in self.schedule.job.keys():
+            job_end[i] = self.schedule.sjikew[4][self.schedule.job[i].index_list]
+        return job_end
+
+    def get_machine_end(self):
+        machine_end = {}
+        for i in self.schedule.machine.keys():
+            machine_end[i] = self.schedule.sjikew[4][self.schedule.machine[i].index_list]
+        return machine_end
+
+    def get_worker_end(self):
+        worker_end = {}
+        for i in self.schedule.worker.keys():
+            worker_end[i] = self.schedule.sjikew[4][self.schedule.worker[i].index_list]
+        return worker_end
+
     def key_route(self):
         critical_path = []
         node_list = []
-        job_end = {}
-        machine_end = {}
-        for i in self.schedule.job.keys():
-            job_end[i] = self.schedule.sjikew[4][self.schedule.job[i].index_list]
-        for i in self.schedule.machine.keys():
-            machine_end[i] = self.schedule.sjikew[4][self.schedule.machine[i].index_list]
+        job_end, machine_end = self.get_job_end(), self.get_machine_end()
         a = np.argwhere(self.schedule.sjikew[4] == self.schedule.makespan)[:, 0]
         if a.shape[0] > 1:
             for i in a:
@@ -139,15 +152,7 @@ class GanttChart:
     def key_route_worker(self):
         critical_path = []
         node_list = []
-        job_end = {}
-        machine_end = {}
-        worker_end = {}
-        for i in self.schedule.job.keys():
-            job_end[i] = self.schedule.sjikew[4][self.schedule.job[i].index_list]
-        for i in self.schedule.machine.keys():
-            machine_end[i] = self.schedule.sjikew[4][self.schedule.machine[i].index_list]
-        for i in self.schedule.worker.keys():
-            worker_end[i] = self.schedule.sjikew[4][self.schedule.worker[i].index_list]
+        job_end, machine_end, worker_end = self.get_job_end(), self.get_machine_end(), self.get_worker_end()
         a = np.argwhere(self.schedule.sjikew[4] == self.schedule.makespan)[:, 0]
         if a.shape[0] > 1:
             for i in a:
@@ -1067,26 +1072,37 @@ class Info(GanttChart):
         func = self.key_route if func is None else func
         if block is None:
             block = self.key_block(func)
-        for i, j in block.items():
-            if j.shape[0] >= 2:
-                head, tail = j[0], j[-1]
-                if np.random.random() < 0.5:
-                    index = np.random.choice(j[1:], 1, replace=False)[0]
-                    if np.random.random() < 0.8:
-                        value = code[head]
-                        obj = np.delete(code, head)
-                        code = np.insert(obj, index - 1, value)
-                        code[index], code[index - 1] = code[index - 1], code[index]
+        all_blocks = list(block.keys())
+        n_blocks = len(all_blocks)
+        i = 0
+        while i < n_blocks:
+            try:
+                one_block = np.random.choice(all_blocks, 1, replace=False)[0]
+                j = block[one_block]
+                i += 1
+                all_blocks.remove(one_block)
+                if j.shape[0] >= 2:
+                    head, tail = j[0], j[-1]
+                    if np.random.random() < 0.5:
+                        index = np.random.choice(j[1:], 1, replace=False)[0]
+                        if np.random.random() < 0.7:
+                            value = code[head]
+                            obj = np.delete(code, head)
+                            code = np.insert(obj, index - 1, value)
+                            code[index], code[index - 1] = code[index - 1], code[index]
+                        else:
+                            code[head], code[index] = code[index], code[head]
                     else:
-                        code[head], code[index] = code[index], code[head]
-                else:
-                    index = np.random.choice(j[:-1], 1, replace=False)[0]
-                    if np.random.random() < 0.8:
-                        value = code[tail]
-                        obj = np.delete(code, tail)
-                        code = np.insert(obj, index, value)
-                    else:
-                        code[tail], code[index] = code[index], code[tail]
+                        index = np.random.choice(j[:-1], 1, replace=False)[0]
+                        if np.random.random() < 0.7:
+                            value = code[tail]
+                            obj = np.delete(code, tail)
+                            code = np.insert(obj, index, value)
+                        else:
+                            code[tail], code[index] = code[index], code[tail]
+                    break
+            except ValueError:
+                break
         return code
 
     def key_block_move_mac(self, block=None, func=None):
@@ -1095,14 +1111,15 @@ class Info(GanttChart):
         if block is None:
             block = self.key_block(func)
         for i, j in block.items():
-            for g in j:
-                if np.random.random() < 0.5:
-                    try:
-                        a, b = self.schedule.sjikew[2][g], self.schedule.sjikew[1][g]
-                        c = [v for v in self.schedule.job[a].task[b].machine if v != mac[a][b]]
-                        mac[a][b] = np.random.choice(c, 1, replace=False)[0]
-                    except ValueError:
-                        pass
+            if j.shape[0] >= 2:
+                for g in j:
+                    if np.random.random() < 0.5:
+                        try:
+                            a, b = self.schedule.sjikew[2][g], self.schedule.sjikew[1][g]
+                            c = [v for v in self.schedule.job[a].task[b].machine if v != mac[a][b]]
+                            mac[a][b] = np.random.choice(c, 1, replace=False)[0]
+                        except ValueError:
+                            pass
         return mac
 
     def key_block_move_wok(self, mac, block=None, func=None):
@@ -1111,17 +1128,199 @@ class Info(GanttChart):
         if block is None:
             block = self.key_block(func)
         for i, j in block.items():
-            for g in j:
-                if np.random.random() < 0.5:
-                    try:
-                        a, b = self.schedule.sjikew[2][g], self.schedule.sjikew[1][g]
-                        task = self.schedule.job[a].task[b]
-                        index_k = task.machine.index(mac[a][b])
-                        c = [v for v in task.worker[index_k] if v != wok[a][b]]
-                        wok[a][b] = np.random.choice(c, 1, replace=False)[0]
-                    except ValueError:
-                        pass
+            if j.shape[0] >= 2:
+                for g in j:
+                    if np.random.random() < 0.5:
+                        try:
+                            a, b = self.schedule.sjikew[2][g], self.schedule.sjikew[1][g]
+                            task = self.schedule.job[a].task[b]
+                            index_k = task.machine.index(mac[a][b])
+                            c = [v for v in task.worker[index_k] if v != wok[a][b]]
+                            wok[a][b] = np.random.choice(c, 1, replace=False)[0]
+                        except ValueError:
+                            pass
         return wok
+
+    """"
+    =============================================================================
+    Complete key block move with evaluate strategies
+    =============================================================================
+    """
+
+    def get_duration(self, job_id, task):
+        task_id = task.index
+        if self.mac is None:
+            if self.wok is None:
+                a = task.duration
+            else:
+                wok_id = self.wok[job_id][task_id]
+                a = task.duration[task.worker.index(wok_id)]
+        else:
+            machine = self.mac[job_id][task_id]
+            if self.wok is None:
+                a = task.duration[task.machine.index(machine)]
+            else:
+                wok_id = self.wok[job_id][task_id]
+                a = task.duration[[task.machine.index(machine)]][task.worker.index(wok_id)]
+        return a
+
+    def get_pre_end_duration(self, index):
+        try:
+            job_id = self.schedule.sjikew[2][index]
+            task_id = self.schedule.sjikew[1][index]
+            machine_id = self.schedule.sjikew[3][index]
+            first = self.schedule.machine[machine_id].index_list[0]
+            if self.schedule.sjikew[0][index] == self.schedule.sjikew[0][first]:
+                a, b = 0, 0
+            else:
+                task = self.schedule.job[job_id].task[task_id - 1]
+                a, b = task.start, self.get_duration(job_id, task)
+                mac_list = self.schedule.machine[machine_id].index_list
+                index_cp = mac_list.index(index)
+                index_mp = index_cp if index_cp == 0 else index_cp
+                index_mp = self.schedule.machine[machine_id].index_list[index_mp]
+                job_id = self.schedule.sjikew[2][index_mp]
+                task_id = self.schedule.sjikew[1][index_mp]
+                task = self.schedule.job[job_id].task[task_id]
+                e, f = task.start, self.get_duration(job_id, task)
+                if e > a:
+                    a, b = e, f
+        except KeyError:
+            a, b = 0, 0
+        return a, b
+
+    def evaluate(self, neg_complete):  # 注：评价策略存在问题，需进一步思考
+        evaluate = []
+        for neg in neg_complete:
+            a, b = [], []  # 头部评价，尾部评价
+            if neg[4] in [1, 2]:  # 块首向后插入
+                c, d = self.get_pre_end_duration(neg[2])
+                a.append(c + d)  # 块首移动后的头部评价
+                index_stop = neg[3].index(neg[2])
+                for index in range(1, index_stop):
+                    c, d = self.get_pre_end_duration(neg[3][index])
+                    machine_id = self.schedule.sjikew[3][neg[3][index]]
+                    index_cp = self.schedule.machine[machine_id].index_list.index(neg[3][index])
+                    index_mp = index_cp if index_cp == 0 else index_cp - 1
+                    index_mp = self.schedule.machine[machine_id].index_list[index_mp]
+                    job_id = self.schedule.sjikew[2][index_mp]
+                    task_id = self.schedule.sjikew[1][index_mp]
+                    task = self.schedule.job[job_id].task[task_id]
+                    e, f = task.start, self.get_duration(job_id, task)
+                    a.append(max(c + d, e + f))  # 块首移动后中间关键工序的头部评价
+                g, h = self.get_pre_end_duration(neg[2])
+                a.append(max([a[0], g + h]))  # 块首移动后尾部关键工序的头部评价
+                machine_id = self.schedule.sjikew[3][neg[2]]
+                mac_list = self.schedule.machine[machine_id].index_list
+                index_cp = mac_list.index(neg[2])
+                index_mp = index_cp if index_cp == len(mac_list) - 1 else index_cp - 1
+                index_mp = self.schedule.machine[machine_id].index_list[index_mp]
+                job_id = self.schedule.sjikew[2][index_mp]
+                task_id = self.schedule.sjikew[1][index_mp]
+                task = self.schedule.job[job_id].task[task_id]
+                e, f = self.schedule.job[job_id].remain(task_id), task.start
+                b.append(max(e + a[0], e + f))  # 块首移动后的尾部评价
+                for index in range(1, index_stop):
+                    c, d = self.get_pre_end_duration(neg[3][index])
+                    machine_id = self.schedule.sjikew[3][neg[3][index]]
+                    mac_list = self.schedule.machine[machine_id].index_list
+                    index_cp = mac_list.index(neg[3][index])
+                    index_mp = index_cp if index_cp == len(mac_list) - 1 else index_cp - 1
+                    index_mp = self.schedule.machine[machine_id].index_list[index_mp]
+                    job_id = self.schedule.sjikew[2][index_mp]
+                    task_id = self.schedule.sjikew[1][index_mp]
+                    task = self.schedule.job[job_id].task[task_id]
+                    e, f = self.schedule.job[job_id].remain(task_id), task.start
+                    b.append(max(c + d, e + f))  # 块首移动后中间关键工序的尾部评价
+                job_id = self.schedule.sjikew[2][neg[2]]
+                task_id = self.schedule.sjikew[1][neg[2]]
+                task = self.schedule.job[job_id].task[task_id]
+                e, f = self.schedule.job[job_id].remain(task_id), task.start
+                b.append(max([e + b[0], e + f]))  # 块首移动后中间关键工序的尾部评价
+            else:
+                c, d = self.get_pre_end_duration(neg[1])
+                a.append(c + d)  # 块尾移动后的头部评价
+                len_neg = len(neg[3])
+                index_start = neg[3].index(neg[2])
+                for index in range(index_start, len_neg):
+                    c, d = self.get_pre_end_duration(neg[3][index])
+                    machine_id = self.schedule.sjikew[3][neg[3][index]]
+                    index_cp = self.schedule.machine[machine_id].index_list.index(neg[3][index])
+                    index_mp = index_cp if index_cp == 0 else index_cp - 1
+                    index_mp = self.schedule.machine[machine_id].index_list[index_mp]
+                    job_id = self.schedule.sjikew[2][index_mp]
+                    task_id = self.schedule.sjikew[1][index_mp]
+                    task = self.schedule.job[job_id].task[task_id]
+                    e, f = task.start, self.get_duration(job_id, task)
+                    a.append(max(c + d, e + f))  # 块尾移动后中间关键工序的头部评价
+                g, h = self.get_pre_end_duration(neg[2])
+                a.append(max([a[0], g + h]))  # 块尾移动后尾部关键工序的头部评价
+                machine_id = self.schedule.sjikew[3][neg[2]]
+                mac_list = self.schedule.machine[machine_id].index_list
+                index_cp = mac_list.index(neg[2])
+                index_mp = index_cp if index_cp == len(mac_list) - 1 else index_cp - 1
+                index_mp = self.schedule.machine[machine_id].index_list[index_mp]
+                job_id = self.schedule.sjikew[2][index_mp]
+                task_id = self.schedule.sjikew[1][index_mp]
+                task = self.schedule.job[job_id].task[task_id]
+                e, f = self.schedule.job[job_id].remain(task_id), task.start
+                b.append(max(e + a[0], e + f))  # 块尾移动后的尾部评价
+                for index in range(index_start, len_neg):
+                    c, d = self.get_pre_end_duration(neg[3][index])
+                    machine_id = self.schedule.sjikew[3][neg[3][index]]
+                    mac_list = self.schedule.machine[machine_id].index_list
+                    index_cp = mac_list.index(neg[3][index])
+                    index_mp = index_cp if index_cp == len(mac_list) - 1 else index_cp - 1
+                    index_mp = self.schedule.machine[machine_id].index_list[index_mp]
+                    job_id = self.schedule.sjikew[2][index_mp]
+                    task_id = self.schedule.sjikew[1][index_mp]
+                    task = self.schedule.job[job_id].task[task_id]
+                    e, f = self.schedule.job[job_id].remain(task_id), task.start
+                    b.append(max(c + d, e + f))  # 块尾移动后中间关键工序的尾部评价
+                job_id = self.schedule.sjikew[2][neg[2]]
+                task_id = self.schedule.sjikew[1][neg[2]]
+                task = self.schedule.job[job_id].task[task_id]
+                e, f = self.schedule.job[job_id].remain(task_id), task.start
+                b.append(max([e + b[0], e + f]))  # 块首移动后中间关键工序的尾部评价
+            z = [i + j for i, j in zip(a, b)]
+            evaluate.append(max(z))
+        return evaluate
+
+    def key_block_move_complete(self, block=None, func=None):
+        self.std_code()
+        func = self.key_route if func is None else func
+        if block is None:
+            block = self.key_block(func)
+        neg_complete = []
+        for i, j in block.items():
+            if j.shape[0] >= 2:
+                head, tail = j[0], j[-1]
+                for index in j[1:]:
+                    code = deepcopy(self.code)
+                    value = code[head]
+                    obj = np.delete(code, head)
+                    code = np.insert(obj, index - 1, value)
+                    code[index], code[index - 1] = code[index - 1], code[index]
+                    neg_complete.append([code, head, index, j.tolist(), 1])
+                for index in j[1:]:
+                    code = deepcopy(self.code)
+                    code[head], code[index] = code[index], code[head]
+                    neg_complete.append([code, head, index, j.tolist(), 2])
+                for index in j[:-1]:
+                    code = deepcopy(self.code)
+                    value = code[tail]
+                    obj = np.delete(code, tail)
+                    code = np.insert(obj, index, value)
+                    neg_complete.append([code, tail, index, j.tolist(), 3])
+                for index in j[:-1]:
+                    code = deepcopy(self.code)
+                    code[tail], code[index] = code[index], code[tail]
+                    neg_complete.append([code, tail, index, j.tolist(), 4])
+        evaluate = self.evaluate(neg_complete)
+        min_evaluate = min(evaluate)
+        choice_list = [i for i, j in enumerate(evaluate) if j == min_evaluate]
+        choice = np.random.choice(choice_list, 1, replace=False)[0]
+        return neg_complete[choice][0]
 
     """"
     =============================================================================
