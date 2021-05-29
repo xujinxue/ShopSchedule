@@ -7,6 +7,14 @@ def main(instance="example"):
     n, m, p, tech, proc = Utils.string2data_jsp_fsp(a, int, time_unit)
     best_known = jsp_benchmark.best_known[instance]
     problem = Utils.create_schedule(Jsp, n, m, p, tech, proc, best_known=best_known, time_unit=time_unit)
+    # code = Code.sequence_operation_based(n, p)
+    # solution = problem.decode(code)
+    # neg_complete, evaluate = solution.key_block_move_complete()
+    # a = []
+    # for i in neg_complete:
+    #     a.append(problem.decode(i[0]).schedule.makespan)
+    # print(evaluate, "# e")
+    # print(a, "# a")
     ga = GaJsp(pop_size=20, rc=0.85, rm=0.15, max_generation=int(10e4), objective=Objective.makespan,
                schedule=problem, max_stay_generation=50)
     ga.schedule.ga_operator[Crossover.name] = Crossover.pox
