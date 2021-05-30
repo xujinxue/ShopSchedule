@@ -1213,7 +1213,7 @@ class Info(GanttChart):
             a += self.get_duration(task_id, task)
         return a
 
-    def evaluate(self, neg_complete):  # 评价策略 ???
+    def evaluate(self, neg_complete):  # 评价策略。存在问题：近似评价值与解码得到的实际值相差较大
         evaluate = []
         for neg in neg_complete:
             a, b = [], []  # 头部评价，尾部评价
@@ -1245,11 +1245,11 @@ class Info(GanttChart):
                 b.append(max([f, g]))  # 块首的尾部评价
                 for index in range(index_stop - 1, 0, -1):
                     f = self.evaluate_tail_job(index)
-                    g = self.evaluate_tail_mac(index) - self.get_duration_by_index(neg[1])
+                    g = self.evaluate_tail_mac(index) + self.get_duration_by_index(neg[1])
                     b.append(max([f, g]))
             else:
                 """头部评价"""
-                c = self.evaluate_head_job(neg[2])
+                c = self.evaluate_head_job(neg[1])
                 e = self.evaluate_head_mac(neg[2])
                 a.append(max([c, e]))
                 index_start = neg[3].index(neg[2])
