@@ -247,6 +247,8 @@ class GanttChart:
                     self.schedule.sjikew[1][g]].block = c
                 block[c] = np.append(block[c], g)
             c += 1
+        for u, v in block.items():
+            block[u] = v[np.argsort(v)]
         return block
 
     def gantt_chart_png(self, filename="GanttChart", fig_width=9, fig_height=5, random_colors=False, lang=1, dpi=200,
@@ -1083,7 +1085,7 @@ class Info(GanttChart):
                 all_blocks.remove(one_block)
                 if j.shape[0] >= 2:
                     head, tail = j[0], j[-1]
-                    if np.random.random() < 0.5:
+                    if np.random.random() < 0.6:
                         index = np.random.choice(j[1:], 1, replace=False)[0]
                         if np.random.random() < 0.7:
                             value = code[head]
@@ -1164,102 +1166,115 @@ class Info(GanttChart):
                 a = task.duration[[task.machine.index(machine)]][task.worker.index(wok_id)]
         return a
 
-    def get_pre_end_duration(self, index):
-        try:
-            job_id = self.schedule.sjikew[2][index]
-            task_id = self.schedule.sjikew[1][index]
-            machine_id = self.schedule.sjikew[3][index]
-            first = self.schedule.machine[machine_id].index_list[0]
-            if self.schedule.sjikew[0][index] == self.schedule.sjikew[0][first]:
-                a, b = 0, 0
-            else:
-                task = self.schedule.job[job_id].task[task_id - 1]
-                a, b = task.start, self.get_duration(job_id, task)
-            mac_list = self.schedule.machine[machine_id].index_list
-            index_cp = mac_list.index(index)
-            index_mp = index_cp if index_cp == 0 else index_cp - 1
-            index_mp = self.schedule.machine[machine_id].index_list[index_mp]
-            job_id = self.schedule.sjikew[2][index_mp]
-            task_id = self.schedule.sjikew[1][index_mp]
-            task = self.schedule.job[job_id].task[task_id]
-            e, f = task.start, self.get_duration(job_id, task)
-            if e > a:
-                a, b = e, f
-        except KeyError:
-            a, b = 0, 0
-        return a, b
+    def get_duration_by_index(self, index):
+        job_id = self.schedule.sjikew[2][index]
+        task_id = self.schedule.sjikew[1][index]
+        task = self.schedule.job[job_id].task[task_id]
+        return self.get_duration(job_id, task)
 
-    def get_machine_remain(self, index):
+    def evaluate_head_job(self, index):
+        job_id = self.schedule.sjikew[2][index]
+        task_id = self.schedule.sjikew[1][index]
+        machine_id = self.schedule.sjikew[3][index]
+        first = self.schedule.machine[machine_id].index_list[0]
+        if self.schedule.sjikew[0][index] == self.schedule.sjikew[0][first]:
+            a = 0
+        else:
+            try:
+                a = self.schedule.job[job_id].task[task_id - 1].end
+            except KeyError:
+                a = 0
+        b = self.get_duration(job_id, self.schedule.job[job_id].task[task_id])
+        return a + b
+
+    def evaluate_head_mac(self, index):
+        machine_id = self.schedule.sjikew[3][index]
+        mac_list = self.schedule.machine[machine_id].index_list
+        index_cp = mac_list.index(index)
+        index_mp = index_cp if index_cp == 0 else index_cp - 1
+        index = self.schedule.machine[machine_id].index_list[index_mp]
+        a = 0 if index_mp == 0 else self.schedule.sjikew[0][index]
+        return a
+
+    def evaluate_tail_job(self, index):
+        job_id = self.schedule.sjikew[2][index]
+        task_id = self.schedule.sjikew[1][index]
+        return self.schedule.job[job_id].remain(task_id, include=False)
+
+    def evaluate_tail_mac(self, index):
         a = 0
         machine_id = self.schedule.sjikew[3][index]
         mac_list = self.schedule.machine[machine_id].index_list
-        remain = [i for i in mac_list if i >= index]
-        for i in remain:
+        b = [i for i in mac_list if i > index]
+        for i in b:
             job_id = self.schedule.sjikew[2][i]
             task_id = self.schedule.sjikew[1][i]
             task = self.schedule.job[job_id].task[task_id]
             a += self.get_duration(task_id, task)
         return a
 
-    def evaluate(self, neg_complete):  # 评价策略
+    def evaluate(self, neg_complete):  # 评价策略 ???
         evaluate = []
         for neg in neg_complete:
             a, b = [], []  # 头部评价，尾部评价
             if neg[4] in [1, 2]:  # 块首向后插入
-                c, d = self.get_pre_end_duration(neg[2])
-                a.append(c + d)  # 块首移动后的头部评价
                 index_stop = neg[3].index(neg[2]) + 1
                 if neg[4] == 1:
-                    for index in range(1, index_stop):
-                        c, d = self.get_pre_end_duration(neg[3][index])
-                        a.append(c + d)  # 块首移动后其他关键工序的头部评价
+                    """头部评价"""
+                    c = self.evaluate_head_job(neg[3][1])
+                    e = self.evaluate_head_mac(neg[1])
+                    a.append(max([c, e]))  # 块首移动后第一个中间关键工序的头部评价
+                    for tmp, index in enumerate(range(2, index_stop)):
+                        c = self.evaluate_head_job(neg[3][index])
+                        e = self.get_duration_by_index(index)
+                        a.append(max([a[tmp] + e, c]))  # 块首移动后其他中间关键工序的头部评价
                 else:
-                    for index in range(1, index_stop - 1):
-                        c, d = self.get_pre_end_duration(neg[3][index])
-                        a.append(c + d)  # 块首移动后其他关键工序的头部评价
-                    c, d = self.get_pre_end_duration(neg[2])
-                    e, f = self.get_pre_end_duration(neg[2])
-                    g, h = c + d, e + f
-                    a.append(g if g > h else g)  # 块尾移动后的头部评价
-                job_id = self.schedule.sjikew[2][neg[1]]
-                task_id = self.schedule.sjikew[1][neg[1]]
-                e = max([self.schedule.job[job_id].remain(task_id), self.get_machine_remain(neg[1])])
-                b.append(a[0] + e)  # 块首移动后的尾部评价
-                for index in range(1, index_stop):
-                    job_id = self.schedule.sjikew[2][neg[3][index]]
-                    task_id = self.schedule.sjikew[1][neg[3][index]]
-                    e = max([self.schedule.job[job_id].remain(task_id), self.get_machine_remain(neg[3][index])])
-                    b.append(a[index] + e)  # 块首移动后其他关键工序的尾部评价
+                    """头部评价"""
+                    c = self.evaluate_head_job(neg[2])
+                    e = self.evaluate_head_mac(neg[1])
+                    a.append(max([c, e]))  # 交换后的头部评价
+                    for tmp, index in enumerate(range(1, index_stop - 1)):
+                        c = self.evaluate_head_job(neg[3][index])
+                        e = self.get_duration_by_index(index)
+                        a.append(max([a[tmp] + e, c]))  # 块首移动后其他中间关键工序的头部评价
+                e = self.get_duration_by_index(neg[1])
+                a.append(max([a[-1] + e, self.evaluate_head_job(neg[1])]))  # 块首的头部评价
+                """尾部评价"""
+                f = self.evaluate_tail_job(neg[1])
+                g = self.evaluate_tail_mac(neg[2])
+                b.append(max([f, g]))  # 块首的尾部评价
+                for index in range(index_stop - 1, 0, -1):
+                    f = self.evaluate_tail_job(index)
+                    g = self.evaluate_tail_mac(index) - self.get_duration_by_index(neg[1])
+                    b.append(max([f, g]))
             else:
-                c, d = self.get_pre_end_duration(neg[1])
-                e, f = self.get_pre_end_duration(neg[2])
-                g, h = c + d, e + f
-                a.append(g if g > h else g)  # 块尾移动后的头部评价
+                """头部评价"""
+                c = self.evaluate_head_job(neg[2])
+                e = self.evaluate_head_mac(neg[2])
+                a.append(max([c, e]))
                 index_start = neg[3].index(neg[2])
                 len_neg = len(neg[3])
                 if neg[4] == 3:
-                    for index in range(index_start, len_neg):
-                        c, d = self.get_pre_end_duration(neg[3][index])
-                        e = c + d
-                        a.append(e if e > a[0] else e)  # 块尾移动后其他关键工序的头部评价
+                    for tmp, index in enumerate(range(index_start, len_neg - 1)):
+                        c = self.evaluate_head_job(neg[3][index])
+                        e = self.get_duration_by_index(index)
+                        a.append(max([a[tmp] + e, c]))
                 else:
-                    for index in range(index_start, len_neg - 1):
-                        c, d = self.get_pre_end_duration(neg[3][index])
-                        e = c + d
-                        a.append(e if e > a[0] else e)  # 块尾移动后其他关键工序的头部评价
-                    c, d = self.get_pre_end_duration(neg[2])
-                    e, f = self.get_pre_end_duration(neg[2])
-                    g, h = c + d, e + f
-                    a.append(g if g > h else g)
-                job_id = self.schedule.sjikew[2][neg[1]]
-                task_id = self.schedule.sjikew[1][neg[1]]
-                e = max([self.schedule.job[job_id].remain(task_id), self.get_machine_remain(neg[1])])
-                b.append(a[0] + e)  # 块尾移动后的尾部评价
-                for tmp, index in enumerate(range(index_start, len_neg)):
-                    job_id = self.schedule.sjikew[2][neg[3][index]]
-                    task_id = self.schedule.sjikew[1][neg[3][index]]
-                    e = max([self.schedule.job[job_id].remain(task_id), self.get_machine_remain(neg[3][index])])
-                    b.append(a[tmp + 1] + e)  # 块尾移动后其他关键工序的尾部评价
+                    for tmp, index in enumerate(range(index_start + 1, len_neg - 1)):
+                        c = self.evaluate_head_job(neg[3][index])
+                        e = self.get_duration_by_index(index)
+                        a.append(max([a[tmp] + e, c]))
+                    e = self.get_duration_by_index(neg[2])
+                    a.append(max([a[-1] + e, self.evaluate_head_job(neg[2])]))
+                """尾部评价"""
+                f = self.evaluate_tail_job(neg[1])
+                g = self.evaluate_tail_mac(neg[2]) - self.get_duration_by_index(neg[1])
+                b.append(max([f, g]))
+                for index in range(index_start, len_neg - 1):
+                    f = self.evaluate_tail_job(index)
+                    g = self.evaluate_tail_mac(index) - self.get_duration_by_index(neg[1])
+                    b.append(max([f, g]))
+            b = b[::-1]
             z = [i + j for i, j in zip(a, b)]
             evaluate.append(max(z))
         return evaluate
@@ -1295,8 +1310,9 @@ class Info(GanttChart):
                     code[tail], code[index] = code[index], code[tail]
                     neg_complete.append([code, tail, index, j.tolist(), 4])
         evaluate = self.evaluate(neg_complete)
-        min_evaluate = min(evaluate)
-        choice_list = [i for i, j in enumerate(evaluate) if j == min_evaluate]
+        # threshold = min(evaluate)
+        threshold = sum(evaluate) / len(evaluate)
+        choice_list = [i for i, j in enumerate(evaluate) if j <= threshold]
         choice = np.random.choice(choice_list, 1, replace=False)[0]
         return neg_complete[choice][0]
         # return neg_complete, evaluate

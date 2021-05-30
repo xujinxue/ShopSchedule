@@ -55,32 +55,32 @@ class Job:  # 工件类
     def end(self):  # 工件的加工完成时间
         return max([task.end for task in self.task.values() if task.start != task.end])
 
-    def done(self, index):  # 调度规则用：已完成的加工时间（index为工件索引）
+    def done(self, index, include=True):  # 调度规则用：已完成的加工时间（index为工件索引）
         a = 0
         for i, j in self.task.items():
-            if i <= index:
+            if i < index or (include is True and i == index):
                 a += j.duration
         return a
 
-    def remain(self, index):  # 调度规则用：剩余的加工时间
+    def remain(self, index, include=True):  # 调度规则用：剩余的加工时间
         a = 0
         for i, j in self.task.items():
-            if i >= index:
+            if i > index or (include is True and i == index):
                 a += j.duration
         return a
 
-    def done_limited_wait(self, index):  # 调度规则用：已完成的允许等待时间
+    def done_limited_wait(self, index, include=True):  # 调度规则用：已完成的允许等待时间
         a = 0
         for i, j in self.task.items():
-            if i <= index:
+            if i < index or (include is True and i == index):
                 if j.limited_wait != np.inf:
                     a += j.limited_wait
         return a
 
-    def remain_limited_wait(self, index):  # 调度规则用：剩余的允许等待时间
+    def remain_limited_wait(self, index, include=True):  # 调度规则用：剩余的允许等待时间
         a = 0
         for i, j in self.task.items():
-            if i >= index:
+            if i > index or (include is True and i == index):
                 if j.limited_wait != np.inf:
                     a += j.limited_wait
         return a
