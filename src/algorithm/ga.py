@@ -278,7 +278,7 @@ class GaJsp(Ga):
         # code1 = self.pop[0][i].key_block_move()
         code1 = self.pop[0][i].key_block_move_complete()
         self.replace_individual(i, self.decode(code1))
-        # code1_complete, evaluate = self.pop[0][i].key_block_move_complete()
+        # code1_complete = self.pop[0][i].key_block_move_complete()
         # for code1 in code1_complete:
         #     self.replace_individual(i, self.decode(code1[0]))
 

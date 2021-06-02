@@ -1193,7 +1193,7 @@ class Info(GanttChart):
         index_cp = mac_list.index(index)
         index_mp = index_cp if index_cp == 0 else index_cp - 1
         index = self.schedule.machine[machine_id].index_list[index_mp]
-        a = 0 if index_mp == 0 else self.schedule.sjikew[0][index]
+        a = 0 if index_mp == 0 else self.schedule.sjikew[4][index]
         return a
 
     def evaluate_tail_job(self, index):
@@ -1205,7 +1205,10 @@ class Info(GanttChart):
         a = 0
         machine_id = self.schedule.sjikew[3][index]
         mac_list = self.schedule.machine[machine_id].index_list
-        b = [i for i in mac_list if i > index]
+        if self.schedule.direction == 0:
+            b = [i for i in mac_list if i > index]
+        else:
+            b = [i for i in mac_list if i < index]
         for i in b:
             job_id = self.schedule.sjikew[2][i]
             task_id = self.schedule.sjikew[1][i]
@@ -1213,7 +1216,7 @@ class Info(GanttChart):
             a += self.get_duration(task_id, task)
         return a
 
-    def evaluate(self, neg_complete):  # 评价策略。存在问题：近似评价值与解码得到的实际值相差较大
+    def evaluate(self, neg_complete):  # 领域结构的近似评价过程
         evaluate = []
         for neg in neg_complete:
             a, b = [], []  # 头部评价，尾部评价
@@ -1222,59 +1225,60 @@ class Info(GanttChart):
                 if neg[4] == 1:
                     """头部评价"""
                     c = self.evaluate_head_job(neg[3][1])
-                    e = self.evaluate_head_mac(neg[1])
-                    a.append(max([c, e]))  # 块首移动后第一个中间关键工序的头部评价
+                    e = self.evaluate_head_mac(neg[1]) + self.get_duration_by_index(neg[3][1])
+                    a.append(max([c, e]))  # 关键上的第2道工序的头部评价
                     for tmp, index in enumerate(range(2, index_stop)):
                         c = self.evaluate_head_job(neg[3][index])
                         e = self.get_duration_by_index(index)
-                        a.append(max([a[tmp] + e, c]))  # 块首移动后其他中间关键工序的头部评价
+                        a.append(max([a[tmp] + e, c]))  # 关键上的第3道工序至插入位置工序的头部评价
                 else:
                     """头部评价"""
                     c = self.evaluate_head_job(neg[2])
-                    e = self.evaluate_head_mac(neg[1])
-                    a.append(max([c, e]))  # 交换后的头部评价
+                    e = self.evaluate_head_mac(neg[1]) + self.get_duration_by_index(neg[2])
+                    a.append(max([c, e]))  # 插入位置工序的头部评价
                     for tmp, index in enumerate(range(1, index_stop - 1)):
                         c = self.evaluate_head_job(neg[3][index])
                         e = self.get_duration_by_index(index)
-                        a.append(max([a[tmp] + e, c]))  # 块首移动后其他中间关键工序的头部评价
+                        a.append(max([a[tmp] + e, c]))  # 关键上的第2道工序至插入位置起倒数第2道工序的头部评价
+                    a[-1], a[:-1] = a[0], a[1:]
                 e = self.get_duration_by_index(neg[1])
                 a.append(max([a[-1] + e, self.evaluate_head_job(neg[1])]))  # 块首的头部评价
                 """尾部评价"""
-                f = self.evaluate_tail_job(neg[1])
-                g = self.evaluate_tail_mac(neg[2])
-                b.append(max([f, g]))  # 块首的尾部评价
-                for index in range(index_stop - 1, 0, -1):
+                for index in range(index_stop - 1, 0, -1):  # 插入位置工序至关键上的第2道工序的尾部评价
                     f = self.evaluate_tail_job(index)
                     g = self.evaluate_tail_mac(index) + self.get_duration_by_index(neg[1])
                     b.append(max([f, g]))
+                f = self.evaluate_tail_job(neg[1])
+                g = self.evaluate_tail_mac(neg[2])
+                b.append(max([f, g]))  # 块首的尾部评价
             else:
                 """头部评价"""
                 c = self.evaluate_head_job(neg[1])
-                e = self.evaluate_head_mac(neg[2])
-                a.append(max([c, e]))
+                e = self.evaluate_head_mac(neg[2]) + self.get_duration_by_index(neg[1])
+                a.append(max([c, e]))  # 块尾的头部评价
                 index_start = neg[3].index(neg[2])
                 len_neg = len(neg[3])
                 if neg[4] == 3:
-                    for tmp, index in enumerate(range(index_start, len_neg - 1)):
+                    for tmp, index in enumerate(range(index_start, len_neg - 1)):  # 插入位置起第1道工序至倒数第2道工序的头部评价
                         c = self.evaluate_head_job(neg[3][index])
                         e = self.get_duration_by_index(index)
                         a.append(max([a[tmp] + e, c]))
                 else:
-                    for tmp, index in enumerate(range(index_start + 1, len_neg - 1)):
+                    for tmp, index in enumerate(range(index_start + 1, len_neg - 1)):  # 插入位置起第2道工序至倒数第2道工序的头部评价
                         c = self.evaluate_head_job(neg[3][index])
                         e = self.get_duration_by_index(index)
                         a.append(max([a[tmp] + e, c]))
                     e = self.get_duration_by_index(neg[2])
-                    a.append(max([a[-1] + e, self.evaluate_head_job(neg[2])]))
+                    a.append(max([a[-1] + e, self.evaluate_head_job(neg[2])]))  # 插入位置起第1道工序的头部评价
+                    a[-1], a[:-1] = a[0], a[1:]
                 """尾部评价"""
                 f = self.evaluate_tail_job(neg[1])
                 g = self.evaluate_tail_mac(neg[2]) - self.get_duration_by_index(neg[1])
-                b.append(max([f, g]))
-                for index in range(index_start, len_neg - 1):
+                b.append(max([f, g]))  # 块尾的尾部评价
+                for index in range(index_start, len_neg - 1):  # 插入位置起第1道工序至倒数第2道工序的尾部评价
                     f = self.evaluate_tail_job(index)
                     g = self.evaluate_tail_mac(index) - self.get_duration_by_index(neg[1])
                     b.append(max([f, g]))
-            b = b[::-1]
             z = [i + j for i, j in zip(a, b)]
             evaluate.append(max(z))
         return evaluate
@@ -1315,7 +1319,7 @@ class Info(GanttChart):
         choice_list = [i for i, j in enumerate(evaluate) if j <= threshold]
         choice = np.random.choice(choice_list, 1, replace=False)[0]
         return neg_complete[choice][0]
-        # return neg_complete, evaluate
+        # return neg_complete
 
     """"
     =============================================================================

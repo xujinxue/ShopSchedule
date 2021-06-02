@@ -19,7 +19,7 @@ def main(instance="example"):
     ga.schedule.para_key_block_move = False
     ga.schedule.para_tabu = False
     ga.schedule.para_dislocation = False
-    GaTemplate(save="GA_MRFJSP", instance=instance, ga=ga,  n_exp=10)
+    GaTemplate(save="GA_MRFJSP", instance=instance, ga=ga, n_exp=10)
 
 
 def exp():

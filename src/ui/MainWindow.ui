@@ -1,354 +1,355 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>800</width>
-    <height>520</height>
-   </rect>
-  </property>
-  <property name="windowTitle">
-   <string>制造车间作业优化调度系统</string>
-  </property>
-  <property name="windowIcon">
-   <iconset resource="apprcc.qrc">
-    <normaloff>:/pic/pic/logo.ico</normaloff>:/pic/pic/logo.ico</iconset>
-  </property>
-  <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout_2">
-    <item row="0" column="0">
-     <layout class="QGridLayout" name="gridLayout">
-      <item row="1" column="0">
-       <widget class="QGroupBox" name="groupBox_3">
-        <property name="title">
-         <string>优化算法</string>
+    <class>MainWindow</class>
+    <widget class="QMainWindow" name="MainWindow">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>800</width>
+                <height>520</height>
+            </rect>
         </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
+        <property name="windowTitle">
+            <string>制造车间作业优化调度系统</string>
         </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QGroupBox" name="groupBox_4">
-        <property name="title">
-         <string>结果分析</string>
+        <property name="windowIcon">
+            <iconset resource="apprcc.qrc">
+                <normaloff>:/pic/pic/logo.ico</normaloff>:/pic/pic/logo.ico
+            </iconset>
         </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QGroupBox" name="groupBox_2">
-        <property name="title">
-         <string>调度数据</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QGroupBox" name="groupBox">
-        <property name="title">
-         <string>调度类型</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_3">
-         <item row="4" column="0">
-          <widget class="QLabel" name="label_3">
-           <property name="text">
-            <string>优化目标</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="1">
-          <layout class="QGridLayout" name="gridLayout_4">
-           <item row="0" column="0">
-            <widget class="QCheckBox" name="checkBoxMakespan">
-             <property name="text">
-              <string>工期</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QCheckBox" name="checkBoxTotalMakespan">
-             <property name="text">
-              <string>工期之和</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="2">
-            <widget class="QCheckBox" name="checkBoxTotalFlowTime">
-             <property name="text">
-              <string>总流程时间</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="2">
-            <widget class="QCheckBox" name="checkBoxEarliness">
-             <property name="text">
-              <string>总提前期</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QCheckBox" name="checkBoxTardiness">
-             <property name="text">
-              <string>总拖期</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QCheckBox" name="checkBoxNTardiness">
-             <property name="text">
-              <string>拖期工件数</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item row="2" column="1">
-          <layout class="QGridLayout" name="gridLayout_5">
-           <item row="0" column="0">
-            <widget class="QCheckBox" name="checkBoxBasic">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="text">
-              <string>基本约束</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QCheckBox" name="checkBoxWorkTimetable">
-             <property name="text">
-              <string>工作时间表</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QCheckBox" name="checkBoxNoWait">
-             <property name="text">
-              <string>无等待</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QCheckBox" name="checkBoxLimitedWait">
-             <property name="text">
-              <string>等待时间有限</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="label_2">
-           <property name="text">
-            <string>数据来源</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_4">
-           <property name="text">
-            <string>约束条件</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QComboBox" name="comboBoxShopType">
-           <item>
-            <property name="text">
-             <string>作业车间</string>
+        <widget class="QWidget" name="centralwidget">
+            <layout class="QGridLayout" name="gridLayout_2">
+                <item row="0" column="0">
+                    <layout class="QGridLayout" name="gridLayout">
+                        <item row="1" column="0">
+                            <widget class="QGroupBox" name="groupBox_3">
+                                <property name="title">
+                                    <string>优化算法</string>
+                                </property>
+                                <property name="alignment">
+                                    <set>Qt::AlignCenter</set>
+                                </property>
+                            </widget>
+                        </item>
+                        <item row="1" column="1">
+                            <widget class="QGroupBox" name="groupBox_4">
+                                <property name="title">
+                                    <string>结果分析</string>
+                                </property>
+                                <property name="alignment">
+                                    <set>Qt::AlignCenter</set>
+                                </property>
+                            </widget>
+                        </item>
+                        <item row="0" column="1">
+                            <widget class="QGroupBox" name="groupBox_2">
+                                <property name="title">
+                                    <string>调度数据</string>
+                                </property>
+                                <property name="alignment">
+                                    <set>Qt::AlignCenter</set>
+                                </property>
+                            </widget>
+                        </item>
+                        <item row="0" column="0">
+                            <widget class="QGroupBox" name="groupBox">
+                                <property name="title">
+                                    <string>调度类型</string>
+                                </property>
+                                <property name="alignment">
+                                    <set>Qt::AlignCenter</set>
+                                </property>
+                                <layout class="QGridLayout" name="gridLayout_3">
+                                    <item row="4" column="0">
+                                        <widget class="QLabel" name="label_3">
+                                            <property name="text">
+                                                <string>优化目标</string>
+                                            </property>
+                                            <property name="alignment">
+                                                <set>Qt::AlignCenter</set>
+                                            </property>
+                                        </widget>
+                                    </item>
+                                    <item row="4" column="1">
+                                        <layout class="QGridLayout" name="gridLayout_4">
+                                            <item row="0" column="0">
+                                                <widget class="QCheckBox" name="checkBoxMakespan">
+                                                    <property name="text">
+                                                        <string>工期</string>
+                                                    </property>
+                                                    <property name="checked">
+                                                        <bool>true</bool>
+                                                    </property>
+                                                </widget>
+                                            </item>
+                                            <item row="0" column="1">
+                                                <widget class="QCheckBox" name="checkBoxTotalMakespan">
+                                                    <property name="text">
+                                                        <string>工期之和</string>
+                                                    </property>
+                                                </widget>
+                                            </item>
+                                            <item row="0" column="2">
+                                                <widget class="QCheckBox" name="checkBoxTotalFlowTime">
+                                                    <property name="text">
+                                                        <string>总流程时间</string>
+                                                    </property>
+                                                </widget>
+                                            </item>
+                                            <item row="1" column="2">
+                                                <widget class="QCheckBox" name="checkBoxEarliness">
+                                                    <property name="text">
+                                                        <string>总提前期</string>
+                                                    </property>
+                                                </widget>
+                                            </item>
+                                            <item row="1" column="1">
+                                                <widget class="QCheckBox" name="checkBoxTardiness">
+                                                    <property name="text">
+                                                        <string>总拖期</string>
+                                                    </property>
+                                                </widget>
+                                            </item>
+                                            <item row="1" column="0">
+                                                <widget class="QCheckBox" name="checkBoxNTardiness">
+                                                    <property name="text">
+                                                        <string>拖期工件数</string>
+                                                    </property>
+                                                </widget>
+                                            </item>
+                                        </layout>
+                                    </item>
+                                    <item row="2" column="1">
+                                        <layout class="QGridLayout" name="gridLayout_5">
+                                            <item row="0" column="0">
+                                                <widget class="QCheckBox" name="checkBoxBasic">
+                                                    <property name="enabled">
+                                                        <bool>false</bool>
+                                                    </property>
+                                                    <property name="text">
+                                                        <string>基本约束</string>
+                                                    </property>
+                                                    <property name="checked">
+                                                        <bool>true</bool>
+                                                    </property>
+                                                </widget>
+                                            </item>
+                                            <item row="0" column="1">
+                                                <widget class="QCheckBox" name="checkBoxWorkTimetable">
+                                                    <property name="text">
+                                                        <string>工作时间表</string>
+                                                    </property>
+                                                </widget>
+                                            </item>
+                                            <item row="1" column="0">
+                                                <widget class="QCheckBox" name="checkBoxNoWait">
+                                                    <property name="text">
+                                                        <string>无等待</string>
+                                                    </property>
+                                                </widget>
+                                            </item>
+                                            <item row="1" column="1">
+                                                <widget class="QCheckBox" name="checkBoxLimitedWait">
+                                                    <property name="text">
+                                                        <string>等待时间有限</string>
+                                                    </property>
+                                                </widget>
+                                            </item>
+                                        </layout>
+                                    </item>
+                                    <item row="1" column="0">
+                                        <widget class="QLabel" name="label_2">
+                                            <property name="text">
+                                                <string>数据来源</string>
+                                            </property>
+                                            <property name="alignment">
+                                                <set>Qt::AlignCenter</set>
+                                            </property>
+                                        </widget>
+                                    </item>
+                                    <item row="2" column="0">
+                                        <widget class="QLabel" name="label_4">
+                                            <property name="text">
+                                                <string>约束条件</string>
+                                            </property>
+                                            <property name="alignment">
+                                                <set>Qt::AlignCenter</set>
+                                            </property>
+                                        </widget>
+                                    </item>
+                                    <item row="0" column="1">
+                                        <widget class="QComboBox" name="comboBoxShopType">
+                                            <item>
+                                                <property name="text">
+                                                    <string>作业车间</string>
+                                                </property>
+                                            </item>
+                                            <item>
+                                                <property name="text">
+                                                    <string>柔性作业车间</string>
+                                                </property>
+                                            </item>
+                                            <item>
+                                                <property name="text">
+                                                    <string>流水车间</string>
+                                                </property>
+                                            </item>
+                                            <item>
+                                                <property name="text">
+                                                    <string>混合流水车间</string>
+                                                </property>
+                                            </item>
+                                            <item>
+                                                <property name="text">
+                                                    <string>多加工路径作业车间</string>
+                                                </property>
+                                            </item>
+                                            <item>
+                                                <property name="text">
+                                                    <string>多加工路径柔性作业车间</string>
+                                                </property>
+                                            </item>
+                                            <item>
+                                                <property name="text">
+                                                    <string>考虑工人的柔性作业车间</string>
+                                                </property>
+                                            </item>
+                                        </widget>
+                                    </item>
+                                    <item row="0" column="0">
+                                        <widget class="QLabel" name="label">
+                                            <property name="text">
+                                                <string>车间类型</string>
+                                            </property>
+                                            <property name="alignment">
+                                                <set>Qt::AlignCenter</set>
+                                            </property>
+                                        </widget>
+                                    </item>
+                                    <item row="1" column="1">
+                                        <widget class="QComboBox" name="comboBoxDataSource">
+                                            <item>
+                                                <property name="text">
+                                                    <string>输入数据</string>
+                                                </property>
+                                            </item>
+                                            <item>
+                                                <property name="text">
+                                                    <string>标准算例</string>
+                                                </property>
+                                            </item>
+                                        </widget>
+                                    </item>
+                                    <item row="3" column="1">
+                                        <widget class="Line" name="line">
+                                            <property name="orientation">
+                                                <enum>Qt::Horizontal</enum>
+                                            </property>
+                                        </widget>
+                                    </item>
+                                </layout>
+                            </widget>
+                        </item>
+                    </layout>
+                </item>
+            </layout>
+        </widget>
+        <widget class="QStatusBar" name="statusbar"/>
+        <widget class="QMenuBar" name="menuBar">
+            <property name="geometry">
+                <rect>
+                    <x>0</x>
+                    <y>0</y>
+                    <width>800</width>
+                    <height>23</height>
+                </rect>
             </property>
-           </item>
-           <item>
+            <widget class="QMenu" name="menufile">
+                <property name="title">
+                    <string>文件</string>
+                </property>
+                <addaction name="actionNew"/>
+                <addaction name="actionOpen"/>
+            </widget>
+            <widget class="QMenu" name="menuHelp">
+                <property name="title">
+                    <string>帮助</string>
+                </property>
+                <addaction name="actionAbout"/>
+            </widget>
+            <addaction name="menufile"/>
+            <addaction name="menuHelp"/>
+        </widget>
+        <action name="actionJSP">
             <property name="text">
-             <string>柔性作业车间</string>
+                <string>静态作业车间</string>
             </property>
-           </item>
-           <item>
+            <property name="toolTip">
+                <string>静态作业车间</string>
+            </property>
+        </action>
+        <action name="actionFJSP">
             <property name="text">
-             <string>流水车间</string>
+                <string>静态柔性作业车间</string>
             </property>
-           </item>
-           <item>
+        </action>
+        <action name="actionFSP">
             <property name="text">
-             <string>混合流水车间</string>
+                <string>静态流水车间</string>
             </property>
-           </item>
-           <item>
+        </action>
+        <action name="actionHFSP">
             <property name="text">
-             <string>多加工路径作业车间</string>
+                <string>静态混合流水车间</string>
             </property>
-           </item>
-           <item>
+        </action>
+        <action name="actionClassic">
             <property name="text">
-             <string>多加工路径柔性作业车间</string>
+                <string>Classic</string>
             </property>
-           </item>
-           <item>
+        </action>
+        <action name="actionTimetable">
             <property name="text">
-             <string>考虑工人的柔性作业车间</string>
+                <string>Timetable</string>
             </property>
-           </item>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="label">
-           <property name="text">
-            <string>车间类型</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QComboBox" name="comboBoxDataSource">
-           <item>
+        </action>
+        <action name="actionNew">
             <property name="text">
-             <string>输入数据</string>
+                <string>新建</string>
             </property>
-           </item>
-           <item>
+            <property name="iconText">
+                <string>新建</string>
+            </property>
+        </action>
+        <action name="actionOpen">
             <property name="text">
-             <string>标准算例</string>
+                <string>打开</string>
             </property>
-           </item>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="Line" name="line">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-     </layout>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QStatusBar" name="statusbar"/>
-  <widget class="QMenuBar" name="menuBar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>800</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="menufile">
-    <property name="title">
-     <string>文件</string>
-    </property>
-    <addaction name="actionNew"/>
-    <addaction name="actionOpen"/>
-   </widget>
-   <widget class="QMenu" name="menuHelp">
-    <property name="title">
-     <string>帮助</string>
-    </property>
-    <addaction name="actionAbout"/>
-   </widget>
-   <addaction name="menufile"/>
-   <addaction name="menuHelp"/>
-  </widget>
-  <action name="actionJSP">
-   <property name="text">
-    <string>静态作业车间</string>
-   </property>
-   <property name="toolTip">
-    <string>静态作业车间</string>
-   </property>
-  </action>
-  <action name="actionFJSP">
-   <property name="text">
-    <string>静态柔性作业车间</string>
-   </property>
-  </action>
-  <action name="actionFSP">
-   <property name="text">
-    <string>静态流水车间</string>
-   </property>
-  </action>
-  <action name="actionHFSP">
-   <property name="text">
-    <string>静态混合流水车间</string>
-   </property>
-  </action>
-  <action name="actionClassic">
-   <property name="text">
-    <string>Classic</string>
-   </property>
-  </action>
-  <action name="actionTimetable">
-   <property name="text">
-    <string>Timetable</string>
-   </property>
-  </action>
-  <action name="actionNew">
-   <property name="text">
-    <string>新建</string>
-   </property>
-   <property name="iconText">
-    <string>新建</string>
-   </property>
-  </action>
-  <action name="actionOpen">
-   <property name="text">
-    <string>打开</string>
-   </property>
-  </action>
-  <action name="actionEdit">
-   <property name="text">
-    <string>编辑</string>
-   </property>
-  </action>
-  <action name="actionSave">
-   <property name="text">
-    <string>保存</string>
-   </property>
-  </action>
-  <action name="actionSave_as">
-   <property name="text">
-    <string>Save as</string>
-   </property>
-  </action>
-  <action name="actionAbout">
-   <property name="text">
-    <string>关于</string>
-   </property>
-  </action>
- </widget>
- <resources>
-  <include location="apprcc.qrc"/>
- </resources>
- <connections/>
+        </action>
+        <action name="actionEdit">
+            <property name="text">
+                <string>编辑</string>
+            </property>
+        </action>
+        <action name="actionSave">
+            <property name="text">
+                <string>保存</string>
+            </property>
+        </action>
+        <action name="actionSave_as">
+            <property name="text">
+                <string>Save as</string>
+            </property>
+        </action>
+        <action name="actionAbout">
+            <property name="text">
+                <string>关于</string>
+            </property>
+        </action>
+    </widget>
+    <resources>
+        <include location="apprcc.qrc"/>
+    </resources>
+    <connections/>
 </ui>
