@@ -1068,6 +1068,11 @@ class Info(GanttChart):
     =============================================================================
     """
 
+    def key_block_move_hybrid(self, block=None, func=None):
+        if np.random.random() < 0.5:
+            return self.key_block_move(block, func)
+        return self.key_block_move_complete(block, func)
+
     def key_block_move(self, block=None, func=None):
         self.std_code()
         code = deepcopy(self.code)
@@ -1085,9 +1090,9 @@ class Info(GanttChart):
                 all_blocks.remove(one_block)
                 if j.shape[0] >= 2:
                     head, tail = j[0], j[-1]
-                    if np.random.random() < 0.6:
+                    if np.random.random() < 0.5:
                         index = np.random.choice(j[1:], 1, replace=False)[0]
-                        if np.random.random() < 0.7:
+                        if np.random.random() < 0.5:
                             value = code[head]
                             obj = np.delete(code, head)
                             code = np.insert(obj, index - 1, value)
@@ -1096,7 +1101,7 @@ class Info(GanttChart):
                             code[head], code[index] = code[index], code[head]
                     else:
                         index = np.random.choice(j[:-1], 1, replace=False)[0]
-                        if np.random.random() < 0.7:
+                        if np.random.random() < 0.5:
                             value = code[tail]
                             obj = np.delete(code, tail)
                             code = np.insert(obj, index, value)
@@ -1216,7 +1221,7 @@ class Info(GanttChart):
             a += self.get_duration(task_id, task)
         return a
 
-    def evaluate(self, neg_complete):  # 领域结构的近似评价过程
+    def evaluate(self, neg_complete):  # 领域结构的近似评价方法
         evaluate = []
         for neg in neg_complete:
             a, b = [], []  # 头部评价，尾部评价
@@ -1314,9 +1319,8 @@ class Info(GanttChart):
                     code[tail], code[index] = code[index], code[tail]
                     neg_complete.append([code, tail, index, j.tolist(), 4])
         evaluate = self.evaluate(neg_complete)
-        # threshold = min(evaluate)
-        threshold = sum(evaluate) / len(evaluate)
-        choice_list = [i for i, j in enumerate(evaluate) if j <= threshold]
+        threshold = min(evaluate)
+        choice_list = [i for i, j in enumerate(evaluate) if j == threshold]
         choice = np.random.choice(choice_list, 1, replace=False)[0]
         return neg_complete[choice][0]
         # return neg_complete

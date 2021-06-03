@@ -276,7 +276,8 @@ class GaJsp(Ga):
 
     def do_key_block_move(self, i):
         # code1 = self.pop[0][i].key_block_move()
-        code1 = self.pop[0][i].key_block_move_complete()
+        # code1 = self.pop[0][i].key_block_move_complete()
+        code1 = self.pop[0][i].key_block_move_hybrid()
         self.replace_individual(i, self.decode(code1))
         # code1_complete = self.pop[0][i].key_block_move_complete()
         # for code1 in code1_complete:
@@ -345,7 +346,8 @@ class GaMrJsp(Ga):
 
     def do_key_block_move(self, i):
         # code1 = self.pop[0][i].key_block_move()
-        code1 = self.pop[0][i].key_block_move_complete()
+        # code1 = self.pop[0][i].key_block_move_complete()
+        code1 = self.pop[0][i].key_block_move_hybrid()
         self.replace_individual(i, self.decode(code1, route=self.pop[0][i].route))
 
 
@@ -436,9 +438,10 @@ class GaFjsp(Ga):
                 self.tabu_list[k][i] = []
 
     def do_key_block_move(self, i):
-        # block = self.pop[0][i].key_block()
-        block = self.pop[0][i].key_block_complete()
-        code1 = self.pop[0][i].key_block_move(block)
+        block = self.pop[0][i].key_block()
+        # code1 = self.pop[0][i].key_block_move(block)
+        # code1 = self.pop[0][i].key_block_complete(block)
+        code1 = self.pop[0][i].key_block_move_hybrid(block)
         mac1 = self.pop[0][i].key_block_move_mac(block)
         self.replace_individual(i, self.decode(code1, mac=mac1))
 
@@ -519,9 +522,10 @@ class GaMrFjsp(Ga):
                 self.tabu_list[k][i] = []
 
     def do_key_block_move(self, i):
-        # block = self.pop[0][i].key_block()
-        block = self.pop[0][i].key_block_complete()
-        code1 = self.pop[0][i].key_block_move(block)
+        block = self.pop[0][i].key_block()
+        # code1 = self.pop[0][i].key_block_move(block)
+        # code1 = self.pop[0][i].key_block_complete(block)
+        code1 = self.pop[0][i].key_block_move_hybrid(block)
         mac1 = self.pop[0][i].key_block_move_mac(block)
         self.replace_individual(i, self.decode(code1, mac1, self.pop[0][i].route))
 
@@ -595,7 +599,8 @@ class GaDrcFjsp(Ga):
     def do_key_block_move(self, i):
         block = self.pop[0][i].key_block(self.pop[0][i].key_route_worker)
         # code1 = self.pop[0][i].key_block_move(block)
-        code1 = self.pop[0][i].key_block_move_complete(block)
+        # code1 = self.pop[0][i].key_block_complete(block)
+        code1 = self.pop[0][i].key_block_move_hybrid(block)
         mac1 = self.pop[0][i].key_block_move_mac(block)
         wok1 = self.pop[0][i].key_block_move_wok(self.pop[0][i].mac, block)
         wok1 = self.pop[0][i].repair_mac_wok(mac1, wok1)
@@ -645,7 +650,8 @@ class GaFjspNew(Ga):
 
     def do_key_block_move(self, i):
         # code1 = self.pop[0][i].key_block_move()
-        code1 = self.pop[0][i].key_block_move_complete()
+        # code1 = self.pop[0][i].key_block_complete()
+        code1 = self.pop[0][i].key_block_move_hybrid()
         self.replace_individual(i, self.decode(code1))
 
 
@@ -719,7 +725,8 @@ class GaMrFjspNew(Ga):
 
     def do_key_block_move(self, i):
         # code1 = self.pop[0][i].key_block_move()
-        code1 = self.pop[0][i].key_block_move_complete()
+        # code1 = self.pop[0][i].key_block_complete()
+        code1 = self.pop[0][i].key_block_move_hybrid()
         self.replace_individual(i, self.decode(code1, route=self.pop[0][i].route))
 
 
