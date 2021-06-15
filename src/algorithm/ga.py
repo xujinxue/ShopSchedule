@@ -219,7 +219,6 @@ class Ga:
                 p, q = np.random.random(3), np.random.random(3)
                 j = np.random.choice(np.delete(np.arange(self.pop_size), i), 1, replace=False)[0]
                 if p[0] < self.rc:
-                    j = np.random.choice(np.delete(np.arange(self.pop_size), i), 1, replace=False)[0]
                     code1, code2 = self.pop[0][i].code, self.pop[0][j].code
                     if self.schedule.para_dislocation and Utils.similarity(code1, code2) >= 0.5:
                         self.dislocation(i, direction=0)
