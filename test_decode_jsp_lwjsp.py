@@ -25,14 +25,14 @@ def main(instance="example"):
     # code = solution.trans_operation_based2machine_based()
     # print(code, "# solution.trans_operation_based2machine_based()")
     """基于机器的编码"""
-    # code = problem.sequence_machine_based(n, m, problem.job)
+    # code = Code.sequence_machine_based(n, m, problem.job)
     # solution = problem.decode_machine_based(code)
     # solution = problem.decode_machine_based_limited_wait(code)
     """解码结果"""
     solution.print()
     solution.save_code_to_txt("./Result/Code/%s.txt" % instance)
     solution.save_gantt_chart_to_csv("./Result/GanttChart/%s.csv" % instance)
-    solution.gantt_chart_png("./Result/GanttChartPngHtml/%s.png" % instance, key_block=True)
+    solution.gantt_chart_png("./Result/GanttChartPngHtml/%s.png" % instance, key_block=True, lang=0)
 
 
 if __name__ == '__main__':
