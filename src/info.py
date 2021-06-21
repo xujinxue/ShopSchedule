@@ -604,7 +604,7 @@ class Info(GanttChart):
         code1[b], code2[c] = code2[c], code1[b]
         return code1, code2
 
-    def ga_crossover_sequence_mox1(self, info):
+    def ga_crossover_sequence_mox1(self, info):  # 直接使用仅适用于JSP；对于FJSP，要进行合法性检查/修复
         code1 = deepcopy(self.code)
         code2 = deepcopy(info.code)
         a = np.random.choice(range(self.schedule.m), 1, replace=False)[0]
@@ -614,7 +614,7 @@ class Info(GanttChart):
         code1[d], code2[e] = code2[e], code1[d]
         return code1, code2
 
-    def ga_crossover_sequence_mox2(self, info):
+    def ga_crossover_sequence_mox2(self, info):  # 直接使用仅适用于JSP；对于FJSP，要进行合法性检查/修复
         code1 = deepcopy(self.code)
         code2 = deepcopy(info.code)
         a = np.random.choice(range(self.schedule.m), 2, replace=False)
