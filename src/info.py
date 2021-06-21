@@ -1069,8 +1069,11 @@ class Info(GanttChart):
     """
 
     def key_block_move_hybrid(self, block=None, func=None):
-        if np.random.random() < 0.5:
+        p = np.random.random()
+        if p < 1 / 3:
             return self.key_block_move(block, func)
+        elif p < 2 / 3:
+            return self.key_block_move_all(block, func)
         return self.key_block_move_complete(block, func)
 
     def key_block_move(self, block=None, func=None):
@@ -1147,6 +1150,40 @@ class Info(GanttChart):
                         except ValueError:
                             pass
         return wok
+
+    """"
+    =============================================================================
+    Complete key block move by all block
+    =============================================================================
+    """
+
+    def key_block_move_all(self, block=None, func=None):
+        self.std_code()
+        code = deepcopy(self.code)
+        func = self.key_route if func is None else func
+        if block is None:
+            block = self.key_block(func)
+        for j in block.values():
+            if j.shape[0] >= 2:
+                head, tail = j[0], j[-1]
+                if np.random.random() < 0.5:
+                    index = np.random.choice(j[1:], 1, replace=False)[0]
+                    if np.random.random() < 0.5:
+                        value = code[head]
+                        obj = np.delete(code, head)
+                        code = np.insert(obj, index - 1, value)
+                        code[index], code[index - 1] = code[index - 1], code[index]
+                    else:
+                        code[head], code[index] = code[index], code[head]
+                else:
+                    index = np.random.choice(j[:-1], 1, replace=False)[0]
+                    if np.random.random() < 0.5:
+                        value = code[tail]
+                        obj = np.delete(code, tail)
+                        code = np.insert(obj, index, value)
+                    else:
+                        code[tail], code[index] = code[index], code[tail]
+        return code
 
     """"
     =============================================================================
