@@ -12,6 +12,8 @@ def NsgaTemplate(save, instance, nsga, n_exp=10, nsga2=None, n_level=5, column=0
             j = i + 1
             res.save_code_to_txt("./%s/%s/Code/e%s_%s.txt" % (save, instance, exp, j))
             res.save_gantt_chart_to_csv("./%s/%s/GanttChart/e%s_%s.csv" % (save, instance, exp, j))
+            res.trans_direction()
+            res.save_gantt_chart_to_csv("./%s/%s/GanttChartReal/e%s_%s.csv" % (save, instance, exp, j))
         for i, j in enumerate(c):
             all_res += "帕累托等级-%s\n" % (i + 1)
             for k in j:
@@ -27,6 +29,8 @@ def NsgaTemplate(save, instance, nsga, n_exp=10, nsga2=None, n_level=5, column=0
                 j = i + 1
                 res.save_code_to_txt("./%s/%s/Code2/e%s_%s.txt" % (save, instance, exp, j))
                 res.save_gantt_chart_to_csv("./%s/%s/GanttChart2/e%s_%s.csv" % (save, instance, exp, j))
+                res.trans_direction()
+                res.save_gantt_chart_to_csv("./%s/%s/GanttChartReal2/e%s_%s.csv" % (save, instance, exp, j))
             for i, j in enumerate(c):
                 all_res2 += "帕累托等级-%s\n" % (i + 1)
                 for k in j:

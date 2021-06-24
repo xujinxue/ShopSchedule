@@ -154,7 +154,8 @@ class Utils:
         Utils.make_dir("./%s" % save)
         Utils.make_dir("./%s/%s" % (save, instance))
         a = ["./%s/%s" % (save, instance), "./%s/%s/Code" % (save, instance), "./%s/%s/GanttChart" % (save, instance),
-             "./%s/%s/GanttChartPngHtml" % (save, instance), "./%s/%s/Record" % (save, instance)]
+             "./%s/%s/GanttChartReal" % (save, instance), "./%s/%s/GanttChartPngHtml" % (save, instance),
+             "./%s/%s/Record" % (save, instance)]
         [Utils.make_dir(i) for i in a]
         try:
             [Utils.clear_dir(i) for i in a]
@@ -162,7 +163,8 @@ class Utils:
             pass
         if stage2 is not None:
             a = ["./%s/%s/Code2" % (save, instance), "./%s/%s/GanttChart2" % (save, instance),
-                 "./%s/%s/GanttChartPngHtml2" % (save, instance), "./%s/%s/Record2" % (save, instance)]
+                 "./%s/%s/GanttChartReal2" % (save, instance), "./%s/%s/GanttChartPngHtml2" % (save, instance),
+                 "./%s/%s/Record2" % (save, instance)]
             [Utils.make_dir(i) for i in a]
             try:
                 [Utils.clear_dir(i) for i in a]

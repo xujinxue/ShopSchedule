@@ -79,6 +79,8 @@ class Ga:
         index = self.pop[2].index(self.best[2])
         self.best[1] = self.pop[1][index]
         self.best[0] = deepcopy(self.pop[0][index])
+        for k in range(3):
+            self.best[3][k] = self.tabu_list[k][index]
 
     def append_individual(self, info_new):
         obj_new, fit_new = self.get_obj_fit(info_new)
@@ -87,7 +89,6 @@ class Ga:
         self.pop[2].append(fit_new)
         for k in range(3):
             self.tabu_list[k].append([])
-        self.update_best(obj_new, info_new, fit_new)
 
     def replace_individual(self, i, info_new):
         obj_new, fit_new = self.get_obj_fit(info_new)
@@ -97,15 +98,6 @@ class Ga:
             self.pop[2][i] = fit_new
             for k in range(3):
                 self.tabu_list[k][i] = []
-            self.update_best(obj_new, info_new, fit_new)
-
-    def update_best(self, obj_new, info_new, fit_new):
-        if Utils.update_info(self.best[1], obj_new):
-            self.best[0] = info_new
-            self.best[1] = obj_new
-            self.best[2] = fit_new
-            for k in range(3):
-                self.best[3][k] = []
 
     def show_generation(self, g):
         self.record[2].append(self.best[1])
@@ -148,18 +140,15 @@ class Ga:
             for k in range(3):
                 self.tabu_list[k][i] = tabu_list[k][j]
 
+    def update_best(self):
+        self.init_best()
+
     def save_best(self):
         self.pop[0][0] = self.best[0]
         self.pop[1][0] = self.best[1]
         self.pop[2][0] = self.best[2]
         for k in range(3):
             self.tabu_list[k][0] = self.best[3][k]
-        # index = self.pop[2].index(max(self.pop[2]))
-        # self.pop[0][index] = self.best[0]
-        # self.pop[1][index] = self.best[1]
-        # self.pop[2][index] = self.best[2]
-        # for k in range(3):
-        #     self.tabu_list[k][index] = self.best[3][k]
 
     def do_selection(self):
         func_dict = {
@@ -168,6 +157,7 @@ class Ga:
             Selection.champion2: self.selection_champion2,
         }
         func = func_dict[self.schedule.ga_operator[Selection.name]]
+        self.update_best()
         func()
         self.save_best()
 

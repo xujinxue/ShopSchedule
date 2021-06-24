@@ -4,6 +4,7 @@ from src import *
 def main(instance="example"):
     time_unit = 1
     a = mrfjsp_benchmark.instance[instance]
+    # a = Utils.load_text("./src/data/mrfjsp/%s.txt" % instance)
     n, m, p, tech, proc = Utils.string2data_mrfjsp(a, int, time_unit)
     problem = Utils.create_schedule(Fjsp, n, m, p, tech, proc, multi_route=True)
     r = [job.nor for job in problem.job.values()]

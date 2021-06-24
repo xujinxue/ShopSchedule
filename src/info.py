@@ -517,9 +517,14 @@ class Info(GanttChart):
         except AttributeError:
             Utils.save_code_to_txt(file, {"code": self.code, "route": self.route, "mac": self.mac, "wok": self.wok})
 
-    def save_gantt_chart_to_csv(self, file):
-        if not file.endswith(".csv"):
-            file = file + ".csv"
+    def trans_direction(self):
+        if self.schedule.direction == 1:
+            for i, job in self.schedule.job.items():
+                for j, task in job.task.items():
+                    a, b = self.schedule.makespan - task.end, self.schedule.makespan - task.start
+                    self.schedule.job[i].task[j].start, self.schedule.job[i].task[j].end = a, b
+
+    def save_start_end(self, file):
         with open(file, "w", encoding="utf-8") as f:
             f.writelines("Job,Operation,Machine,Start,Duration,End,Worker\n")
             for job in self.schedule.job.values():
@@ -546,6 +551,11 @@ class Info(GanttChart):
                         worker += 1
                     f.writelines("{},{},{},{},{},{},{}\n".format(
                         job.index + 1, task.index + 1, machine + 1, task.start, duration, task.end, worker))
+
+    def save_gantt_chart_to_csv(self, file):
+        if not file.endswith(".csv"):
+            file = file + ".csv"
+        self.save_start_end(file)
 
     def ga_crossover_sequence(self, info):
         func_dict = {
