@@ -5,7 +5,7 @@ def NsgaTemplate(save, instance, nsga, n_exp=10, nsga2=None, n_level=5, column=0
     Utils.make_dir_save(save, instance, nsga2)
     all_res, all_res2 = "", ""
     for exp in range(1, n_exp + 1):
-        all_res += "实验%s\n" % exp
+        cur_res = "实验%s\n" % exp
         c = nsga.do_evolution(n_level=n_level, column=column, exp_no=exp)
         for i in range(len(c[0])):
             res = c[0][i][0]
@@ -15,14 +15,15 @@ def NsgaTemplate(save, instance, nsga, n_exp=10, nsga2=None, n_level=5, column=0
             res.trans_direction()
             res.save_gantt_chart_to_csv("./%s/%s/GanttChartReal/e%s_%s.csv" % (save, instance, exp, j))
         for i, j in enumerate(c):
-            all_res += "帕累托等级-%s\n" % (i + 1)
+            cur_res += "帕累托等级-%s\n" % (i + 1)
             for k in j:
-                all_res += "%s\n" % str(k)
-        all_res += "\n"
+                cur_res += "%s\n" % str(k)
+        cur_res += "\n"
         with open("./%s/%s/Record/e%s.txt" % (save, instance, exp), "w", encoding="utf-8") as f:
-            f.writelines(all_res)
+            f.writelines(cur_res)
+        all_res += cur_res
         if nsga2 is not None:
-            all_res2 += "实验%s\n" % exp
+            cur_res2 = "实验%s\n" % exp
             c = nsga2.do_evolution(pop=nsga.pop, n_level=n_level, column=column, exp_no=exp)
             for i in range(len(c[0])):
                 res = c[0][i][0]
@@ -32,12 +33,13 @@ def NsgaTemplate(save, instance, nsga, n_exp=10, nsga2=None, n_level=5, column=0
                 res.trans_direction()
                 res.save_gantt_chart_to_csv("./%s/%s/GanttChartReal2/e%s_%s.csv" % (save, instance, exp, j))
             for i, j in enumerate(c):
-                all_res2 += "帕累托等级-%s\n" % (i + 1)
+                cur_res2 += "帕累托等级-%s\n" % (i + 1)
                 for k in j:
-                    all_res2 += "%s\n" % str(k)
-            all_res2 += "\n"
+                    cur_res2 += "%s\n" % str(k)
+            cur_res2 += "\n"
             with open("./%s/%s/Record2/e%s.txt" % (save, instance, exp), "w", encoding="utf-8") as f:
-                f.writelines(all_res2)
+                f.writelines(cur_res2)
+            all_res2 += cur_res2
     with open("./%s/%s.txt" % (save, instance), "w", encoding="utf-8") as f:
         f.writelines(all_res)
     if nsga2 is not None:
