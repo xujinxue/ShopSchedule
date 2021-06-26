@@ -49,7 +49,7 @@ class Hfsp(Schedule):
                 if self.job[i].task[0].limited_wait is not None:
                     while self.constrain_limited_wait(i, range(j, -1, -1), mac) is False:
                         pass
-            copy_code = copy_code[np.argsort([self.job[i].task[j].start for i in copy_code])]
+            copy_code = copy_code[np.argsort([self.job[i].task[j].end for i in copy_code])]
             j += 1
         return Info(self, code, mac=mac)
 
@@ -83,6 +83,6 @@ class Hfsp(Schedule):
                 if self.job[i].task[0].limited_wait is not None:
                     while self.constrain_limited_wait(i, range(j, -1, -1), mac) is False:
                         pass
-            copy_code = copy_code[np.argsort([self.job[i].task[j].start for i in copy_code])]
+            copy_code = copy_code[np.argsort([self.job[i].task[j].end for i in copy_code])]
             j += 1
         return Info(self, code, mac=mac)
