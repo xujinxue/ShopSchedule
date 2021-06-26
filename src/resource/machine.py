@@ -14,7 +14,7 @@ class Machine:  # 机器类
         # self.timetable = {0: np.array([], dtype=int), 1: np.array([], dtype=int) # 0: restStart, 1: restEnd
         self.timetable = timetable
         self.name = name
-        self.end = 0  # 工件上的最大完成时间
+        self.end = 0  # 机器上的最大完成时间
         # 机器空闲时间数据类型：字典，0：空闲开始时刻，1：空闲结束时刻
         self.idle = {0: [0, ], 1: [np.inf, ]}
         self.index_list = []  # 解码用： 机器在编码中的位置索引（基于工序的编码）
