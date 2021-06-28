@@ -9,7 +9,9 @@ def main(instance="example2"):
     problem = Utils.create_schedule(Jsp, n, m, p, tech, proc, multi_route=True)
     r = [job.nor for job in problem.job.values()]
     code = Code.sequence_operation_based(n, p)
-    route = Code.assignment_route(n, r)
+    # route = Code.assignment_route(n, r)
+    # route = Code.assignment_route_min_avg_jsp(n, r, problem.job)
+    route = Code.assignment_route_min_total_jsp(n, r, problem.job)
     solution = problem.decode(code, route, direction=0)
     solution.print()
     solution.save_code_to_txt("./Result/Code/%s.txt" % instance)

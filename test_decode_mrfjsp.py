@@ -9,7 +9,9 @@ def main(instance="example"):
     problem = Utils.create_schedule(Fjsp, n, m, p, tech, proc, multi_route=True)
     r = [job.nor for job in problem.job.values()]
     code = Code.sequence_operation_based(n, p)
-    route = Code.assignment_route(n, r)
+    # route = Code.assignment_route(n, r)
+    # route = Code.assignment_route_min_avg_fjsp(n, r, problem.job)
+    route = Code.assignment_route_min_total_fjsp(n, r, problem.job)
     """解码方式一：有机器编码，在迭代的过程中要保持mac和route匹配"""
     # mac = Code.assignment_job_based_route(n, p, tech, route)
     # solution = problem.decode(code, mac, route, direction=0)

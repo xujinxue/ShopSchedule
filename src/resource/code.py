@@ -79,6 +79,75 @@ class Code:  # 编码类
         return a
 
     @staticmethod
+    def assignment_route_min_avg_jsp(n, r, job):
+        """
+        选择平均加工时间短的加工路径
+        """
+        a = []
+        for i in range(n):
+            b = []
+            for j in range(r[i]):
+                c = []
+                for u in job[i].route[j].task.values():
+                    if u.duration != 0:
+                        c.append(u.duration)
+                b.append(np.mean(c))
+            d = np.argwhere(np.array(b) == min(b))[:, 0]
+            a.append(np.random.choice(d, 1, replace=False)[0])
+        return a
+
+    @staticmethod
+    def assignment_route_min_total_jsp(n, r, job):
+        """
+        选择总加工时间短的加工路径
+        """
+        a = []
+        for i in range(n):
+            b = []
+            for j in range(r[i]):
+                b.append(0)
+                for u in job[i].route[j].task.values():
+                    b[j] += u.duration
+            d = np.argwhere(np.array(b) == min(b))[:, 0]
+            a.append(np.random.choice(d, 1, replace=False)[0])
+        return a
+
+    @staticmethod
+    def assignment_route_min_avg_fjsp(n, r, job):
+        """
+        选择平均加工时间短的加工路径
+        """
+        a = []
+        for i in range(n):
+            b = []
+            for j in range(r[i]):
+                c = []
+                for u in job[i].route[j].task.values():
+                    for v in u.duration:
+                        if v != 0:
+                            c.append(v)
+                b.append(np.mean(c))
+            d = np.argwhere(np.array(b) == min(b))[:, 0]
+            a.append(np.random.choice(d, 1, replace=False)[0])
+        return a
+
+    @staticmethod
+    def assignment_route_min_total_fjsp(n, r, job):
+        """
+        选择总加工时间短的加工路径
+        """
+        a = []
+        for i in range(n):
+            b = []
+            for j in range(r[i]):
+                b.append(0)
+                for u in job[i].route[j].task.values():
+                    b[j] += sum(u.duration)
+            d = np.argwhere(np.array(b) == min(b))[:, 0]
+            a.append(np.random.choice(d, 1, replace=False)[0])
+        return a
+
+    @staticmethod
     def assignment_worker(n, p, tech, worker, mac):
         """工人安排问题"""
         a = []

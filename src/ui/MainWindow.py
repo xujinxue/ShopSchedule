@@ -211,4 +211,3 @@ class Ui_MainWindow(object):
         self.actionAbout.setText(_translate("MainWindow", "关于"))
 
 
-from . import apprcc_rc

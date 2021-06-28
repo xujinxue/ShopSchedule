@@ -906,18 +906,20 @@ class Info(GanttChart):
         route1 = deepcopy(self.route)
         route2 = deepcopy(info.route)
         for i, (p, q) in enumerate(zip(route1, route2)):
-            route1[i], route2[i] = q, p
+            if np.random.random() < 0.5:
+                route1[i], route2[i] = q, p
         return route1, route2
 
     def ga_mutation_route(self):
         route = deepcopy(self.route)
         for i in range(self.schedule.n):
-            try:
-                a = list(range(self.schedule.job[i].nor))
-                a.remove(route[i])
-                route[i] = np.random.choice(a, 1, replace=False)[0]
-            except ValueError:
-                pass
+            if np.random.random() < 0.5:
+                try:
+                    a = list(range(self.schedule.job[i].nor))
+                    a.remove(route[i])
+                    route[i] = np.random.choice(a, 1, replace=False)[0]
+                except ValueError:
+                    pass
         return route
 
     """"

@@ -52,7 +52,7 @@ class Ga:
         self.tabu_list = [[[] for _ in self.individual], [[] for _ in self.individual], [[] for _ in self.individual]]
 
     def update_p(self, route):
-        self.schedule.clear(route)
+        self.schedule.set_route(route)
         self.p = [job.nop for job in self.schedule.job.values()]
 
     def update_tech(self, mode=0):

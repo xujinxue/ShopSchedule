@@ -24,6 +24,12 @@ class Schedule:  # 调度资源融合类
         self.para_key_block_move = False
         self.para_dislocation = False
 
+    def set_route(self, route):  # 设置工件的加工路径
+        for i in self.job.keys():
+            for j in range(self.job[i].nor):
+                self.job[i].route[j].clear()
+            self.job[i].task = self.job[i].route[route[i]].task
+
     def clear(self, route=None):  # 解码前要进行清空, 方便快速地进行下一次解码
         for i in self.job.keys():
             if route is not None:

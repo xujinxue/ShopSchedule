@@ -5,11 +5,11 @@ from .algorithm import GaJsp, GaLwJsp, GaMrJsp
 from .algorithm import GaJspNew, GaLwJspNew, GaLwJspNew2, GaMrJspNew
 from .algorithm import NsgaJsp
 from .algorithm import OrToolsJspSat
+from .data import drcfjsp_benchmark
 from .data import fjsp_benchmark, fsp_benchmark, jsp_benchmark, hfsp_benchmark
 from .data import fjsp_simulation, fsp_simulation, jsp_simulation
 from .data import mrfjsp_benchmark
 from .data import mrjsp_benchmark
-from .data import drcfjsp_benchmark
 from .define import Crossover, Mutation, Selection
 from .info import GanttChart
 from .objective import Objective

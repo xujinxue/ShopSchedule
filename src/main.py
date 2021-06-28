@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QMainWindow, QMessageBox
 
-from .ui import Ui_MainWindow
 from .define import Para
+from .ui import Ui_MainWindow
 
 
 class Main(QMainWindow, Ui_MainWindow):
