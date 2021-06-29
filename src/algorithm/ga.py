@@ -5,7 +5,6 @@ class GaJsp(De): Jsp的Ga, 重载了***
 ...
 """
 
-import copy
 import time
 
 import numpy as np
@@ -13,8 +12,6 @@ import numpy as np
 from ..define import Selection
 from ..resource.code import Code
 from ..utils import Utils
-
-deepcopy = copy.deepcopy
 
 
 class Ga:
@@ -78,7 +75,7 @@ class Ga:
         self.best[2] = max(self.pop[2])
         index = self.pop[2].index(self.best[2])
         self.best[1] = self.pop[1][index]
-        self.best[0] = deepcopy(self.pop[0][index])
+        self.best[0] = self.pop[0][index]
         for k in range(3):
             self.best[3][k] = self.tabu_list[k][index]
 
@@ -114,8 +111,8 @@ class Ga:
         b = np.array([])
         for i in range(a.shape[0]):
             b = np.append(b, sum(a[:i + 1]))
-        pop = deepcopy(self.pop)
-        tabu_list = deepcopy(self.tabu_list)
+        pop = self.pop
+        tabu_list = self.tabu_list
         self.pop = [[], [], []]
         self.tabu_list = [[[] for _ in self.individual], [[] for _ in self.individual], [[] for _ in self.individual]]
         for i in range(self.pop_size):
@@ -127,8 +124,8 @@ class Ga:
                 self.tabu_list[k][i] = tabu_list[k][j]
 
     def selection_champion2(self):
-        pop = deepcopy(self.pop)
-        tabu_list = deepcopy(self.tabu_list)
+        pop = self.pop
+        tabu_list = self.tabu_list
         self.pop = [[], [], []]
         self.tabu_list = [[[] for _ in self.individual], [[] for _ in self.individual], [[] for _ in self.individual]]
         for i in range(self.pop_size):

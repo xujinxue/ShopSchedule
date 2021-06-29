@@ -209,5 +209,3 @@ class Ui_MainWindow(object):
         self.actionSave.setText(_translate("MainWindow", "保存"))
         self.actionSave_as.setText(_translate("MainWindow", "Save as"))
         self.actionAbout.setText(_translate("MainWindow", "关于"))
-
-

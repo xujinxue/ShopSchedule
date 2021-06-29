@@ -1,4 +1,9 @@
+import cProfile
+import os
+
 from src import *
+
+pr = cProfile.Profile()
 
 
 def main(instance="example"):
@@ -16,7 +21,11 @@ def main(instance="example"):
     # solution = problem.decode(code, direction=1)
     # """基于工序的编码"""
     code = problem.spt()
+    pr.enable()
     solution = problem.decode(code)
+    pr.disable()
+    pr.dump_stats("./Result/test_decode_jsp")
+    os.system("pyprof2calltree -i ./Result/test_decode_jsp -o ./Result/callgrind.test_decode_jsp")
     # solution = problem.decode_new(code)
     # solution = problem.decode_new_twice(code)
     # solution = problem.decode_limited_wait(code)

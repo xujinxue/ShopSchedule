@@ -148,6 +148,8 @@ class Utils:
                 os.remove("%s/%s" % (dir_name, i))
         except IsADirectoryError:
             pass
+        except PermissionError:
+            pass
 
     @staticmethod
     def make_dir_save(save, instance, stage2=None):

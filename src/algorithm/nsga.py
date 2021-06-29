@@ -5,7 +5,6 @@ class NsgaJsp(Nsga): Jsp的Nsga, 重载了***
 ...
 """
 
-import copy
 import time
 
 import numpy as np
@@ -14,8 +13,6 @@ from ..define import Selection
 from ..pareto import Pareto, SelectPareto
 from ..resource.code import Code
 from ..utils import Utils
-
-deepcopy = copy.deepcopy
 
 
 class Nsga:
@@ -83,8 +80,8 @@ class Nsga:
             info_new = self.pop[0]
             obj_new = self.pop[1]
             scale = self.pop_size
-        info_copy = copy.deepcopy(info_new)
-        obj_copy = copy.deepcopy(obj_new)
+        info_copy = info_new
+        obj_copy = obj_new
         pareto = Pareto(scale, obj_copy, self.num_obj)
         pareto.fast_non_dominate_sort()  # 非支配排序
         pareto.crowd_distance()  # 计算拥挤度

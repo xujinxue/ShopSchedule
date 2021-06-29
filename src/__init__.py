@@ -19,10 +19,8 @@ from .shop import Jsp, Fjsp, Fsp, Hfsp
 from .template import GaTemplate, NsgaTemplate
 from .utils import Utils
 
-Utils.make_dir("./Result")
-Utils.make_dir("./Result/Code")
-Utils.make_dir("./Result/GanttChart")
-Utils.make_dir("./Result/GanttChartPngHtml")
+DIR_RESULT = ["./Result", "./Result/Code", "./Result/GanttChart", "./Result/GanttChartPngHtml"]
+[Utils.make_dir(i) for i in DIR_RESULT]
 INSTANCE_LIST_JSP = """
 ft06
 """
