@@ -139,13 +139,18 @@ class Ga:
             for k in range(3):
                 self.tabu_list[k][i] = tabu_list[k][j]
 
-    def update_best(self):
-        self.best[2] = max(self.pop[2])
-        index = self.pop[2].index(self.best[2])
-        self.best[1] = self.pop[1][index]
-        self.best[0] = self.pop[0][index]
-        for k in range(3):
-            self.best[3][k] = self.tabu_list[k][index]
+    @property
+    def func_selection(self):
+        func_dict = {
+            Selection.default: self.selection_roulette,
+            Selection.roulette: self.selection_roulette,
+            Selection.champion2: self.selection_champion2,
+        }
+        return func_dict[self.schedule.ga_operator[Selection.name]]
+
+    def do_selection(self):
+        self.func_selection()
+        self.save_best()
 
     def save_best(self):
         self.pop[0][0] = self.best[0]
@@ -154,19 +159,13 @@ class Ga:
         for k in range(3):
             self.tabu_list[k][0] = self.best[3][k]
 
-    @property
-    def func_selection(self):
-        func_dict = {
-            Selection.default: self.selection_roulette,
-            Selection.roulette: self.selection_roulette,
-            Selection.champion2: self.selection_champion2,
-        }
-        return func_dict
-
-    def do_selection(self):
-        func = self.func_selection[self.schedule.ga_operator[Selection.name]]
-        func()
-        self.save_best()
+    def update_best(self):
+        self.best[2] = max(self.pop[2])
+        index = self.pop[2].index(self.best[2])
+        self.best[1] = self.pop[1][index]
+        self.best[0] = self.pop[0][index]
+        for k in range(3):
+            self.best[3][k] = self.tabu_list[k][index]
 
     def do_init(self, pop=None):
         pass
