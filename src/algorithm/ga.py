@@ -71,14 +71,6 @@ class Ga:
         code1 = self.pop[0][i].dislocation_operator(direction)
         self.append_individual(self.decode(code1, self.pop[0][i].mac, self.pop[0][i].route, self.pop[0][i].wok))
 
-    def init_best(self):
-        self.best[2] = max(self.pop[2])
-        index = self.pop[2].index(self.best[2])
-        self.best[1] = self.pop[1][index]
-        self.best[0] = self.pop[0][index]
-        for k in range(3):
-            self.best[3][k] = self.tabu_list[k][index]
-
     def append_individual(self, info_new):
         obj_new, fit_new = self.get_obj_fit(info_new)
         self.pop[0].append(info_new)
@@ -138,7 +130,12 @@ class Ga:
                 self.tabu_list[k][i] = tabu_list[k][j]
 
     def update_best(self):
-        self.init_best()
+        self.best[2] = max(self.pop[2])
+        index = self.pop[2].index(self.best[2])
+        self.best[1] = self.pop[1][index]
+        self.best[0] = self.pop[0][index]
+        for k in range(3):
+            self.best[3][k] = self.tabu_list[k][index]
 
     def save_best(self):
         self.pop[0][0] = self.best[0]
@@ -147,13 +144,17 @@ class Ga:
         for k in range(3):
             self.tabu_list[k][0] = self.best[3][k]
 
-    def do_selection(self):
+    @property
+    def func_selection(self):
         func_dict = {
             Selection.default: self.selection_roulette,
             Selection.roulette: self.selection_roulette,
             Selection.champion2: self.selection_champion2,
         }
-        func = func_dict[self.schedule.ga_operator[Selection.name]]
+        return func_dict
+
+    def do_selection(self):
+        func = self.func_selection[self.schedule.ga_operator[Selection.name]]
         self.update_best()
         func()
         self.save_best()
@@ -190,6 +191,7 @@ class Ga:
         self.clear()
         self.do_init(pop)
         self.do_selection()
+        self.show_generation(0)
         for g in range(1, self.max_generation + 1):
             if self.reach_best_known_solution():
                 break
@@ -197,8 +199,6 @@ class Ga:
                 break
             self.record[0].append(time.perf_counter())
             for i in range(self.pop_size):
-                if self.reach_best_known_solution():
-                    break
                 if self.schedule.para_key_block_move:
                     self.do_key_block_move(i)
                 if self.schedule.para_tabu:
@@ -238,9 +238,7 @@ class GaJsp(Ga):
             self.pop[0].append(info)
             self.pop[1].append(obj)
             self.pop[2].append(fit)
-        self.init_best()
         self.record[1].append(time.perf_counter())
-        self.show_generation(0)
 
     def do_crossover(self, i, j, p):
         if p[0] < self.rc:
@@ -301,9 +299,7 @@ class GaMrJsp(Ga):
             self.pop[0].append(info)
             self.pop[1].append(obj)
             self.pop[2].append(fit)
-        self.init_best()
         self.record[1].append(time.perf_counter())
-        self.show_generation(0)
 
     def do_crossover(self, i, j, p):
         if p[0] < self.rc or p[1] < self.rc:
@@ -393,9 +389,7 @@ class GaFjsp(Ga):
             self.pop[0].append(info)
             self.pop[1].append(obj)
             self.pop[2].append(fit)
-        self.init_best()
         self.record[1].append(time.perf_counter())
-        self.show_generation(0)
 
     def do_crossover(self, i, j, p):
         if p[0] < self.rc or p[1] < self.rc:
@@ -468,9 +462,7 @@ class GaMrFjsp(Ga):
             self.pop[0].append(info)
             self.pop[1].append(obj)
             self.pop[2].append(fit)
-        self.init_best()
         self.record[1].append(time.perf_counter())
-        self.show_generation(0)
 
     def do_crossover(self, i, j, p):
         if p[0] < self.rc or p[1] < self.rc or p[2] < self.rc:
@@ -542,9 +534,7 @@ class GaDrcFjsp(Ga):
             self.pop[0].append(info)
             self.pop[1].append(obj)
             self.pop[2].append(fit)
-        self.init_best()
         self.record[1].append(time.perf_counter())
-        self.show_generation(0)
 
     def do_crossover(self, i, j, p):
         if p[0] < self.rc or p[1] < self.rc or p[2] < self.rc:
@@ -613,9 +603,7 @@ class GaFjspNew(Ga):
             self.pop[0].append(info)
             self.pop[1].append(obj)
             self.pop[2].append(fit)
-        self.init_best()
         self.record[1].append(time.perf_counter())
-        self.show_generation(0)
 
     def do_crossover(self, i, j, p):
         if p[0] < self.rc:
@@ -680,9 +668,7 @@ class GaMrFjspNew(Ga):
             self.pop[0].append(info)
             self.pop[1].append(obj)
             self.pop[2].append(fit)
-        self.init_best()
         self.record[1].append(time.perf_counter())
-        self.show_generation(0)
 
     def do_crossover(self, i, j, p):
         if p[0] < self.rc or p[1] < self.rc:
@@ -736,9 +722,7 @@ class GaFspHfsp(Ga):
             self.pop[0].append(info)
             self.pop[1].append(obj)
             self.pop[2].append(fit)
-        self.init_best()
         self.record[1].append(time.perf_counter())
-        self.show_generation(0)
 
     def do_crossover(self, i, j, p):
         if p[0] < self.rc:

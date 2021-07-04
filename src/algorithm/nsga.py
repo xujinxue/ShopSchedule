@@ -65,6 +65,15 @@ class Nsga:
     def selection_champion(select_pareto):
         return select_pareto.champion()
 
+    @property
+    def func_selection(self):
+        func_dict = {
+            Selection.default: self.selection_elite_strategy,
+            Selection.nsga_elite_strategy: self.selection_elite_strategy,
+            Selection.nsga_champion: self.selection_champion,
+        }
+        return func_dict
+
     def do_selection(self):
         if len(self.pop_child[0]) != 0:
             info_new = []
@@ -89,12 +98,7 @@ class Nsga:
         rank = pareto.rank
         cd = pareto.cd
         select_pareto = SelectPareto(self.pop_size, scale, f, rank, cd)
-        func_dict = {
-            Selection.default: self.selection_elite_strategy,
-            Selection.nsga_elite_strategy: self.selection_elite_strategy,
-            Selection.nsga_champion: self.selection_champion,
-        }
-        func = func_dict[self.schedule.ga_operator[Selection.name]]
+        func = self.func_selection[self.schedule.ga_operator[Selection.name]]
         index = func(select_pareto)
         pareto_front = []
         self.pop = [[], [], []]
