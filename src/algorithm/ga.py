@@ -78,6 +78,7 @@ class Ga:
         self.pop[2].append(fit_new)
         for k in range(3):
             self.tabu_list[k].append([])
+        self.replace_best(info_new, obj_new, fit_new)
 
     def replace_individual(self, i, info_new):
         obj_new, fit_new = self.get_obj_fit(info_new)
@@ -87,6 +88,15 @@ class Ga:
             self.pop[2][i] = fit_new
             for k in range(3):
                 self.tabu_list[k][i] = []
+        self.replace_best(info_new, obj_new, fit_new)
+
+    def replace_best(self, info_new, obj_new, fit_new):
+        if Utils.update_info(self.best[1], obj_new):
+            self.best[0] = info_new
+            self.best[1] = obj_new
+            self.best[2] = fit_new
+            for k in range(3):
+                self.best[3][k] = []
 
     def show_generation(self, g):
         self.record[2].append(self.best[1])
@@ -155,7 +165,6 @@ class Ga:
 
     def do_selection(self):
         func = self.func_selection[self.schedule.ga_operator[Selection.name]]
-        self.update_best()
         func()
         self.save_best()
 
@@ -190,6 +199,7 @@ class Ga:
         Utils.print("{}Evolution {}  start{}".format("=" * 48, exp_no, "=" * 48), fore=Utils.fore().LIGHTYELLOW_EX)
         self.clear()
         self.do_init(pop)
+        self.update_best()
         self.do_selection()
         self.show_generation(0)
         for g in range(1, self.max_generation + 1):
@@ -199,6 +209,8 @@ class Ga:
                 break
             self.record[0].append(time.perf_counter())
             for i in range(self.pop_size):
+                if self.reach_best_known_solution():
+                    break
                 if self.schedule.para_key_block_move:
                     self.do_key_block_move(i)
                 if self.schedule.para_tabu:
