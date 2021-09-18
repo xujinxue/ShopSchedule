@@ -1,2475 +1,2475 @@
 event: ns : Nanoseconds
 events: ns
-summary: 61228266300
+summary: 48535007000
 fl=<__array_function__ internals>
 fn=append
-2 52601800
+2 39236800
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\lib\function_base.py
 cfn=_append_dispatcher
-calls=15766 4686
-2 12982100
+calls=11048 4686
+2 10059800
 cfl=~
 cfn=<built-in method numpy.core._multiarray_umath.implement_array_function>
-calls=15766 0
-2 1005882100
+calls=11048 0
+2 949016900
 
 fl=<__array_function__ internals>
 fn=argsort
-2 24744100
+2 18549000
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\fromnumeric.py
 cfn=_argsort_dispatcher
-calls=7488 1000
-2 6175700
+calls=5133 1000
+2 4529500
 cfl=~
 cfn=<built-in method numpy.core._multiarray_umath.implement_array_function>
-calls=7488 0
-2 175232300
+calls=5133 0
+2 132022000
 
 fl=<__array_function__ internals>
 fn=argwhere
-2 113796300
+2 76713600
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\numeric.py
 cfn=_argwhere_dispatcher
-calls=35131 566
-2 30478300
+calls=22946 566
+2 20131700
 cfl=~
 cfn=<built-in method numpy.core._multiarray_umath.implement_array_function>
-calls=35131 0
-2 2497406000
+calls=22946 0
+2 1779084400
 
 fl=<__array_function__ internals>
 fn=concatenate
-2 71156900
+2 54297400
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\multiarray.py
 cfn=concatenate
-calls=15766 143
-2 8447700
+calls=11048 143
+2 6603000
 cfl=~
 cfn=<built-in method numpy.core._multiarray_umath.implement_array_function>
-calls=15766 0
-2 228464700
+calls=11048 0
+2 169147000
 
 fl=<__array_function__ internals>
 fn=delete
-2 24097300
+2 16266900
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\lib\function_base.py
 cfn=_delete_dispatcher
-calls=5987 4306
-2 4818400
+calls=3810 4306
+2 3288900
 cfl=~
 cfn=<built-in method numpy.core._multiarray_umath.implement_array_function>
-calls=5987 0
-2 393993800
+calls=3810 0
+2 268754400
 
 fl=<__array_function__ internals>
 fn=insert
-2 16204200
+2 11297600
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\lib\function_base.py
 cfn=_insert_dispatcher
-calls=5060 4491
-2 4325100
+calls=3175 4491
+2 2720400
 cfl=~
 cfn=<built-in method numpy.core._multiarray_umath.implement_array_function>
-calls=5060 0
-2 759735100
+calls=3175 0
+2 548744900
 
 fl=<__array_function__ internals>
 fn=mean
-2 589800
+2 435400
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\fromnumeric.py
 cfn=_mean_dispatcher
-calls=62 3296
-2 103500
+calls=48 3296
+2 79100
 cfl=~
 cfn=<built-in method numpy.core._multiarray_umath.implement_array_function>
-calls=62 0
-2 14317900
+calls=48 0
+2 10916400
 
 fl=<__array_function__ internals>
 fn=moveaxis
-2 17318800
+2 11587700
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\numeric.py
 cfn=_moveaxis_dispatcher
-calls=5060 1400
-2 3844300
+calls=3175 1400
+2 2788300
 cfl=~
 cfn=<built-in method numpy.core._multiarray_umath.implement_array_function>
-calls=5060 0
-2 308450300
+calls=3175 0
+2 207409800
 
 fl=<__array_function__ internals>
 fn=ndim
-2 80292400
+2 60291300
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\fromnumeric.py
 cfn=_ndim_dispatcher
-calls=35131 3102
-2 20975700
+calls=22946 3102
+2 13747000
 cfl=~
 cfn=<built-in method numpy.core._multiarray_umath.implement_array_function>
-calls=35131 0
-2 105211000
+calls=22946 0
+2 79766100
 
 fl=<__array_function__ internals>
 fn=nonzero
-2 76898300
+2 53158300
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\fromnumeric.py
 cfn=_nonzero_dispatcher
-calls=35131 1823
-2 21804900
+calls=22946 1823
+2 12125400
 cfl=~
 cfn=<built-in method numpy.core._multiarray_umath.implement_array_function>
-calls=35131 0
-2 398872500
+calls=22946 0
+2 267872600
 
 fl=<__array_function__ internals>
 fn=prod
-2 26004700
+2 20916100
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\fromnumeric.py
 cfn=_prod_dispatcher
-calls=4051 2907
-2 3945200
+calls=2805 2907
+2 2592600
 cfl=~
 cfn=<built-in method numpy.core._multiarray_umath.implement_array_function>
-calls=4051 0
-2 347845500
+calls=2805 0
+2 231009800
 
 fl=<__array_function__ internals>
 fn=ravel
-2 42819300
+2 32897200
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\fromnumeric.py
 cfn=_ravel_dispatcher
-calls=15766 1712
-2 9472500
+calls=11048 1712
+2 5955200
 cfl=~
 cfn=<built-in method numpy.core._multiarray_umath.implement_array_function>
-calls=15766 0
-2 363345900
+calls=11048 0
+2 447933800
 
 fl=<__array_function__ internals>
 fn=transpose
-2 86398500
+2 97745600
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\fromnumeric.py
 cfn=_transpose_dispatcher
-calls=35131 598
-2 22022400
+calls=22946 598
+2 12567300
 cfl=~
 cfn=<built-in method numpy.core._multiarray_umath.implement_array_function>
-calls=35131 0
-2 1340899900
+calls=22946 0
+2 921990500
 
 fl=F:\Python\lib\codecs.py
 fn=__init__
-186 280600
+186 279800
 
 fl=F:\Python\lib\copy.py
 fn=deepcopy
-128 17176404800
+128 13429841100
 cfl=F:\Python\lib\copy.py
 cfn=_deepcopy_atomic
-calls=3504094 182
-128 1052887300
+calls=2461388 182
+128 1137360900
 cfl=F:\Python\lib\copy.py
 cfn=_deepcopy_list
-calls=141251 200
-128 6907682200
+calls=99059 200
+128 5305858700
 cfl=F:\Python\lib\copy.py
 cfn=_deepcopy_tuple
-calls=102996 209
-128 2192758700
+calls=72324 209
+128 1763432200
 cfl=F:\Python\lib\copy.py
 cfn=_deepcopy_dict
-calls=205992 226
-128 36686161400
+calls=144648 226
+128 29610154000
 cfl=F:\Python\lib\copy.py
 cfn=_keep_alive
-calls=519790 242
-128 1789053500
+calls=363909 242
+128 1386656300
 cfl=F:\Python\lib\copy.py
 cfn=_reconstruct
-calls=140189 258
-128 36863527100
+calls=98441 258
+128 29746965400
 cfl=~
 cfn=<built-in method builtins.getattr>
-calls=312736 0
-128 229980900
+calls=218643 0
+128 167067500
 cfl=~
 cfn=<built-in method builtins.id>
-calls=4126880 0
-128 1691205800
+calls=2897621 0
+128 1272217200
 cfl=~
 cfn=<built-in method builtins.isinstance>
-calls=140189 0
-128 93778900
+calls=98441 0
+128 76306100
 cfl=~
 cfn=<built-in method builtins.issubclass>
-calls=172547 0
-128 95502300
+calls=120202 0
+128 88355500
 cfl=~
 cfn=<method '__deepcopy__' of 'numpy.generic' objects>
-calls=1062 0
-128 10164300
+calls=618 0
+128 5990600
 cfl=~
 cfn=<method '__deepcopy__' of 'numpy.ndarray' objects>
-calls=31296 0
-128 203439800
+calls=21143 0
+128 155125700
 cfl=~
 cfn=<method '__reduce_ex__' of 'object' objects>
-calls=140189 0
-128 561719500
+calls=98441 0
+128 432949900
 cfl=~
 cfn=<method 'get' of 'dict' objects>
-calls=8393949 0
-128 3334485600
+calls=5893683 0
+128 2630296300
 
 fl=F:\Python\lib\copy.py
 fn=_deepcopy_atomic
-182 1052887300
+182 1137360900
 
 fl=F:\Python\lib\copy.py
 fn=_deepcopy_list
-200 1223032700
+200 879799800
 cfl=F:\Python\lib\copy.py
 cfn=deepcopy
-calls=575492 128
-200 5877943800
+calls=404790 128
+200 4552826900
 cfl=~
 cfn=<built-in method builtins.id>
-calls=141251 0
-200 55684100
+calls=99059 0
+200 42542100
 cfl=~
 cfn=<method 'append' of 'list' objects>
-calls=575492 0
-200 249691600
+calls=404790 0
+200 204683200
 
 fl=F:\Python\lib\copy.py
 fn=_deepcopy_tuple
-209 804564500
+209 562095500
 cfl=F:\Python\lib\copy.py
 cfn=<listcomp>
-calls=102996 210
-209 1340769100
+calls=72324 210
+209 1169684400
 cfl=~
 cfn=<built-in method builtins.id>
-calls=102996 0
-209 47425100
+calls=72324 0
+209 31652300
 
 fl=F:\Python\lib\copy.py
 fn=<listcomp>
-210 288630900
+210 214549300
 cfl=F:\Python\lib\copy.py
 cfn=deepcopy
-calls=205992 128
-210 1052138200
+calls=144648 128
+210 955135100
 
 fl=F:\Python\lib\copy.py
 fn=_deepcopy_dict
-226 4524154500
+226 3421920000
 cfl=F:\Python\lib\copy.py
 cfn=deepcopy
-calls=3049826 128
-226 36444539600
+calls=2141594 128
+226 29433488500
 cfl=~
 cfn=<built-in method builtins.id>
-calls=205992 0
-226 89568100
+calls=144648 0
+226 65775900
 cfl=~
 cfn=<method 'items' of 'dict' objects>
-calls=205992 0
-226 428308900
+calls=144648 0
+226 961681100
 
 fl=F:\Python\lib\copy.py
 fn=_keep_alive
-242 1226839700
+242 946018200
 cfl=~
 cfn=<built-in method builtins.id>
-calls=534982 0
-242 256301100
+calls=373616 0
+242 184676000
 cfl=~
 cfn=<method 'append' of 'list' objects>
-calls=504598 0
-242 305912700
+calls=354202 0
+242 255962100
 
 fl=F:\Python\lib\copy.py
 fn=_reconstruct
-258 2088560700
+258 1960759300
 cfl=F:\Python\lib\copy.py
 cfn=deepcopy
-calls=140189 128
-258 36721631300
+calls=98441 128
+258 29640234700
 cfl=F:\Python\lib\copy.py
 cfn=<genexpr>
-calls=280378 263
-258 1383525100
+calls=196882 263
+258 1039570700
 cfl=F:\Python\lib\copyreg.py
 cfn=__newobj__
-calls=140189 94
-258 435823900
+calls=98441 94
+258 334078300
 cfl=~
 cfn=<built-in method builtins.hasattr>
-calls=140189 0
-258 94496300
+calls=98441 0
+258 76541900
 cfl=~
 cfn=<built-in method builtins.id>
-calls=140189 0
-258 89445100
+calls=98441 0
+258 49651600
 cfl=~
 cfn=<built-in method builtins.isinstance>
-calls=140189 0
-258 83931500
+calls=98441 0
+258 71389800
 cfl=~
 cfn=<method 'update' of 'dict' objects>
-calls=140189 0
-258 296087500
+calls=98441 0
+258 206298200
 
 fl=F:\Python\lib\copy.py
 fn=<genexpr>
-263 316922500
+263 230687400
 cfl=F:\Python\lib\copy.py
 cfn=deepcopy
-calls=140189 128
-263 1066602600
+calls=98441 128
+263 808883300
 
 fl=F:\Python\lib\copyreg.py
 fn=__newobj__
-94 286767800
+94 229921400
 cfl=~
-cfn=<built-in method __new__ of type object at 0x00007FFC97763C60>
-calls=140189 0
-94 149056100
+cfn=<built-in method __new__ of type object at 0x00007FFABBF2BC60>
+calls=98441 0
+94 104156900
 
 fl=F:\Python\lib\copyreg.py
 fn=_slotnames
-103 39500
+103 46800
 cfl=~
 cfn=<built-in method builtins.hasattr>
 calls=4 0
-103 20900
+103 27300
 cfl=~
 cfn=<method 'get' of 'mappingproxy' objects>
 calls=4 0
-103 7200
+103 8800
 
 fl=F:\Python\lib\genericpath.py
 fn=exists
-16 33800
+16 47400
 cfl=~
 cfn=<built-in method nt.stat>
 calls=8 0
-16 2247100
+16 2917700
 
 fl=F:\Python\lib\ntpath.py
 fn=_get_bothseps
-34 17900
+34 58800
 cfl=~
 cfn=<built-in method builtins.isinstance>
 calls=8 0
-34 9300
+34 20200
 
 fl=F:\Python\lib\ntpath.py
 fn=splitdrive
-124 100600
+124 479800
 cfl=~
 cfn=<built-in method builtins.isinstance>
 calls=8 0
-124 4400
+124 4100
 cfl=~
 cfn=<built-in method builtins.len>
 calls=8 0
-124 6100
+124 9700
 cfl=~
 cfn=<built-in method nt.fspath>
 calls=8 0
-124 3500
+124 3100
 cfl=~
 cfn=<method 'replace' of 'str' objects>
 calls=8 0
-124 13900
+124 27700
 
 fl=F:\Python\lib\ntpath.py
 fn=split
-180 121600
+180 6010000
 cfl=F:\Python\lib\ntpath.py
 cfn=_get_bothseps
 calls=8 34
-180 27200
+180 79000
 cfl=F:\Python\lib\ntpath.py
 cfn=splitdrive
 calls=8 124
-180 128500
+180 524400
 cfl=~
 cfn=<built-in method builtins.len>
 calls=8 0
-180 3300
+180 3400
 cfl=~
 cfn=<built-in method nt.fspath>
 calls=8 0
-180 6200
+180 15200
 cfl=~
 cfn=<method 'rstrip' of 'str' objects>
 calls=8 0
-180 10400
+180 13400
 
 fl=F:\Python\lib\os.py
 fn=makedirs
-200 105100
+200 186300
 cfl=F:\Python\lib\genericpath.py
 cfn=exists
 calls=8 16
-200 2280900
+200 2965100
 cfl=F:\Python\lib\ntpath.py
 cfn=split
 calls=8 180
-200 297200
+200 6645400
 cfl=~
 cfn=<built-in method nt.mkdir>
 calls=8 0
-200 3687800
+200 4674300
 
 fl=G:\Python\ShopSchedule\src\algorithm\ga.py
 fn=clear
-45 7782100
+45 8451200
 cfl=G:\Python\ShopSchedule\src\algorithm\ga.py
 cfn=<listcomp>:49
 calls=30 49
-45 203700
+45 205400
 
 fl=G:\Python\ShopSchedule\src\algorithm\ga.py
 fn=<listcomp>:49
-49 203700
+49 205400
 
 fl=G:\Python\ShopSchedule\src\algorithm\ga.py
 fn=get_obj_fit
-62 27653700
+62 19290100
 cfl=G:\Python\ShopSchedule\src\objective.py
 cfn=makespan
-calls=2861 5
-62 59779300
+calls=2009 5
+62 45666500
 cfl=G:\Python\ShopSchedule\src\utils.py
 cfn=calculate_fitness
-calls=2861 94
-62 12632500
+calls=2009 94
+62 9963600
 
 fl=G:\Python\ShopSchedule\src\algorithm\ga.py
 fn=append_individual
-74 39199400
+74 29797800
 cfl=G:\Python\ShopSchedule\src\algorithm\ga.py
 cfn=get_obj_fit
-calls=1734 62
-74 59848400
+calls=1174 62
+74 44339500
 cfl=G:\Python\ShopSchedule\src\algorithm\ga.py
 cfn=replace_best
-calls=1734 93
-74 10093100
+calls=1174 93
+74 9771000
 cfl=~
 cfn=<method 'append' of 'list' objects>
-calls=10404 0
-74 5871200
+calls=7044 0
+74 3840300
 
 fl=G:\Python\ShopSchedule\src\algorithm\ga.py
 fn=replace_individual
-83 28379800
+83 23349200
 cfl=G:\Python\ShopSchedule\src\algorithm\ga.py
 cfn=get_obj_fit
-calls=927 62
-83 33364900
+calls=635 62
+83 22911700
 cfl=G:\Python\ShopSchedule\src\algorithm\ga.py
 cfn=replace_best
-calls=927 93
-83 3712200
+calls=635 93
+83 3094600
 cfl=G:\Python\ShopSchedule\src\utils.py
 cfn=update_info
-calls=927 102
-83 1450100
+calls=635 102
+83 1017800
 
 fl=G:\Python\ShopSchedule\src\algorithm\ga.py
 fn=replace_best
-93 10763000
+93 9924500
 cfl=G:\Python\ShopSchedule\src\utils.py
 cfn=update_info
-calls=2661 102
-93 3042300
+calls=1809 102
+93 2941100
 
 fl=G:\Python\ShopSchedule\src\algorithm\ga.py
 fn=show_generation
-101 2178600
+101 1545900
 cfl=<__array_function__ internals>
 cfn=mean
-calls=62 2
-101 15011200
+calls=48 2
+101 11430900
 cfl=G:\Python\ShopSchedule\src\utils.py
 cfn=print
-calls=62 133
-101 10598200
+calls=48 133
+101 8051100
 cfl=~
 cfn=<built-in method builtins.min>
-calls=62 0
-101 571700
+calls=48 0
+101 458600
 cfl=~
 cfn=<method 'append' of 'list' objects>
-calls=248 0
-101 133200
+calls=192 0
+101 116600
 cfl=~
 cfn=<method 'format' of 'str' objects>
-calls=62 0
-101 2723700
+calls=48 0
+101 2046000
 
 fl=G:\Python\ShopSchedule\src\algorithm\ga.py
 fn=selection_roulette
-111 66790800
+111 50971100
 cfl=<__array_function__ internals>
 cfn=append
-calls=2974 2
-111 205673000
+calls=2134 2
+111 152247300
 cfl=<__array_function__ internals>
 cfn=argwhere
-calls=1240 2
-111 93134900
+calls=960 2
+111 74669600
 cfl=G:\Python\ShopSchedule\src\algorithm\ga.py
 cfn=<listcomp>:119
-calls=186 119
-111 3482500
+calls=144 119
+111 1715900
 cfl=~
 cfn=<built-in method builtins.sum>
-calls=3036 0
-111 64834900
+calls=2182 0
+111 52876400
 cfl=~
 cfn=<built-in method numpy.array>
-calls=124 0
-111 3134600
+calls=96 0
+111 2562000
 cfl=~
 cfn=<method 'append' of 'list' objects>
-calls=3720 0
-111 1914500
+calls=2880 0
+111 1614600
 cfl=~
 cfn=<method 'random' of 'numpy.random.mtrand.RandomState' objects>
-calls=1240 0
-111 7884800
+calls=960 0
+111 7902700
 
 fl=G:\Python\ShopSchedule\src\algorithm\ga.py
 fn=<listcomp>:119
-119 3482500
+119 1715900
 
 fl=G:\Python\ShopSchedule\src\algorithm\ga.py
 fn=func_selection
-142 544800
+142 774700
 
 fl=G:\Python\ShopSchedule\src\algorithm\ga.py
 fn=do_selection
-151 100561300
+151 71650900
 cfl=G:\Python\ShopSchedule\src\algorithm\ga.py
 cfn=selection_roulette
-calls=62 111
-151 446850000
+calls=48 111
+151 344559600
 cfl=G:\Python\ShopSchedule\src\algorithm\ga.py
 cfn=func_selection
-calls=62 142
-151 544800
+calls=48 142
+151 774700
 cfl=G:\Python\ShopSchedule\src\algorithm\ga.py
 cfn=save_best
-calls=62 155
-151 3085900
+calls=48 155
+151 2446500
 
 fl=G:\Python\ShopSchedule\src\algorithm\ga.py
 fn=save_best
-155 3085900
+155 2446500
 
 fl=G:\Python\ShopSchedule\src\algorithm\ga.py
 fn=update_best
-162 197900
+162 203400
 cfl=~
 cfn=<built-in method builtins.max>
 calls=10 0
-162 49000
+162 51700
 cfl=~
 cfn=<method 'index' of 'list' objects>
 calls=10 0
-162 26600
+162 35000
 
 fl=G:\Python\ShopSchedule\src\algorithm\ga.py
 fn=reach_max_stay_generation
-185 97600
+185 73500
 
 fl=G:\Python\ShopSchedule\src\algorithm\ga.py
 fn=reach_best_known_solution
-191 3487000
+191 2715100
 
 fl=G:\Python\ShopSchedule\src\algorithm\ga.py
 fn=do_evolution
-196 52714700
+196 35721500
 cfl=<__array_function__ internals>
 cfn=delete
-calls=927 2
-196 83192200
+calls=635 2
+196 61675000
 cfl=G:\Python\ShopSchedule\src\algorithm\ga.py
 cfn=clear
 calls=10 45
-196 7985800
+196 8656600
 cfl=G:\Python\ShopSchedule\src\algorithm\ga.py
 cfn=show_generation
-calls=62 101
-196 31216600
+calls=48 101
+196 23649100
 cfl=G:\Python\ShopSchedule\src\algorithm\ga.py
 cfn=do_selection
-calls=62 151
-196 551042000
+calls=48 151
+196 419431700
 cfl=G:\Python\ShopSchedule\src\algorithm\ga.py
 cfn=update_best
 calls=10 162
-196 273500
+196 290100
 cfl=G:\Python\ShopSchedule\src\algorithm\ga.py
 cfn=reach_max_stay_generation
-calls=52 185
-196 97600
+calls=38 185
+196 73500
 cfl=G:\Python\ShopSchedule\src\algorithm\ga.py
 cfn=reach_best_known_solution
-calls=999 191
-196 3487000
+calls=693 191
+196 2715100
 cfl=G:\Python\ShopSchedule\src\algorithm\ga.py
 cfn=do_init
 calls=10 240
-196 3396044300
+196 3936830100
 cfl=G:\Python\ShopSchedule\src\algorithm\ga.py
 cfn=do_crossover
-calls=927 254
-196 26998424900
+calls=635 254
+196 19879516900
 cfl=G:\Python\ShopSchedule\src\algorithm\ga.py
 cfn=do_mutation
-calls=927 260
-196 2272322900
+calls=635 260
+196 1879633100
 cfl=G:\Python\ShopSchedule\src\algorithm\ga.py
 cfn=do_key_block_move
-calls=927 272
-196 27365714100
+calls=635 272
+196 21820223300
 cfl=G:\Python\ShopSchedule\src\utils.py
 cfn=fore
 calls=20 129
-196 29300
+196 32500
 cfl=G:\Python\ShopSchedule\src\utils.py
 cfn=print
 calls=20 133
-196 2029100
+196 4353200
 cfl=~
 cfn=<built-in method numpy.arange>
-calls=927 0
-196 19221400
+calls=635 0
+196 14064000
 cfl=~
 cfn=<built-in method time.perf_counter>
-calls=104 0
-196 149700
+calls=76 0
+196 110900
 cfl=~
 cfn=<method 'append' of 'list' objects>
-calls=104 0
-196 109500
+calls=76 0
+196 67700
 cfl=~
 cfn=<method 'choice' of 'numpy.random.mtrand.RandomState' objects>
-calls=927 0
-196 231597100
+calls=635 0
+196 151043000
 cfl=~
 cfn=<method 'format' of 'str' objects>
 calls=20 0
-196 135900
+196 160100
 cfl=~
 cfn=<method 'random' of 'numpy.random.mtrand.RandomState' objects>
-calls=1854 0
-196 50504600
+calls=1270 0
+196 36286100
 
 fl=G:\Python\ShopSchedule\src\algorithm\ga.py
 fn=decode
-237 27106000
+237 20507300
 cfl=G:\Python\ShopSchedule\src\shop\jsp.py
 cfn=decode
-calls=2861 12
-237 47524395400
+calls=2009 12
+237 38640579700
 
 fl=G:\Python\ShopSchedule\src\algorithm\ga.py
 fn=do_init
-240 4898500
+240 5150600
 cfl=G:\Python\ShopSchedule\src\algorithm\ga.py
 cfn=get_obj_fit
 calls=200 62
-240 6852200
+240 7669000
 cfl=G:\Python\ShopSchedule\src\algorithm\ga.py
 cfn=decode
 calls=200 237
-240 3266745100
+240 3795217600
 cfl=G:\Python\ShopSchedule\src\resource\code.py
 cfn=sequence_operation_based
 calls=200 19
-240 116416200
+240 127514300
 cfl=G:\Python\ShopSchedule\src\shop\schedule.py
 cfn=n
 calls=200 49
-240 778400
+240 914600
 cfl=~
 cfn=<built-in method time.perf_counter>
 calls=20 0
-240 26800
+240 27800
 cfl=~
 cfn=<method 'append' of 'list' objects>
 calls=620 0
-240 327100
+240 336200
 
 fl=G:\Python\ShopSchedule\src\algorithm\ga.py
 fn=do_crossover
-254 19724200
+254 13494500
 cfl=G:\Python\ShopSchedule\src\algorithm\ga.py
 cfn=append_individual
-calls=1602 74
-254 106291300
+calls=1074 74
+254 80674800
 cfl=G:\Python\ShopSchedule\src\algorithm\ga.py
 cfn=decode
-calls=1602 237
-254 26463107100
+calls=1074 237
+254 19498472900
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=ga_crossover_sequence
-calls=801 560
-254 409302300
+calls=537 560
+254 286874700
 
 fl=G:\Python\ShopSchedule\src\algorithm\ga.py
 fn=do_mutation
-260 12214800
+260 9049300
 cfl=G:\Python\ShopSchedule\src\algorithm\ga.py
 cfn=append_individual
-calls=132 74
-260 8720800
+calls=100 74
+260 7073800
 cfl=G:\Python\ShopSchedule\src\algorithm\ga.py
 cfn=decode
-calls=132 237
-260 2175794000
+calls=100 237
+260 1745862800
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=ga_mutation_sequence
-calls=132 574
-260 75593300
+calls=100 574
+260 117647200
 
 fl=G:\Python\ShopSchedule\src\algorithm\ga.py
 fn=do_key_block_move
-272 37343800
+272 25299100
 cfl=G:\Python\ShopSchedule\src\algorithm\ga.py
 cfn=replace_individual
-calls=927 83
-272 66907000
+calls=635 83
+272 50373300
 cfl=G:\Python\ShopSchedule\src\algorithm\ga.py
 cfn=decode
-calls=927 237
-272 15645855200
+calls=635 237
+272 13621533700
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=key_block_move_hybrid
-calls=927 1083
-272 11615608100
+calls=635 1083
+272 8123017200
 
 fl=G:\Python\ShopSchedule\src\info.py
 fn=__init__:37
-37 3469000
+37 2411800
 
 fl=G:\Python\ShopSchedule\src\info.py
 fn=__init__:42
-42 6876000
+42 14386200
 
 fl=G:\Python\ShopSchedule\src\info.py
 fn=not_dummy
-88 68803100
+88 43941400
 
 fl=G:\Python\ShopSchedule\src\info.py
 fn=get_job_end
-91 172721200
+91 121017300
 cfl=~
 cfn=<method 'keys' of 'dict' objects>
-calls=927 0
-91 681300
+calls=635 0
+91 432400
 
 fl=G:\Python\ShopSchedule\src\info.py
 fn=get_machine_end
-97 136782200
+97 93463600
 cfl=~
 cfn=<method 'keys' of 'dict' objects>
-calls=927 0
-97 639100
+calls=635 0
+97 617200
 
 fl=G:\Python\ShopSchedule\src\info.py
 fn=key_route
-109 1058694400
+109 710922600
 cfl=<__array_function__ internals>
 cfn=argwhere
-calls=27899 2
-109 2067851700
+calls=17865 2
+109 1450929000
 cfl=F:\Python\lib\copy.py
 cfn=deepcopy
-calls=1062 128
-109 81328300
+calls=618 128
+109 51271700
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=__init__:37
-calls=2120 37
-109 3469000
+calls=1302 37
+109 2411800
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=not_dummy
-calls=17809 88
-109 68803100
+calls=11429 88
+109 43941400
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=get_job_end
-calls=927 91
-109 173402500
+calls=635 91
+109 121449700
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=get_machine_end
-calls=927 97
-109 137421300
+calls=635 97
+109 94080800
 cfl=G:\Python\ShopSchedule\src\shop\schedule.py
 cfn=makespan
-calls=927 65
-109 14881800
+calls=635 65
+109 10350600
 cfl=~
 cfn=<built-in method builtins.len>
-calls=2516 0
-109 1474300
+calls=1628 0
+109 1044800
 cfl=~
 cfn=<method 'append' of 'list' objects>
-calls=14548 0
-109 9590700
+calls=9233 0
+109 6610700
 cfl=~
 cfn=<method 'extend' of 'list' objects>
-calls=1589 0
-109 2531200
+calls=993 0
+109 1704500
 cfl=~
 cfn=<method 'pop' of 'list' objects>
-calls=2120 0
-109 4043900
+calls=1302 0
+109 2752300
 
 fl=G:\Python\ShopSchedule\src\info.py
 fn=key_block
-224 655097100
+224 491966200
 cfl=<__array_function__ internals>
 cfn=append
-calls=11592 2
-224 774904100
+calls=7714 2
+224 749217100
 cfl=<__array_function__ internals>
 cfn=argsort
-calls=6561 2
-224 153914400
+calls=4498 2
+224 112816800
 cfl=<__array_function__ internals>
 cfn=argwhere
-calls=4390 2
-224 336171300
+calls=3047 2
+224 251577600
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=key_route
-calls=927 109
-224 3623492200
+calls=635 109
+224 2497469900
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=<listcomp>:228
-calls=927 228
-224 14371300
+calls=635 228
+224 9019900
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=<listcomp>:236
-calls=4390 236
-224 42732600
+calls=3047 236
+224 29513100
 cfl=~
 cfn=<built-in method numpy.array>
-calls=5634 0
-224 56689000
+calls=3863 0
+224 43089000
 cfl=~
 cfn=<method 'index' of 'list' objects>
-calls=11592 0
-224 64218000
+calls=7714 0
+224 82444500
 cfl=~
 cfn=<method 'items' of 'dict' objects>
-calls=927 0
-224 1290700
+calls=635 0
+224 806800
 cfl=~
 cfn=<method 'tolist' of 'numpy.ndarray' objects>
-calls=4390 0
-224 10354200
+calls=3047 0
+224 7454300
 
 fl=G:\Python\ShopSchedule\src\info.py
 fn=<listcomp>:228
-228 14371300
+228 9019900
 
 fl=G:\Python\ShopSchedule\src\info.py
 fn=<listcomp>:236
-236 42732600
+236 29513100
 
 fl=G:\Python\ShopSchedule\src\info.py
 fn=__init__:426
-426 165932400
+426 254537900
 cfl=F:\Python\lib\copy.py
 cfn=deepcopy
-calls=2861 128
-426 36994253000
+calls=2009 128
+426 29854987500
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=__init__:42
-calls=2861 42
-426 6876000
+calls=2009 42
+426 14386200
 
 fl=G:\Python\ShopSchedule\src\info.py
 fn=std_code
-453 887342700
+453 580542200
 cfl=<__array_function__ internals>
 cfn=argsort
-calls=927 2
-453 52237700
+calls=635 2
+453 42283700
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=<listcomp>:469
-calls=5562 469
-453 8735400
+calls=3810 469
+453 7077100
 cfl=G:\Python\ShopSchedule\src\resource\job.py
 cfn=nop
-calls=21366 26
-453 36586200
+calls=16086 26
+453 28801700
 cfl=G:\Python\ShopSchedule\src\utils.py
 cfn=direction
-calls=927 82
-453 8348100
+calls=635 82
+453 5446700
 cfl=~
 cfn=<method 'append' of 'list' objects>
-calls=33372 0
-453 20276000
+calls=22860 0
+453 14568000
 cfl=~
 cfn=<method 'keys' of 'dict' objects>
-calls=1854 0
-453 1571800
+calls=1270 0
+453 1065700
 
 fl=G:\Python\ShopSchedule\src\info.py
 fn=<listcomp>:469
-469 8735400
+469 7077100
 
 fl=G:\Python\ShopSchedule\src\info.py
 fn=save_code_to_txt
-513 562800
+513 551200
 cfl=G:\Python\ShopSchedule\src\utils.py
 cfn=save_code_to_txt
 calls=10 415
-513 26894700
+513 31646300
 cfl=~
 cfn=<method 'tolist' of 'numpy.ndarray' objects>
 calls=10 0
-513 49200
+513 54400
 
 fl=G:\Python\ShopSchedule\src\info.py
 fn=trans_direction
-520 891500
+520 813700
 cfl=G:\Python\ShopSchedule\src\shop\schedule.py
 cfn=makespan
 calls=288 65
-520 2439400
+520 2727200
 cfl=~
 cfn=<method 'items' of 'dict' objects>
 calls=28 0
-520 22600
+520 17900
 
 fl=G:\Python\ShopSchedule\src\info.py
 fn=save_start_end
-527 4924900
+527 4476800
 cfl=~
 cfn=<built-in method io.open>
 calls=20 0
-527 28326500
+527 30918900
 cfl=~
 cfn=<method '__exit__' of '_io._IOBase' objects>
 calls=20 0
-527 14009700
+527 18414100
 cfl=~
 cfn=<method 'format' of 'str' objects>
 calls=720 0
-527 4399700
+527 3804500
 cfl=~
 cfn=<method 'values' of 'dict' objects>
 calls=140 0
-527 101400
+527 96600
 cfl=~
 cfn=<method 'writelines' of '_io._IOBase' objects>
 calls=740 0
-527 9494500
+527 8692600
 
 fl=G:\Python\ShopSchedule\src\info.py
 fn=save_gantt_chart_to_csv
-555 613300
+555 655100
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=save_start_end
 calls=20 527
-555 61256700
+555 66403500
 cfl=~
 cfn=<method 'endswith' of 'str' objects>
 calls=20 0
-555 106900
+555 95900
 
 fl=G:\Python\ShopSchedule\src\info.py
 fn=ga_crossover_sequence
-560 15142400
+560 11274800
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=ga_crossover_sequence_pox
-calls=801 609
-560 394159900
+calls=537 609
+560 275599900
 
 fl=G:\Python\ShopSchedule\src\info.py
 fn=ga_mutation_sequence
-574 2046800
+574 1496000
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=ga_mutation_sequence_tpe
-calls=132 750
-574 73546500
+calls=100 750
+574 116151200
 
 fl=G:\Python\ShopSchedule\src\info.py
 fn=ga_crossover_sequence_pox
-609 70468900
+609 49354100
 cfl=<__array_function__ internals>
 cfn=argwhere
-calls=1602 2
-609 144522700
+calls=1074 2
+609 98753500
 cfl=F:\Python\lib\copy.py
 cfn=deepcopy
-calls=1602 128
-609 40623000
+calls=1074 128
+609 29762900
 cfl=G:\Python\ShopSchedule\src\shop\schedule.py
 cfn=n
-calls=801 49
-609 3143300
+calls=537 49
+609 2228900
 cfl=~
 cfn=<method 'choice' of 'numpy.random.mtrand.RandomState' objects>
-calls=801 0
-609 135402000
+calls=537 0
+609 95500500
 
 fl=G:\Python\ShopSchedule\src\info.py
 fn=ga_mutation_sequence_tpe
-750 9346900
+750 7025900
 cfl=F:\Python\lib\copy.py
 cfn=deepcopy
-calls=132 128
-750 5010000
+calls=100 128
+750 3535000
 cfl=G:\Python\ShopSchedule\src\shop\schedule.py
 cfn=m
-calls=132 53
-750 378800
+calls=100 53
+750 313900
 cfl=G:\Python\ShopSchedule\src\shop\schedule.py
 cfn=length
-calls=264 61
-750 6804100
+calls=200 61
+750 5648000
 cfl=~
 cfn=<method 'choice' of 'numpy.random.mtrand.RandomState' objects>
-calls=132 0
-750 25764500
+calls=100 0
+750 20303700
 cfl=~
 cfn=<method 'randint' of 'numpy.random.mtrand.RandomState' objects>
-calls=132 0
-750 26242200
+calls=100 0
+750 79324700
 
 fl=G:\Python\ShopSchedule\src\info.py
 fn=key_block_move_hybrid
-1083 25112600
+1083 17414100
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=key_block_move
-calls=325 1091
-1083 2566054400
+calls=216 1091
+1083 1916188500
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=key_block_move_all
-calls=266 1172
-1083 2178042800
+calls=198 1172
+1083 1699040200
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=key_block_move_complete
-calls=336 1340
-1083 6830093800
+calls=221 1340
+1083 4479119800
 cfl=~
 cfn=<method 'random' of 'numpy.random.mtrand.RandomState' objects>
-calls=927 0
-1083 16304500
+calls=635 0
+1083 11254600
 
 fl=G:\Python\ShopSchedule\src\info.py
 fn=key_block_move
-1091 26246600
+1091 18043500
 cfl=<__array_function__ internals>
 cfn=delete
-calls=175 2
-1091 14222100
+calls=121 2
+1091 10259300
 cfl=<__array_function__ internals>
 cfn=insert
-calls=175 2
-1091 33418300
+calls=121 2
+1091 23565500
 cfl=F:\Python\lib\copy.py
 cfn=deepcopy
-calls=325 128
-1091 10130200
+calls=216 128
+1091 7428400
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=key_block
-calls=325 224
-1091 1955506000
+calls=216 224
+1091 1517770900
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=std_code
-calls=325 453
-1091 371371200
+calls=216 453
+1091 235023900
 cfl=~
 cfn=<built-in method builtins.len>
-calls=325 0
-1091 240300
+calls=216 0
+1091 163700
 cfl=~
 cfn=<method 'choice' of 'numpy.random.mtrand.RandomState' objects>
-calls=919 0
-1091 146308900
+calls=604 0
+1091 97811500
 cfl=~
 cfn=<method 'keys' of 'dict' objects>
-calls=325 0
-1091 275300
+calls=216 0
+1091 184900
 cfl=~
 cfn=<method 'random' of 'numpy.random.mtrand.RandomState' objects>
-calls=650 0
-1091 5505300
+calls=432 0
+1091 4269100
 cfl=~
 cfn=<method 'remove' of 'list' objects>
-calls=594 0
-1091 2830200
+calls=388 0
+1091 1667800
 
 fl=G:\Python\ShopSchedule\src\info.py
 fn=key_block_move_all
-1172 30088100
+1172 23504600
 cfl=<__array_function__ internals>
 cfn=delete
-calls=413 2
-1172 30891900
+calls=308 2
+1172 24714400
 cfl=<__array_function__ internals>
 cfn=insert
-calls=413 2
-1172 71784000
+calls=308 2
+1172 81591600
 cfl=F:\Python\lib\copy.py
 cfn=deepcopy
-calls=266 128
-1172 8065800
+calls=198 128
+1172 6639100
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=key_block
-calls=266 224
-1172 1620793400
+calls=198 224
+1172 1253767200
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=std_code
-calls=266 453
-1172 284715600
+calls=198 453
+1172 207453900
 cfl=~
 cfn=<method 'choice' of 'numpy.random.mtrand.RandomState' objects>
-calls=804 0
-1172 119606600
+calls=608 0
+1172 92232700
 cfl=~
 cfn=<method 'random' of 'numpy.random.mtrand.RandomState' objects>
-calls=1608 0
-1172 11867500
+calls=1216 0
+1172 8965200
 cfl=~
 cfn=<method 'values' of 'dict' objects>
-calls=266 0
-1172 229900
+calls=198 0
+1172 171500
 
 fl=G:\Python\ShopSchedule\src\info.py
 fn=get_duration
-1206 161335700
+1206 91732200
 
 fl=G:\Python\ShopSchedule\src\info.py
 fn=get_duration_by_index
-1223 298940600
+1223 185537400
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=get_duration
-calls=47152 1206
-1223 51677700
+calls=28670 1206
+1223 30390900
 
 fl=G:\Python\ShopSchedule\src\info.py
 fn=evaluate_head_job
-1229 392844700
+1229 237112100
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=get_duration
-calls=25812 1206
-1229 31263500
+calls=15708 1206
+1229 19320900
 
 fl=G:\Python\ShopSchedule\src\info.py
 fn=evaluate_head_mac
-1244 69923400
+1244 41264800
 cfl=~
 cfn=<method 'index' of 'list' objects>
-calls=8944 0
-1244 24894600
+calls=5492 0
+1244 18077100
 
 fl=G:\Python\ShopSchedule\src\info.py
 fn=evaluate_tail_job
-1253 192206800
+1253 112103900
 cfl=G:\Python\ShopSchedule\src\resource\job.py
 cfn=remain
-calls=25812 65
-1253 242270900
+calls=15708 65
+1253 146910400
 
 fl=G:\Python\ShopSchedule\src\info.py
 fn=evaluate_tail_mac
-1258 602875000
+1258 344275300
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=get_duration
-calls=73328 1206
-1258 78394500
+calls=38518 1206
+1258 42020400
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=<listcomp>:1263
-calls=15668 1263
-1258 52296500
+calls=7332 1263
+1258 26388500
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=<listcomp>:1265
-calls=10144 1265
-1258 30860200
+calls=8376 1265
+1258 26325500
 
 fl=G:\Python\ShopSchedule\src\info.py
 fn=<listcomp>:1263
-1263 52296500
+1263 26388500
 
 fl=G:\Python\ShopSchedule\src\info.py
 fn=<listcomp>:1265
-1265 30860200
+1265 26325500
 
 fl=G:\Python\ShopSchedule\src\info.py
 fn=evaluate
-1273 528360000
+1273 359147200
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=get_duration_by_index
-calls=47152 1223
-1273 350618300
+calls=28670 1223
+1273 215928300
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=evaluate_head_job
-calls=25812 1229
-1273 424108200
+calls=15708 1229
+1273 256433000
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=evaluate_head_mac
-calls=8944 1244
-1273 94818000
+calls=5492 1244
+1273 59341900
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=evaluate_tail_job
-calls=25812 1253
-1273 434477700
+calls=15708 1253
+1273 259014300
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=evaluate_tail_mac
-calls=25812 1258
-1273 764426200
+calls=15708 1258
+1273 439009700
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=<listcomp>:1336
-calls=8944 1336
-1273 24591900
+calls=5492 1336
+1273 15434100
 cfl=~
 cfn=<built-in method builtins.len>
-calls=4472 0
-1273 2271200
+calls=2746 0
+1273 1504600
 cfl=~
 cfn=<built-in method builtins.max>
-calls=60568 0
-1273 118139900
+calls=36908 0
+1273 86554200
 cfl=~
 cfn=<method 'append' of 'list' objects>
-calls=60568 0
-1273 34779100
+calls=36908 0
+1273 20899000
 cfl=~
 cfn=<method 'index' of 'list' objects>
-calls=8944 0
-1273 30195800
+calls=5492 0
+1273 17988400
 
 fl=G:\Python\ShopSchedule\src\info.py
 fn=<listcomp>:1336
-1336 24591900
+1336 15434100
 
 fl=G:\Python\ShopSchedule\src\info.py
 fn=key_block_move_complete
-1340 206166800
+1340 135113500
 cfl=<__array_function__ internals>
 cfn=delete
-calls=4472 2
-1340 294603300
+calls=2746 2
+1340 191661500
 cfl=<__array_function__ internals>
 cfn=insert
-calls=4472 2
-1340 675062100
+calls=2746 2
+1340 457605800
 cfl=F:\Python\lib\copy.py
 cfn=deepcopy
-calls=8944 128
-1340 215540300
+calls=5492 128
+1340 142648200
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=key_block
-calls=336 224
-1340 2156935500
+calls=221 224
+1340 1503837100
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=std_code
-calls=336 453
-1340 359011100
+calls=221 453
+1340 237307300
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=evaluate
-calls=336 1273
-1340 2806786300
+calls=221 1273
+1340 1731254700
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=<listcomp>:1372
-calls=336 1372
-1340 4113300
+calls=221 1372
+1340 2403800
 cfl=~
 cfn=<built-in method builtins.min>
-calls=336 0
-1340 2757400
+calls=221 0
+1340 1893400
 cfl=~
 cfn=<method 'append' of 'list' objects>
-calls=8944 0
-1340 5187100
+calls=5492 0
+1340 3537400
 cfl=~
 cfn=<method 'choice' of 'numpy.random.mtrand.RandomState' objects>
-calls=336 0
-1340 88555200
+calls=221 0
+1340 61892500
 cfl=~
 cfn=<method 'items' of 'dict' objects>
-calls=336 0
-1340 269300
+calls=221 0
+1340 178700
 cfl=~
 cfn=<method 'tolist' of 'numpy.ndarray' objects>
-calls=8944 0
-1340 15106100
+calls=5492 0
+1340 9785900
 
 fl=G:\Python\ShopSchedule\src\info.py
 fn=<listcomp>:1372
-1372 4113300
+1372 2403800
 
 fl=G:\Python\ShopSchedule\src\objective.py
 fn=makespan
-5 30572400
+5 23116000
 cfl=G:\Python\ShopSchedule\src\objective.py
 cfn=<listcomp>
-calls=2861 7
-5 14323900
+calls=2009 7
+5 8571900
 cfl=~
 cfn=<built-in method builtins.max>
-calls=2861 0
-5 12308000
+calls=2009 0
+5 12040900
 cfl=~
 cfn=<method 'values' of 'dict' objects>
-calls=2861 0
-5 2575000
+calls=2009 0
+5 1937700
 
 fl=G:\Python\ShopSchedule\src\objective.py
 fn=<listcomp>
-7 14323900
+7 8571900
 
 fl=G:\Python\ShopSchedule\src\resource\code.py
 fn=sequence_operation_based
-19 10731700
+19 11503900
 cfl=<__array_function__ internals>
 cfn=append
 calls=1200 2
-19 90888900
+19 96849100
 cfl=~
 cfn=<built-in method numpy.array>
 calls=200 0
-19 6399500
+19 10449800
 cfl=~
 cfn=<method 'shuffle' of 'numpy.random.mtrand.RandomState' objects>
 calls=200 0
-19 8396100
+19 8711500
 
 fl=G:\Python\ShopSchedule\src\resource\job.py
 fn=clear
-20 270987100
+20 215804500
 cfl=G:\Python\ShopSchedule\src\resource\job.py
 cfn=<listcomp>
-calls=17166 24
-20 26813600
+calls=12054 24
+20 21806800
 cfl=G:\Python\ShopSchedule\src\resource\job.py
 cfn=nop
-calls=17166 26
-20 31463100
+calls=12054 26
+20 21443600
 cfl=G:\Python\ShopSchedule\src\resource\task.py
 cfn=clear
-calls=102996 14
-20 109554100
+calls=72324 14
+20 79914800
 cfl=~
 cfn=<method 'keys' of 'dict' objects>
-calls=17166 0
-20 10710900
+calls=12054 0
+20 7639900
 
 fl=G:\Python\ShopSchedule\src\resource\job.py
 fn=<listcomp>
-24 26813600
+24 21806800
 
 fl=G:\Python\ShopSchedule\src\resource\job.py
 fn=nop
-26 235891000
+26 175916000
 cfl=~
 cfn=<built-in method builtins.len>
-calls=245280 0
-26 117287900
+calls=172008 0
+26 80012900
 
 fl=G:\Python\ShopSchedule\src\resource\job.py
 fn=remain
-65 226736300
+65 137099900
 cfl=~
 cfn=<method 'items' of 'dict' objects>
-calls=25812 0
-65 15534600
+calls=15708 0
+65 9810500
 
 fl=G:\Python\ShopSchedule\src\resource\machine.py
 fn=clear
-22 73084800
+22 52355900
 
 fl=G:\Python\ShopSchedule\src\resource\task.py
 fn=clear
-14 109554100
+14 79914800
 
 fl=G:\Python\ShopSchedule\src\shop\jsp.py
 fn=decode
-12 1348893100
+12 988799600
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=__init__:426
-calls=2861 426
-12 37167061400
+calls=2009 426
+12 30123911600
 cfl=G:\Python\ShopSchedule\src\resource\job.py
 cfn=nop
-calls=102168 26
-12 157642400
+calls=70344 26
+12 116493200
 cfl=G:\Python\ShopSchedule\src\shop\schedule.py
 cfn=clear
-calls=2861 33
-12 1206090500
+calls=2009 33
+12 897263800
 cfl=G:\Python\ShopSchedule\src\shop\schedule.py
 cfn=decode_common
-calls=102996 138
-12 7275794800
+calls=72324 138
+12 6194326300
 cfl=G:\Python\ShopSchedule\src\shop\schedule.py
 cfn=decode_add_limited_wait
-calls=102996 182
-12 320797100
+calls=72324 182
+12 282418400
 cfl=G:\Python\ShopSchedule\src\utils.py
 cfn=direction
-calls=2861 82
-12 48116100
+calls=2009 82
+12 37366800
 
 fl=G:\Python\ShopSchedule\src\shop\schedule.py
 fn=clear
-33 164582700
+33 124506300
 cfl=G:\Python\ShopSchedule\src\resource\job.py
 cfn=clear
-calls=17166 20
-33 449528800
+calls=12054 20
+33 346609600
 cfl=G:\Python\ShopSchedule\src\resource\machine.py
 cfn=clear
-calls=17166 22
-33 73084800
+calls=12054 22
+33 52355900
 cfl=G:\Python\ShopSchedule\src\shop\schedule.py
 cfn=length
-calls=17166 61
-33 354103700
+calls=12054 61
+33 252438900
 cfl=~
 cfn=<built-in method numpy.zeros>
-calls=17166 0
-33 158367700
+calls=12054 0
+33 117370800
 cfl=~
 cfn=<method 'keys' of 'dict' objects>
-calls=8583 0
-33 6422800
+calls=6027 0
+33 3982300
 
 fl=G:\Python\ShopSchedule\src\shop\schedule.py
 fn=n
-49 2691500
+49 2161500
 cfl=~
 cfn=<built-in method builtins.len>
-calls=1001 0
-49 1230200
+calls=737 0
+49 982000
 
 fl=G:\Python\ShopSchedule\src\shop\schedule.py
 fn=m
-53 316000
+53 270400
 cfl=~
 cfn=<built-in method builtins.len>
-calls=132 0
-53 62800
+calls=100 0
+53 43500
 
 fl=G:\Python\ShopSchedule\src\shop\schedule.py
 fn=length
-61 89538800
+61 66549400
 cfl=G:\Python\ShopSchedule\src\shop\schedule.py
 cfn=<listcomp>:63
-calls=17430 63
-61 232649500
+calls=12254 63
+61 164466000
 cfl=~
 cfn=<built-in method builtins.sum>
-calls=17430 0
-61 26988300
+calls=12254 0
+61 18876900
 cfl=~
 cfn=<method 'values' of 'dict' objects>
-calls=17430 0
-61 11731200
+calls=12254 0
+61 8194600
 
 fl=G:\Python\ShopSchedule\src\shop\schedule.py
 fn=<listcomp>:63
-63 105162300
+63 75275600
 cfl=G:\Python\ShopSchedule\src\resource\job.py
 cfn=nop
-calls=104580 26
-63 127487200
+calls=73524 26
+63 89190400
 
 fl=G:\Python\ShopSchedule\src\shop\schedule.py
 fn=makespan
-65 7905700
+65 6649900
 cfl=G:\Python\ShopSchedule\src\shop\schedule.py
 cfn=<listcomp>:67
-calls=1215 67
-65 5075000
+calls=923 67
+65 3055900
 cfl=~
 cfn=<built-in method builtins.max>
-calls=1215 0
-65 3403400
+calls=923 0
+65 2708500
 cfl=~
 cfn=<method 'values' of 'dict' objects>
-calls=1215 0
-65 937100
+calls=923 0
+65 663500
 
 fl=G:\Python\ShopSchedule\src\shop\schedule.py
 fn=<listcomp>:67
-67 5075000
+67 3055900
 
 fl=G:\Python\ShopSchedule\src\shop\schedule.py
 fn=save_sjikew
-104 2200336300
+104 1537500600
 
 fl=G:\Python\ShopSchedule\src\shop\schedule.py
 fn=save_update_decode
-118 753809200
+118 784582200
 cfl=G:\Python\ShopSchedule\src\shop\schedule.py
 cfn=save_sjikew
-calls=102996 104
-118 2200336300
+calls=72324 104
+118 1537500600
 cfl=~
 cfn=<method 'append' of 'list' objects>
-calls=102996 0
-118 63200200
+calls=72324 0
+118 49232600
 
 fl=G:\Python\ShopSchedule\src\shop\schedule.py
 fn=decode_update_machine_idle
-126 1453767000
+126 1592079900
 cfl=~
 cfn=<method 'insert' of 'list' objects>
-calls=203734 0
-126 137774800
+calls=142972 0
+126 131418000
 cfl=~
 cfn=<method 'pop' of 'list' objects>
-calls=114140 0
-126 94685700
+calls=78980 0
+126 83954300
 
 fl=G:\Python\ShopSchedule\src\shop\schedule.py
 fn=decode_common
-138 2266183700
+138 1762867800
 cfl=G:\Python\ShopSchedule\src\shop\schedule.py
 cfn=save_update_decode
-calls=102996 118
-138 3017345700
+calls=72324 118
+138 2371315400
 cfl=G:\Python\ShopSchedule\src\shop\schedule.py
 cfn=decode_update_machine_idle
-calls=102996 126
-138 1686227500
+calls=72324 126
+138 1807452200
 cfl=~
 cfn=<built-in method builtins.max>
-calls=214880 0
-138 306037900
+calls=151158 0
+138 252690900
 
 fl=G:\Python\ShopSchedule\src\shop\schedule.py
 fn=decode_add_limited_wait
-182 320797100
+182 282418400
 
 fl=G:\Python\ShopSchedule\src\template\ga_template.py
 fn=GaTemplate
-4 1847900
+4 1992100
 cfl=G:\Python\ShopSchedule\src\algorithm\ga.py
 cfn=do_evolution
 calls=10 196
-4 61066292200
+4 48274533500
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=save_code_to_txt
 calls=10 513
-4 27506700
+4 32251900
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=trans_direction
 calls=10 520
-4 3353500
+4 3558800
 cfl=G:\Python\ShopSchedule\src\info.py
 cfn=save_gantt_chart_to_csv
 calls=20 555
-4 61976900
+4 67154500
 cfl=G:\Python\ShopSchedule\src\utils.py
 cfn=make_dir_save
 calls=1 154
-4 42143500
+4 111316800
 cfl=G:\Python\ShopSchedule\src\utils.py
 cfn=save_obj_to_csv
 calls=1 426
-4 2103500
+4 3209500
 cfl=G:\Python\ShopSchedule\src\utils.py
 cfn=save_record_to_csv
 calls=10 450
-4 22995800
+4 40932600
 cfl=~
 cfn=<method 'append' of 'list' objects>
 calls=10 0
-4 14700
+4 17000
 cfl=~
 cfn=<method 'index' of 'list' objects>
 calls=10 0
-4 31600
+4 40300
 
 fl=G:\Python\ShopSchedule\src\utils.py
 fn=direction
-82 16644500
+82 13363400
 cfl=~
 cfn=<method 'random' of 'numpy.random.mtrand.RandomState' objects>
-calls=3788 0
-82 39819700
+calls=2644 0
+82 29450100
 
 fl=G:\Python\ShopSchedule\src\utils.py
 fn=calculate_fitness
-94 12632500
+94 9963600
 
 fl=G:\Python\ShopSchedule\src\utils.py
 fn=update_info
-102 4492400
+102 3958900
 
 fl=G:\Python\ShopSchedule\src\utils.py
 fn=fore
-129 29300
+129 32500
 
 fl=G:\Python\ShopSchedule\src\utils.py
 fn=print
-133 324600
+133 290900
 cfl=~
 cfn=<built-in method builtins.print>
-calls=82 0
-133 12302700
+calls=68 0
+133 12113400
 
 fl=G:\Python\ShopSchedule\src\utils.py
 fn=make_dir
-137 62400
+137 121600
 cfl=F:\Python\lib\os.py
 cfn=makedirs
 calls=8 200
-137 6371000
+137 14471100
 
 fl=G:\Python\ShopSchedule\src\utils.py
 fn=clear_dir
-144 1149600
+144 1302900
 cfl=~
 cfn=<built-in method nt.listdir>
 calls=6 0
-144 2782900
+144 3095300
 cfl=~
 cfn=<built-in method nt.remove>
 calls=42 0
-144 31607800
+144 92100200
 
 fl=G:\Python\ShopSchedule\src\utils.py
 fn=make_dir_save
-154 79300
+154 83600
 cfl=G:\Python\ShopSchedule\src\utils.py
 cfn=make_dir
 calls=2 137
-154 2090600
+154 8268800
 cfl=G:\Python\ShopSchedule\src\utils.py
 cfn=<listcomp>:161
 calls=1 161
-154 4369300
+154 6385800
 cfl=G:\Python\ShopSchedule\src\utils.py
 cfn=<listcomp>:163
 calls=1 163
-154 35604300
+154 96578600
 
 fl=G:\Python\ShopSchedule\src\utils.py
 fn=<listcomp>:161
-161 26500
+161 61900
 cfl=G:\Python\ShopSchedule\src\utils.py
 cfn=make_dir
 calls=6 137
-161 4342800
+161 6323900
 
 fl=G:\Python\ShopSchedule\src\utils.py
 fn=<listcomp>:163
-163 64000
+163 80200
 cfl=G:\Python\ShopSchedule\src\utils.py
 cfn=clear_dir
 calls=6 144
-163 35540300
+163 96498400
 
 fl=G:\Python\ShopSchedule\src\utils.py
 fn=save_code_to_txt
-415 2653900
+415 3150500
 cfl=~
 cfn=<built-in method io.open>
 calls=10 0
-415 15261300
+415 18501000
 cfl=~
 cfn=<method '__exit__' of '_io._IOBase' objects>
 calls=10 0
-415 6579900
+415 6398100
 cfl=~
 cfn=<method 'endswith' of 'str' objects>
 calls=10 0
-415 30700
+415 26400
 cfl=~
 cfn=<method 'writelines' of '_io._IOBase' objects>
 calls=1610 0
-415 2368900
+415 3570300
 
 fl=G:\Python\ShopSchedule\src\utils.py
 fn=save_obj_to_csv
-426 128100
+426 155600
 cfl=~
 cfn=<built-in method builtins.len>
 calls=3 0
-426 1600
+426 1800
 cfl=~
 cfn=<built-in method builtins.max>
 calls=2 0
-426 4600
+426 5500
 cfl=~
 cfn=<built-in method builtins.min>
 calls=2 0
-426 8000
+426 10500
 cfl=~
 cfn=<built-in method builtins.sum>
 calls=4 0
-426 9000
+426 11500
 cfl=~
 cfn=<built-in method io.open>
 calls=1 0
-426 1233100
+426 1819400
 cfl=~
 cfn=<method '__exit__' of '_io._IOBase' objects>
 calls=1 0
-426 394600
+426 834600
 cfl=~
 cfn=<method 'append' of 'list' objects>
 calls=30 0
-426 11400
+426 15100
 cfl=~
 cfn=<method 'endswith' of 'str' objects>
 calls=1 0
-426 5000
+426 5300
 cfl=~
 cfn=<method 'format' of 'str' objects>
 calls=19 0
-426 93500
+426 101700
 cfl=~
 cfn=<method 'writelines' of '_io._IOBase' objects>
 calls=19 0
-426 214600
+426 248500
 
 fl=G:\Python\ShopSchedule\src\utils.py
 fn=save_record_to_csv
-450 2671700
+450 2655100
 cfl=~
 cfn=<built-in method builtins.len>
 calls=20 0
-450 16300
+450 19100
 cfl=~
 cfn=<built-in method io.open>
 calls=10 0
-450 13160300
+450 15882900
 cfl=~
 cfn=<method '__exit__' of '_io._IOBase' objects>
 calls=10 0
-450 4461100
+450 20177300
 cfl=~
 cfn=<method 'endswith' of 'str' objects>
 calls=10 0
-450 55700
+450 51200
 cfl=~
 cfn=<method 'writelines' of '_io._IOBase' objects>
-calls=62 0
-450 2630700
+calls=48 0
+450 2147000
 
 fl=G:\Python\venv\python3.9\lib\site-packages\colorama\ansitowin32.py
 fn=write:40
-40 598400
+40 476600
 cfl=G:\Python\venv\python3.9\lib\site-packages\colorama\ansitowin32.py
 cfn=write:160
-calls=164 160
-40 10519500
+calls=136 160
+40 10657400
 
 fl=G:\Python\venv\python3.9\lib\site-packages\colorama\ansitowin32.py
 fn=closed
-55 295900
+55 264000
 
 fl=G:\Python\venv\python3.9\lib\site-packages\colorama\ansitowin32.py
 fn=write:160
-160 1566600
+160 1341000
 cfl=G:\Python\venv\python3.9\lib\site-packages\colorama\ansitowin32.py
 cfn=reset_all
-calls=164 170
-160 3082400
+calls=136 170
+160 4260600
 cfl=~
 cfn=<method 'flush' of '_io.TextIOWrapper' objects>
-calls=164 0
-160 464300
+calls=136 0
+160 723400
 cfl=~
 cfn=<method 'write' of '_io.TextIOWrapper' objects>
-calls=164 0
-160 5406200
+calls=136 0
+160 4332400
 
 fl=G:\Python\venv\python3.9\lib\site-packages\colorama\ansitowin32.py
 fn=reset_all
-170 976300
+170 882900
 cfl=G:\Python\venv\python3.9\lib\site-packages\colorama\ansitowin32.py
 cfn=closed
-calls=164 55
-170 295900
+calls=136 55
+170 264000
 cfl=~
 cfn=<method 'write' of '_io.TextIOWrapper' objects>
-calls=164 0
-170 1810200
+calls=136 0
+170 3113700
 
 fl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\_asarray.py
 fn=asarray
-23 76619300
+23 51564400
 cfl=~
 cfn=<built-in method numpy.array>
-calls=46178 0
-23 557851700
+calls=29931 0
+23 377249200
 
 fl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\_asarray.py
 fn=asanyarray
-110 45314100
+110 30940800
 cfl=~
 cfn=<built-in method numpy.array>
-calls=31594 0
-110 170046200
+calls=22144 0
+110 121998100
 
 fl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\_methods.py
 fn=_count_reduce_items
-65 2503500
+65 1925400
 cfl=~
 cfn=<built-in method numpy.core._multiarray_umath.normalize_axis_index>
-calls=62 0
-65 194600
+calls=48 0
+65 150400
 
 fl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\_methods.py
 fn=_mean
-161 2592100
+161 1835600
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\_asarray.py
 cfn=asanyarray
-calls=62 110
-161 2452500
+calls=48 110
+161 1887900
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\_methods.py
 cfn=_count_reduce_items
-calls=62 65
-161 2698100
+calls=48 65
+161 2075800
 cfl=~
 cfn=<built-in method builtins.hasattr>
-calls=62 0
-161 199500
+calls=48 0
+161 152900
 cfl=~
 cfn=<built-in method builtins.isinstance>
-calls=62 0
-161 147200
+calls=48 0
+161 103300
 cfl=~
 cfn=<built-in method builtins.issubclass>
-calls=124 0
-161 173200
+calls=96 0
+161 157600
 cfl=~
 cfn=<method 'reduce' of 'numpy.ufunc' objects>
-calls=62 0
-161 3566600
+calls=48 0
+161 2743100
 
 fl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\fromnumeric.py
 fn=_wrapit
-39 329261100
+39 228578700
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\_asarray.py
 cfn=asarray
-calls=35131 23
-39 590346000
+calls=22946 23
+39 400124200
 cfl=~
 cfn=<built-in method builtins.getattr>
-calls=35131 0
-39 37831400
+calls=22946 0
+39 26986900
 cfl=~
 cfn=<method 'transpose' of 'numpy.ndarray' objects>
-calls=35131 0
-39 63936600
+calls=22946 0
+39 43353900
 
 fl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\fromnumeric.py
 fn=_wrapfunc
-52 250314000
+52 180919200
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\fromnumeric.py
 cfn=_wrapit
-calls=35131 39
-52 1021375100
+calls=22946 39
+52 699043700
 cfl=~
 cfn=<built-in method builtins.getattr>
-calls=77750 0
-52 64027200
+calls=51025 0
+52 41351200
 cfl=~
 cfn=<method 'argsort' of 'numpy.ndarray' objects>
-calls=7488 0
-52 82850700
+calls=5133 0
+52 65427600
 cfl=~
 cfn=<method 'nonzero' of 'numpy.ndarray' objects>
-calls=35131 0
-52 137220400
+calls=22946 0
+52 84101400
 
 fl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\fromnumeric.py
 fn=_wrapreduction
-70 59099300
+70 44067700
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\fromnumeric.py
 cfn=<dictcomp>
-calls=4051 71
-70 27134600
+calls=2805 71
+70 7675300
 cfl=~
 cfn=<built-in method builtins.getattr>
-calls=4051 0
-70 14577100
+calls=2805 0
+70 10852700
 cfl=~
 cfn=<method 'items' of 'dict' objects>
-calls=4051 0
-70 3389000
+calls=2805 0
+70 2531400
 cfl=~
 cfn=<method 'reduce' of 'numpy.ufunc' objects>
-calls=4051 0
-70 182976600
+calls=2805 0
+70 127794000
 
 fl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\fromnumeric.py
 fn=<dictcomp>
-71 27134600
+71 7675300
 
 fl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\fromnumeric.py
 fn=_transpose_dispatcher
-598 22022400
+598 12567300
 
 fl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\fromnumeric.py
 fn=transpose
-602 66937800
+602 48595900
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\fromnumeric.py
 cfn=_wrapfunc
-calls=35131 52
-602 1186811100
+calls=22946 52
+602 814409600
 
 fl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\fromnumeric.py
 fn=_argsort_dispatcher
-1000 6175700
+1000 4529500
 
 fl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\fromnumeric.py
 fn=argsort
-1004 33677300
+1004 24697900
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\fromnumeric.py
 cfn=_wrapfunc
-calls=7488 52
-1004 115987600
+calls=5133 52
+1004 89022400
 
 fl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\fromnumeric.py
 fn=_ravel_dispatcher
-1712 9472500
+1712 5955200
 
 fl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\fromnumeric.py
 fn=ravel
-1716 78330300
+1716 56938700
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\_asarray.py
 cfn=asanyarray
-calls=15766 110
-1716 151705500
+calls=11048 110
+1716 109315400
 cfl=~
 cfn=<built-in method builtins.isinstance>
-calls=15766 0
-1716 15800200
+calls=11048 0
+1716 11255700
 cfl=~
 cfn=<method 'ravel' of 'numpy.ndarray' objects>
-calls=15766 0
-1716 62626800
+calls=11048 0
+1716 232326800
 
 fl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\fromnumeric.py
 fn=_nonzero_dispatcher
-1823 21804900
+1823 12125400
 
 fl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\fromnumeric.py
 fn=nonzero
-1827 75467400
+1827 50516800
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\fromnumeric.py
 cfn=_wrapfunc
-calls=35131 52
-1827 252988700
+calls=22946 52
+1827 167411100
 
 fl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\fromnumeric.py
 fn=_prod_dispatcher
-2907 3945200
+2907 2592600
 
 fl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\fromnumeric.py
 fn=prod
-2912 40203400
+2912 24150700
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\fromnumeric.py
 cfn=_wrapreduction
-calls=4051 70
-2912 287176600
+calls=2805 70
+2912 192921100
 
 fl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\fromnumeric.py
 fn=_ndim_dispatcher
-3102 20975700
+3102 13747000
 
 fl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\fromnumeric.py
 fn=ndim
-3106 37417000
+3106 28974400
 
 fl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\fromnumeric.py
 fn=_mean_dispatcher
-3296 103500
+3296 79100
 
 fl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\fromnumeric.py
 fn=mean
-3301 1927100
+3301 1551300
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\_methods.py
 cfn=_mean
-calls=62 161
-3301 11829200
+calls=48 161
+3301 8956200
 
 fl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\multiarray.py
 fn=concatenate
-143 8447700
+143 6603000
 
 fl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\numeric.py
 fn=_argwhere_dispatcher
-566 30478300
+566 20131700
 
 fl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\numeric.py
 fn=argwhere
-570 245644100
+570 186251200
 cfl=<__array_function__ internals>
 cfn=ndim
-calls=35131 2
-570 206479100
+calls=22946 2
+570 153804400
 cfl=<__array_function__ internals>
 cfn=nonzero
-calls=35131 2
-570 497575700
+calls=22946 2
+570 333156300
 cfl=<__array_function__ internals>
 cfn=transpose
-calls=35131 2
-570 1449320800
+calls=22946 2
+570 1032303400
 
 fl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\numeric.py
 fn=normalize_axis_tuple
-1341 95951200
+1341 67487200
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\numeric.py
 cfn=<listcomp>:1391
-calls=10120 1391
-1341 30975700
+calls=6350 1391
+1341 21074600
 cfl=~
 cfn=<built-in method _operator.index>
-calls=10120 0
-1341 6353600
+calls=6350 0
+1341 4238400
 cfl=~
 cfn=<built-in method builtins.len>
-calls=20240 0
-1341 9905000
+calls=12700 0
+1341 5633500
 
 fl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\numeric.py
 fn=<listcomp>:1391
-1391 16537800
+1391 11525300
 cfl=~
 cfn=<built-in method numpy.core._multiarray_umath.normalize_axis_index>
-calls=10120 0
-1391 14437900
+calls=6350 0
+1391 9549300
 
 fl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\numeric.py
 fn=_moveaxis_dispatcher
-1400 3844300
+1400 2788300
 
 fl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\numeric.py
 fn=moveaxis
-1404 96122400
+1404 63738200
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\numeric.py
 cfn=normalize_axis_tuple
-calls=10120 1341
-1404 143185500
+calls=6350 1341
+1404 98433700
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\numeric.py
 cfn=<listcomp>:1467
-calls=5060 1467
-1404 5061900
+calls=3175 1467
+1404 3923700
 cfl=~
 cfn=<built-in method builtins.len>
-calls=10120 0
-1404 3303700
+calls=6350 0
+1404 2332200
 cfl=~
 cfn=<built-in method builtins.sorted>
-calls=5060 0
-1404 18630900
+calls=3175 0
+1404 11902100
 cfl=~
 cfn=<method 'insert' of 'list' objects>
-calls=5060 0
-1404 4987400
+calls=3175 0
+1404 3527400
 cfl=~
 cfn=<method 'transpose' of 'numpy.ndarray' objects>
-calls=5060 0
-1404 15994300
+calls=3175 0
+1404 10688000
 
 fl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\numeric.py
 fn=<listcomp>:1467
-1467 5061900
+1467 3923700
 
 fl=G:\Python\venv\python3.9\lib\site-packages\numpy\lib\function_base.py
 fn=_delete_dispatcher
-4306 4818400
+4306 3288900
 
 fl=G:\Python\venv\python3.9\lib\site-packages\numpy\lib\function_base.py
 fn=delete
-4310 275091300
+4310 189061900
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\_asarray.py
 cfn=asarray
-calls=5987 23
-4310 25377300
+calls=3810 23
+4310 16717700
 cfl=~
 cfn=<built-in method builtins.isinstance>
-calls=17961 0
-4310 13832000
+calls=11430 0
+4310 8426800
 cfl=~
 cfn=<built-in method numpy.empty>
-calls=5987 0
-4310 27539100
+calls=3810 0
+4310 18953100
 
 fl=G:\Python\venv\python3.9\lib\site-packages\numpy\lib\function_base.py
 fn=_insert_dispatcher
-4491 4325100
+4491 2720400
 
 fl=G:\Python\venv\python3.9\lib\site-packages\numpy\lib\function_base.py
 fn=insert
-4495 255862200
+4495 177396100
 cfl=<__array_function__ internals>
 cfn=moveaxis
-calls=5060 2
-4495 329613400
+calls=3175 2
+4495 221785800
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\_asarray.py
 cfn=asarray
-calls=5060 23
-4495 18747700
+calls=3175 23
+4495 11971700
 cfl=~
 cfn=<built-in method builtins.isinstance>
-calls=5060 0
-4495 4321600
+calls=3175 0
+4495 2830300
 cfl=~
 cfn=<built-in method numpy.array>
-calls=10120 0
-4495 66960900
+calls=6350 0
+4495 68558300
 cfl=~
 cfn=<built-in method numpy.empty>
-calls=5060 0
-4495 22525000
+calls=3175 0
+4495 21923200
 cfl=~
 cfn=<method 'item' of 'numpy.ndarray' objects>
-calls=5060 0
-4495 5167900
+calls=3175 0
+4495 3442200
 
 fl=G:\Python\venv\python3.9\lib\site-packages\numpy\lib\function_base.py
 fn=_append_dispatcher
-4686 12982100
+4686 10059800
 
 fl=G:\Python\venv\python3.9\lib\site-packages\numpy\lib\function_base.py
 fn=append
-4690 147064500
+4690 118931300
 cfl=<__array_function__ internals>
 cfn=concatenate
-calls=15766 2
-4690 308069300
+calls=11048 2
+4690 230047400
 cfl=<__array_function__ internals>
 cfn=ravel
-calls=15766 2
-4690 415637700
+calls=11048 2
+4690 486786200
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\_asarray.py
 cfn=asanyarray
-calls=15766 110
-4690 61202300
+calls=11048 110
+4690 41735600
 
 fl=~
-fn=<built-in method __new__ of type object at 0x00007FFC97763C60>
-0 149056100
+fn=<built-in method __new__ of type object at 0x00007FFABBF2BC60>
+0 104156900
 
 fl=~
 fn=<built-in method _operator.index>
-0 6353600
+0 4238400
 
 fl=~
 fn=<built-in method builtins.getattr>
-0 346416600
+0 246258300
 
 fl=~
 fn=<built-in method builtins.hasattr>
-0 94716700
+0 76722100
 
 fl=~
 fn=<built-in method builtins.id>
-0 2229629300
+0 1646515100
 
 fl=~
 fn=<built-in method builtins.isinstance>
-0 211825100
+0 170336300
 
 fl=~
 fn=<built-in method builtins.issubclass>
-0 95675500
+0 88513100
 
 fl=~
 fn=<built-in method builtins.len>
-0 135802700
+0 91751200
 
 fl=~
 fn=<built-in method builtins.max>
-0 439942800
+0 354051700
 
 fl=~
 fn=<built-in method builtins.min>
-0 3337100
+0 2362500
 
 fl=~
 fn=<built-in method builtins.print>
-0 1184800
+0 979400
 cfl=G:\Python\venv\python3.9\lib\site-packages\colorama\ansitowin32.py
 cfn=write:40
-calls=164 40
-0 11117900
+calls=136 40
+0 11134000
 
 fl=~
 fn=<built-in method builtins.sorted>
-0 18630900
+0 11902100
 
 fl=~
 fn=<built-in method builtins.sum>
-0 91832200
+0 71764800
 
 fl=~
 fn=<built-in method io.open>
-0 57700600
+0 66842400
 cfl=F:\Python\lib\codecs.py
 cfn=__init__
 calls=41 186
-0 280600
+0 279800
 
 fl=~
 fn=<built-in method nt.fspath>
-0 9700
+0 18300
 
 fl=~
 fn=<built-in method nt.listdir>
-0 2782900
+0 3095300
 
 fl=~
 fn=<built-in method nt.mkdir>
-0 3687800
+0 4674300
 
 fl=~
 fn=<built-in method nt.remove>
-0 31607800
+0 92100200
 
 fl=~
 fn=<built-in method nt.stat>
-0 2247100
+0 2917700
 
 fl=~
 fn=<built-in method numpy.arange>
-0 19221400
+0 14064000
 
 fl=~
 fn=<built-in method numpy.array>
-0 861081900
+0 623906400
 
 fl=~
 fn=<built-in method numpy.core._multiarray_umath.implement_array_function>
-0 857453000
+0 633996400
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\fromnumeric.py
 cfn=transpose
-calls=35131 602
-0 1253748900
+calls=22946 602
+0 863005500
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\fromnumeric.py
 cfn=argsort
-calls=7488 1004
-0 149664900
+calls=5133 1004
+0 113720300
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\fromnumeric.py
 cfn=ravel
-calls=15766 1716
-0 308462800
+calls=11048 1716
+0 409836600
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\fromnumeric.py
 cfn=nonzero
-calls=35131 1827
-0 328456100
+calls=22946 1827
+0 217927900
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\fromnumeric.py
 cfn=prod
-calls=4051 2912
-0 327380000
+calls=2805 2912
+0 217071800
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\fromnumeric.py
 cfn=ndim
-calls=35131 3106
-0 37417000
+calls=22946 3106
+0 28974400
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\fromnumeric.py
 cfn=mean
-calls=62 3301
-0 13756300
+calls=48 3301
+0 10507500
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\numeric.py
 cfn=argwhere
-calls=35131 570
-0 2399019700
+calls=22946 570
+0 1705515300
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\core\numeric.py
 cfn=moveaxis
-calls=5060 1404
-0 287286100
+calls=3175 1404
+0 194545300
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\lib\function_base.py
 cfn=delete
-calls=5987 4310
-0 341839700
+calls=3810 4310
+0 233159500
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\lib\function_base.py
 cfn=insert
-calls=5060 4495
-0 703198700
+calls=3175 4495
+0 507907600
 cfl=G:\Python\venv\python3.9\lib\site-packages\numpy\lib\function_base.py
 cfn=append
-calls=15766 4690
-0 931973800
+calls=11048 4690
+0 877500500
 
 fl=~
 fn=<built-in method numpy.core._multiarray_umath.normalize_axis_index>
-0 14632500
+0 9699700
 
 fl=~
 fn=<built-in method numpy.empty>
-0 50064100
+0 40876300
 
 fl=~
 fn=<built-in method numpy.zeros>
-0 158367700
+0 117370800
 
 fl=~
 fn=<built-in method time.perf_counter>
-0 176500
+0 138700
 
 fl=~
 fn=<method '__deepcopy__' of 'numpy.generic' objects>
-0 10164300
+0 5990600
 
 fl=~
 fn=<method '__deepcopy__' of 'numpy.ndarray' objects>
-0 203439800
+0 155125700
 
 fl=~
 fn=<method '__exit__' of '_io._IOBase' objects>
-0 25445300
+0 45824100
 
 fl=~
 fn=<method '__reduce_ex__' of 'object' objects>
-0 561651900
+0 432867000
 cfl=F:\Python\lib\copyreg.py
 cfn=_slotnames
 calls=4 103
-0 67600
+0 82900
 
 fl=~
 fn=<method 'append' of 'list' objects>
-0 697019000
+0 561500500
 
 fl=~
 fn=<method 'argsort' of 'numpy.ndarray' objects>
-0 82850700
+0 65427600
 
 fl=~
 fn=<method 'choice' of 'numpy.random.mtrand.RandomState' objects>
-0 384501800
+0 275912000
 cfl=<__array_function__ internals>
 cfn=prod
-calls=3919 2
-0 362732500
+calls=2705 2
+0 242871900
 
 fl=~
 fn=<method 'disable' of '_lsprof.Profiler' objects>
-0 2700
+0 3700
 
 fl=~
 fn=<method 'endswith' of 'str' objects>
-0 198300
+0 178800
 
 fl=~
 fn=<method 'extend' of 'list' objects>
-0 2531200
+0 1704500
 
 fl=~
 fn=<method 'flush' of '_io.TextIOWrapper' objects>
-0 464300
+0 723400
 
 fl=~
 fn=<method 'format' of 'str' objects>
-0 7352800
+0 6112300
 
 fl=~
 fn=<method 'get' of 'dict' objects>
-0 3334485600
+0 2630296300
 
 fl=~
 fn=<method 'get' of 'mappingproxy' objects>
-0 7200
+0 8800
 
 fl=~
 fn=<method 'index' of 'list' objects>
-0 119366600
+0 118585300
 
 fl=~
 fn=<method 'insert' of 'list' objects>
-0 142762200
+0 134945400
 
 fl=~
 fn=<method 'item' of 'numpy.ndarray' objects>
-0 5167900
+0 3442200
 
 fl=~
 fn=<method 'items' of 'dict' objects>
-0 448815100
+0 975026400
 
 fl=~
 fn=<method 'keys' of 'dict' objects>
-0 20301200
+0 13922400
 
 fl=~
 fn=<method 'nonzero' of 'numpy.ndarray' objects>
-0 137220400
+0 84101400
 
 fl=~
 fn=<method 'pop' of 'list' objects>
-0 98729600
+0 86706600
 
 fl=~
 fn=<method 'randint' of 'numpy.random.mtrand.RandomState' objects>
-0 11179300
+0 67678100
 cfl=<__array_function__ internals>
 cfn=prod
-calls=132 2
-0 15062900
+calls=100 2
+0 11646600
 
 fl=~
 fn=<method 'random' of 'numpy.random.mtrand.RandomState' objects>
-0 131886400
+0 98127800
 
 fl=~
 fn=<method 'ravel' of 'numpy.ndarray' objects>
-0 62626800
+0 232326800
 
 fl=~
 fn=<method 'reduce' of 'numpy.ufunc' objects>
-0 186543200
+0 130537100
 
 fl=~
 fn=<method 'remove' of 'list' objects>
-0 2830200
+0 1667800
 
 fl=~
 fn=<method 'replace' of 'str' objects>
-0 13900
+0 27700
 
 fl=~
 fn=<method 'rstrip' of 'str' objects>
-0 10400
+0 13400
 
 fl=~
 fn=<method 'shuffle' of 'numpy.random.mtrand.RandomState' objects>
-0 8396100
+0 8711500
 
 fl=~
 fn=<method 'tolist' of 'numpy.ndarray' objects>
-0 25509500
+0 17294600
 
 fl=~
 fn=<method 'transpose' of 'numpy.ndarray' objects>
-0 79930900
+0 54041900
 
 fl=~
 fn=<method 'update' of 'dict' objects>
-0 296087500
+0 206298200
 
 fl=~
 fn=<method 'values' of 'dict' objects>
-0 15574600
+0 11063900
 
 fl=~
 fn=<method 'write' of '_io.TextIOWrapper' objects>
-0 7216400
+0 7446100
 
 fl=~
 fn=<method 'writelines' of '_io._IOBase' objects>
-0 14708700
+0 14658400
 
