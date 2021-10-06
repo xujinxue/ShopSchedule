@@ -282,9 +282,9 @@ class Utils:
         wait = []
         value = []
         for i, j in enumerate(to_int):
-            value.append(j)
+            value.append(time_unit * j)
             if i + 1 == sum(nop[:len(wait) + 1]):
-                wait.append(time_unit * value)
+                wait.append(value)
                 value = []
         return wait
 
