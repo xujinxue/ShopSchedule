@@ -5,7 +5,7 @@ Constrain: Basic constrain, worker constrain, no-wait constrain, limited-wait co
 multi-route constrain.    
 Algorithm: Genetic algorithm, Non-dominate sort genetic algorithm.    
 Schedule rules: SPT,LPT,et al.   
-E-mail: 2315466330@qq.com 
+E-mail: 2315466330@qq.com   
 All copyright reserved.  
 
 
